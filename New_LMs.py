@@ -218,7 +218,7 @@ def importance_sampling_estimator(P_probs, Q_probs, n_samples=100, alpha_values=
     all_results = []
 
     for proposal in r_probs_list:
-        print(f"Testing {proposal['name']}")
+        print(f"\nTesting {proposal['name']}")
         # Sample from proposal
         samples = sample_from_distribution(proposal['r'], n_samples)
         
