@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 import seaborn as sns
+import os
 
 # Set style
 sns.set_style("whitegrid")
@@ -306,22 +307,27 @@ def create_comprehensive_report(P_probs, Q_probs, r_probs_dict, n_samples=10000)
     print("GENERATING COMPREHENSIVE VISUALIZATION REPORT")
     print("=" * 80)
     
+    # Create plots directory in current working directory
+    plots_dir = os.path.join(os.getcwd(), 'plots')
+    os.makedirs(plots_dir, exist_ok=True)
+    print(f"\nPlots will be saved to: {plots_dir}")
+    
     # 1. Distribution Overlay
     print("\n[1/5] Creating distribution overlay plots...")
     fig1 = plot_distribution_overlay(P_probs, Q_probs, r_probs_dict, max_tokens=200)
-    plt.savefig('/mnt/user-data/outputs/01_distribution_overlay.png', dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(plots_dir, '01_distribution_overlay.png'), dpi=150, bbox_inches='tight')
     print("    ✓ Saved: 01_distribution_overlay.png")
     
     # 2. Importance Weights
     print("[2/5] Creating importance weight histograms...")
     fig2 = plot_importance_weights(P_probs, Q_probs, r_probs_dict, n_samples)
-    plt.savefig('/mnt/user-data/outputs/02_importance_weights.png', dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(plots_dir, '02_importance_weights.png'), dpi=150, bbox_inches='tight')
     print("    ✓ Saved: 02_importance_weights.png")
     
     # 3. Coverage Map
     print("[3/5] Creating coverage map...")
     fig3 = plot_coverage_map(P_probs, Q_probs, r_probs_dict, n_samples, n_regions=10)
-    plt.savefig('/mnt/user-data/outputs/03_coverage_map.png', dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(plots_dir, '03_coverage_map.png'), dpi=150, bbox_inches='tight')
     print("    ✓ Saved: 03_coverage_map.png")
     
     # 4. ESS Analysis
@@ -339,15 +345,14 @@ def create_comprehensive_report(P_probs, Q_probs, r_probs_dict, n_samples=10000)
     # 5. ESS Comparison Plot
     print("\n[5/5] Creating ESS comparison plot...")
     fig4 = plot_ess_comparison(ess_results)
-    plt.savefig('/mnt/user-data/outputs/04_ess_comparison.png', dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(plots_dir, '04_ess_comparison.png'), dpi=150, bbox_inches='tight')
     print("    ✓ Saved: 04_ess_comparison.png")
     
     print("\n" + "=" * 80)
     print("REPORT GENERATION COMPLETE")
-    print("All plots saved to /mnt/user-data/outputs/")
+    print(f"All plots saved to: {plots_dir}")
     print("=" * 80)
     
     plt.close('all')  # Close all figures to free memory
     
     return ess_results
-
