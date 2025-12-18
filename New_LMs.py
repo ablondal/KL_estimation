@@ -1,0 +1,295 @@
+"""
+KL Divergence Estimation with Long-Tailed Distributions
+Compares Naive MC vs Importance Sampling on realistic language model distributions
+"""
+
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import zipf
+
+
+
+class LongTailedDistribution:
+   
+    
+    @staticmethod
+    def zipfian(vocab_size, alpha=1.5):
+        """
+        Zipfian distribution: P(k) ∝ 1/k^alpha
+        Args:
+        vocab_size: number of tokens in vocabulary
+        alpha: controls heaviness of tail (1.0-1.5 typical for language)
+        """
+        ranks = np.arange(1, vocab_size + 1)
+        probs = 1.0 / (ranks ** alpha)
+        probs = probs / probs.sum()
+        return probs
+    
+    @staticmethod
+    def perturb_distribution(base_probs, shift_ratio=0.2, n_shift=100):
+        """
+        Create a similar but different distribution by shifting probability mass.
+        """
+        vocab_size = len(base_probs)
+        perturbed = base_probs.copy()
+        
+        # Randomly select tokens to boost/reduce
+        boost_indices = np.random.choice(
+            range(n_shift, vocab_size),
+            size=n_shift // 2,
+            replace=False
+        )
+        
+        reduce_indices = np.random.choice(
+            range(n_shift, vocab_size // 2),
+            size=n_shift // 2,
+            replace=False
+        )
+        
+        # Shift probability mass
+        shift_mass = base_probs.sum() * shift_ratio
+        mass_per_boost = shift_mass / len(boost_indices)
+        mass_per_reduce = shift_mass / len(reduce_indices)
+        
+        perturbed[boost_indices] += mass_per_boost
+        perturbed[reduce_indices] = np.maximum(
+            perturbed[reduce_indices] - mass_per_reduce,
+            1e-10
+        )
+        
+        # Renormalize
+        perturbed = perturbed / perturbed.sum()
+        return perturbed
+
+
+def create_model_pair(vocab_size=1000, divergence='medium'):
+    """
+    Create two related long-tailed distributions P and Q.
+    Args:
+        vocab_size: size of vocabulary
+        divergence: 'low', 'medium', or 'high' - controls how different P and Q are
+    """
+    # Base distribution P ( base model) # switched the order here
+    P_probs = LongTailedDistribution.zipfian(vocab_size, alpha=1.5)
+    
+    # Perturbed distribution Q (fine-tuned model)
+    if divergence == 'low':
+        Q_probs = LongTailedDistribution.perturb_distribution(Q_probs, shift_ratio=0.1)
+    elif divergence == 'medium':
+        Q_probs = LongTailedDistribution.perturb_distribution(Q_probs, shift_ratio=0.3)
+    elif divergence == 'high':
+        Q_probs = LongTailedDistribution.zipfian(vocab_size, alpha=1.2)
+        Q_probs = LongTailedDistribution.perturb_distribution(P_probs, shift_ratio=0.5)
+    else:
+        raise ValueError("divergence must be 'low', 'medium', or 'high'")
+    
+    return P_probs, Q_probs
+
+
+
+
+def compute_true_KL(P_probs, Q_probs, eps=1e-12):
+   
+    P_safe = np.clip(P_probs, eps, 1.0)
+    Q_safe = np.clip(Q_probs, eps, 1.0)
+    
+    kl = np.sum(P_safe * np.log(P_safe / Q_safe))
+    return kl
+
+
+def compute_theoretical_variance(P_probs, Q_probs, true_kl, eps=1e-12):
+  
+    P_safe = np.clip(P_probs, eps, 1.0)
+    Q_safe = np.clip(Q_probs, eps, 1.0)
+    
+    log_ratios = np.log(P_safe / Q_safe)
+    
+    # Var[log(P/Q)] = E[(log(P/Q))²] - (E[log(P/Q)])²
+    second_moment = np.sum(P_safe * log_ratios**2)
+    variance = second_moment - true_kl**2
+    
+    return variance
+
+
+def sample_from_distribution(probs, n_samples=1):
+   
+    vocab_size = len(probs)
+    samples = np.random.choice(vocab_size, size=n_samples, p=probs)
+    return samples
+
+
+def compute_proposal_distribution(P_probs, Q_probs, alpha=0.5, eps=1e-12):
+    """
+    Compute proposal distribution:
+    r(x) = P(x) * |log(P/Q)| * alpha + P(x) * (1-alpha)
+    """
+    P_safe = np.clip(P_probs, eps, 1.0)
+    Q_safe = np.clip(Q_probs, eps, 1.0)
+    
+    log_ratio = np.log(P_safe / Q_safe)
+    abs_log_ratio = np.abs(log_ratio)
+    
+    # r(x) = P(x) * |log(P/Q)| * alpha + P(x) * (1-alpha)
+    r_probs = P_safe * abs_log_ratio * alpha + P_safe * (1 - alpha)
+    
+    # Normalize
+    r_probs = r_probs / np.sum(r_probs)
+    
+    return r_probs
+
+def naive_MC_estimator(P_probs, Q_probs, n_samples=100, eps=1e-12):
+    
+    print(f"Naive Monte Carlo with {n_samples} samples")
+    
+    # Sample from P
+    samples = sample_from_distribution(P_probs, n_samples)
+    
+    # Compute log(P/Q) for each sample
+    estimates = []
+    for token in samples:
+        p = P_probs[token]
+        q = Q_probs[token]
+        
+        if q < eps:
+            estimates.append(float('inf'))
+        else:
+            estimates.append(np.log(p / q))
+    
+    # Statistics
+    estimate = np.mean(estimates)
+    variance = np.var(estimates, ddof=1)
+    std_error = np.sqrt(variance / n_samples)
+    
+    print(f"Final estimate: {estimate:.6f}")
+    print(f"Empirical variance: {variance:.6f}")
+    print(f"Standard error: {std_error:.6f}")
+    
+    return estimate, variance, std_error, estimates
+
+
+def importance_sampling_estimator(P_probs, Q_probs, n_samples=100, alpha=0.5, eps=1e-12):
+   
+    print(f"Importance Sampling with α={alpha}, n={n_samples}")
+    
+    # Compute proposal distribution
+    r_probs = compute_proposal_distribution(P_probs, Q_probs, alpha, eps)
+    
+    # Sample from proposal
+    samples = sample_from_distribution(r_probs, n_samples)
+    
+    # Compute weighted log(P/Q) for each sample
+    estimates = []
+    for token in samples:
+        p = P_probs[token]
+        q = Q_probs[token]
+        r = r_probs[token]
+        
+        # Importance weight: w = P(x) / r(x)
+        weight = p / r
+        
+        if q < eps:
+            estimates.append(float('inf'))
+        else:
+            estimates.append(weight * np.log(p / q))
+    
+    # Statistics
+    estimate = np.mean(estimates)
+    variance = np.var(estimates, ddof=1)
+    std_error = np.sqrt(variance / n_samples)
+    
+    print(f"Final estimate: {estimate:.6f}")
+    print(f"Empirical variance: {variance:.6f}")
+    print(f"Standard error: {std_error:.6f}")
+    
+    return estimate, variance, std_error, estimates
+
+
+def run_comparison_experiment(vocab_size=1000, n_samples=100, 
+                              alpha_values=[0.3, 0.5, 0.7, 0.9],
+                              divergence='medium'):
+    """
+    Run complete comparison of naive MC vs importance sampling.
+    """
+    print("=" * 80)
+    print("KL DIVERGENCE ESTIMATION WITH LONG-TAILED DISTRIBUTIONS")
+    print("=" * 80)
+    
+    # Create models P and Q
+    print(f"\nCreating long-tailed distributions (vocab_size={vocab_size})...")
+    P_probs, Q_probs = create_model_pair(vocab_size, divergence=divergence)
+    
+    # Show distribution statistics
+    print(f"\nDistribution statistics:")
+    print(f"  Top 10 tokens in P: {P_probs[:10].sum():.2%}")
+    print(f"  Top 100 tokens in P: {P_probs[:100].sum():.2%}")
+    print(f"  Top 10 tokens in Q: {Q_probs[:10].sum():.2%}")
+    print(f"  Top 100 tokens in Q: {Q_probs[:100].sum():.2%}")
+    
+    # Compute true KL
+    print("\n" + "=" * 80)
+    print("Computing TRUE KL divergence...")
+    true_kl = compute_true_KL(P_probs, Q_probs)
+    theoretical_variance = compute_theoretical_variance(P_probs, Q_probs, true_kl)
+    
+    print(f"TRUE KL(P||Q) = {true_kl:.6f}")
+    print(f"Theoretical MC variance = {theoretical_variance:.6f}")
+    print("=" * 80)
+    
+    results = {
+        'true_kl': true_kl,
+        'theoretical_variance': theoretical_variance,
+        'methods': []
+    }
+    
+    # Naive Monte Carlo
+    print("\n[METHOD 1] Naive Monte Carlo")
+    print("-" * 80)
+    mc_est, mc_var, mc_se, mc_estimates = naive_MC_estimator(
+        P_probs, Q_probs, n_samples
+    )
+    
+    results['methods'].append({
+        'name': 'Naive MC',
+        'estimate': mc_est,
+        'variance': mc_var,
+        'std_error': mc_se,
+        'error': abs(mc_est - true_kl),
+        'estimates': mc_estimates
+    })
+    
+    # Importance Sampling with different alphas
+    for alpha in alpha_values:
+        print("\n" + "=" * 80)
+        print(f"[METHOD 2] Importance Sampling (α={alpha})")
+        print("-" * 80)
+        is_est, is_var, is_se, is_estimates = importance_sampling_estimator(
+            P_probs, Q_probs, n_samples, alpha
+        )
+        
+        results['methods'].append({
+            'name': f'IS (α={alpha})',
+            'estimate': is_est,
+            'variance': is_var,
+            'std_error': is_se,
+            'error': abs(is_est - true_kl),
+            'estimates': is_estimates
+        })
+    
+  
+    
+    return results, P_probs, Q_probs
+
+# ============================================================
+# MAIN EXECUTION
+# ============================================================
+
+if __name__ == "__main__":
+    # Run experiment with long-tailed distributions
+    results, P_probs, Q_probs = run_comparison_experiment(
+        vocab_size=1000,
+        n_samples=100,
+        alpha_values=[0.3, 0.5, 0.7, 0.9],
+        divergence='medium'
+    )
+    
