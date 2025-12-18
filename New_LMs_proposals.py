@@ -7,6 +7,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import zipf
+from visualize_proposals import create_comprehensive_report
 
 
 class LongTailedDistribution:
@@ -254,7 +255,7 @@ def importance_sampling_estimator(P_probs, Q_probs, n_samples=100, alpha_values=
             'estimates': estimates
         })
     
-    return all_results
+    return r_probs_list, all_results
 
 
 def run_comparison_experiment(vocab_size=1000, n_samples=100, 
@@ -313,10 +314,10 @@ def run_comparison_experiment(vocab_size=1000, n_samples=100,
     # various types of importance sampling
     print("\n" + "=" * 80)
     print(f"[METHOD 2] Importance Sampling")
-    all_results = importance_sampling_estimator(P_probs, Q_probs, n_samples, alpha_values)
+    r_probs_list, all_results = importance_sampling_estimator(P_probs, Q_probs, n_samples, alpha_values)
     results['methods'].extend(all_results)
     
-    return results, P_probs, Q_probs
+    return results, P_probs, Q_probs, r_probs_list
 
 
 # ============================================================
@@ -325,9 +326,14 @@ def run_comparison_experiment(vocab_size=1000, n_samples=100,
 
 if __name__ == "__main__":
     # Run experiment with long-tailed distributions
-    results, P_probs, Q_probs = run_comparison_experiment(
+    results, P_probs, Q_probs, r_probs_list = run_comparison_experiment(
         vocab_size=1000,
         n_samples=100,
         alpha_values=[0.3, 0.5, 0.7, 0.9],
         divergence='medium'
     )
+    print("\n" + "=" * 80)
+    print("GENERATING VISUALIZATIONS")
+    print("=" * 80)
+    
+    ess_results = create_comprehensive_report(P_probs, Q_probs, r_probs_list)
