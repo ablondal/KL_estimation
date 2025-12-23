@@ -7,14 +7,13 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import zipf
-
+from visualize_proposals import create_comprehensive_report
 
 
 class LongTailedDistribution:
-   
     
     @staticmethod
-    def ç(vocab_size, alpha=1.5):
+    def zipfian(vocab_size, alpha=1.5):
         """
         Zipfian distribution: P(k) ∝ 1/k^alpha
         Args:
@@ -70,27 +69,24 @@ def create_model_pair(vocab_size=1000, divergence='medium'):
         vocab_size: size of vocabulary
         divergence: 'low', 'medium', or 'high' - controls how different P and Q are
     """
-    # Base distribution Q ( base model)
-    Q_probs = LongTailedDistribution.zipfian(vocab_size, alpha=1.5)
+    # Base distribution P (base model)
+    P_probs = LongTailedDistribution.zipfian(vocab_size, alpha=1.5)
     
-    # Perturbed distribution P (fine-tuned model)
+    # Perturbed distribution Q (fine-tuned model)
     if divergence == 'low':
-        P_probs = LongTailedDistribution.perturb_distribution(Q_probs, shift_ratio=0.1)
+        Q_probs = LongTailedDistribution.perturb_distribution(P_probs, shift_ratio=0.1)
     elif divergence == 'medium':
-        P_probs = LongTailedDistribution.perturb_distribution(Q_probs, shift_ratio=0.3)
+        Q_probs = LongTailedDistribution.perturb_distribution(P_probs, shift_ratio=0.3)
     elif divergence == 'high':
-        P_probs = LongTailedDistribution.zipfian(vocab_size, alpha=1.2)
-        P_probs = LongTailedDistribution.perturb_distribution(P_probs, shift_ratio=0.5)
+        Q_probs = LongTailedDistribution.zipfian(vocab_size, alpha=1.2)
+        Q_probs = LongTailedDistribution.perturb_distribution(Q_probs, shift_ratio=0.5)
     else:
         raise ValueError("divergence must be 'low', 'medium', or 'high'")
     
     return P_probs, Q_probs
 
 
-
-
 def compute_true_KL(P_probs, Q_probs, eps=1e-12):
-   
     P_safe = np.clip(P_probs, eps, 1.0)
     Q_safe = np.clip(Q_probs, eps, 1.0)
     
@@ -99,7 +95,6 @@ def compute_true_KL(P_probs, Q_probs, eps=1e-12):
 
 
 def compute_theoretical_variance(P_probs, Q_probs, true_kl, eps=1e-12):
-  
     P_safe = np.clip(P_probs, eps, 1.0)
     Q_safe = np.clip(Q_probs, eps, 1.0)
     
@@ -113,13 +108,12 @@ def compute_theoretical_variance(P_probs, Q_probs, true_kl, eps=1e-12):
 
 
 def sample_from_distribution(probs, n_samples=1):
-   
     vocab_size = len(probs)
     samples = np.random.choice(vocab_size, size=n_samples, p=probs)
     return samples
 
 
-def compute_proposal_distribution(P_probs, Q_probs, alpha=0.5, eps=1e-12):
+def compute_proposal_alpha_mixture(P_probs, Q_probs, alpha=0.5, eps=1e-12):
     """
     Compute proposal distribution:
     r(x) = P(x) * |log(P/Q)| * alpha + P(x) * (1-alpha)
@@ -138,8 +132,39 @@ def compute_proposal_distribution(P_probs, Q_probs, alpha=0.5, eps=1e-12):
     
     return r_probs
 
+
+def compute_proposal_optimal(P_probs, Q_probs, eps=1e-12):
+    """
+    Theoretically optimal: r ∝ P|log(P/Q)|
+    Serves as a performance ceiling
+    Intractable for LLMs
+    """
+    P_safe = np.clip(P_probs, eps, 1.0)
+    Q_safe = np.clip(Q_probs, eps, 1.0)
+    r_probs = P_safe * np.abs(np.log(P_safe / Q_safe))
+    return r_probs / r_probs.sum()
+
+
+def compute_proposal_geometric_mixture(P_probs, Q_probs, beta=0.5, eps=1e-12):
+    """
+    geometric mixture: r ∝ P^beta * Q^(1-beta)
+    geometric mean with beta=0.5
+    """
+    P_safe = np.clip(P_probs, eps, 1.0)
+    Q_safe = np.clip(Q_probs, eps, 1.0)
+    r_probs = (P_safe ** beta) * (Q_safe ** (1 - beta))
+    return r_probs / r_probs.sum()
+
+
+def compute_proposal_mixture(P_probs, Q_probs, lambda_mix=0.5, eps=1e-12):
+    """
+    r = λP + (1-λ)Q - simple mixture
+    doesn't explicitly target high divergence regions
+    """
+    return lambda_mix * P_probs + (1 - lambda_mix) * Q_probs
+
+
 def naive_MC_estimator(P_probs, Q_probs, n_samples=100, eps=1e-12):
-    
     print(f"Naive Monte Carlo with {n_samples} samples")
     
     # Sample from P
@@ -168,41 +193,69 @@ def naive_MC_estimator(P_probs, Q_probs, n_samples=100, eps=1e-12):
     return estimate, variance, std_error, estimates
 
 
-def importance_sampling_estimator(P_probs, Q_probs, n_samples=100, alpha=0.5, eps=1e-12):
-   
-    print(f"Importance Sampling with α={alpha}, n={n_samples}")
+def importance_sampling_estimator(P_probs, Q_probs, n_samples=100, alpha_values=[0.3, 0.5, 0.7, 0.9], eps=1e-12):
+    print(f"Importance Sampling with n={n_samples}")
+
+    r_probs_list = []
+
+    for alpha in alpha_values:
+        r_probs_list.append({
+            'name': f'Alpha-mixture (α={alpha})', 
+            'r': compute_proposal_alpha_mixture(P_probs, Q_probs, alpha=alpha, eps=eps)
+        })
+        r_probs_list.append({
+            'name': f'Geometric (α={alpha})', 
+            'r': compute_proposal_geometric_mixture(P_probs, Q_probs, beta=alpha, eps=eps)
+        })
+        r_probs_list.append({
+            'name': f'Mixture (α={alpha})', 
+            'r': compute_proposal_mixture(P_probs, Q_probs, lambda_mix=alpha, eps=eps)
+        })
     
-    # Compute proposal distribution
-    r_probs = compute_proposal_distribution(P_probs, Q_probs, alpha, eps)
-    
-    # Sample from proposal
-    samples = sample_from_distribution(r_probs, n_samples)
-    
-    # Compute weighted log(P/Q) for each sample
-    estimates = []
-    for token in samples:
-        p = P_probs[token]
-        q = Q_probs[token]
-        r = r_probs[token]
+    r_probs_list.extend([
+        {'name': 'Optimal', 'r': compute_proposal_optimal(P_probs, Q_probs, eps)}
+    ])
+
+    all_results = []
+
+    for proposal in r_probs_list:
+        print(f"\nTesting {proposal['name']}")
+        # Sample from proposal
+        samples = sample_from_distribution(proposal['r'], n_samples)
         
-        # Importance weight: w = P(x) / r(x)
-        weight = p / r
+        # Compute weighted log(P/Q) for each sample
+        estimates = []
+        for token in samples:
+            p = P_probs[token]
+            q = Q_probs[token]
+            r = proposal['r'][token]
+            
+            # Importance weight: w = P(x) / r(x)
+            weight = p / r
+            
+            if q < eps:
+                estimates.append(float('inf'))
+            else:
+                estimates.append(weight * np.log(p / q))
         
-        if q < eps:
-            estimates.append(float('inf'))
-        else:
-            estimates.append(weight * np.log(p / q))
+        # Statistics
+        estimate = np.mean(estimates)
+        variance = np.var(estimates, ddof=1)
+        std_error = np.sqrt(variance / n_samples)
+        
+        print(f"Final estimate: {estimate:.6f}")
+        print(f"Empirical variance: {variance:.6f}")
+        print(f"Standard error: {std_error:.6f}")
+
+        all_results.append({
+            'name': proposal['name'],
+            'estimate': estimate,
+            'variance': variance,
+            'std_error': std_error,
+            'estimates': estimates
+        })
     
-    # Statistics
-    estimate = np.mean(estimates)
-    variance = np.var(estimates, ddof=1)
-    std_error = np.sqrt(variance / n_samples)
-    
-    print(f"Final estimate: {estimate:.6f}")
-    print(f"Empirical variance: {variance:.6f}")
-    print(f"Standard error: {std_error:.6f}")
-    
-    return estimate, variance, std_error, estimates
+    return r_probs_list, all_results
 
 
 def run_comparison_experiment(vocab_size=1000, n_samples=100, 
@@ -257,28 +310,15 @@ def run_comparison_experiment(vocab_size=1000, n_samples=100,
         'error': abs(mc_est - true_kl),
         'estimates': mc_estimates
     })
+
+    # various types of importance sampling
+    print("\n" + "=" * 80)
+    print(f"[METHOD 2] Importance Sampling")
+    r_probs_list, all_results = importance_sampling_estimator(P_probs, Q_probs, n_samples, alpha_values)
+    results['methods'].extend(all_results)
     
-    # Importance Sampling with different alphas
-    for alpha in alpha_values:
-        print("\n" + "=" * 80)
-        print(f"[METHOD 2] Importance Sampling (α={alpha})")
-        print("-" * 80)
-        is_est, is_var, is_se, is_estimates = importance_sampling_estimator(
-            P_probs, Q_probs, n_samples, alpha
-        )
-        
-        results['methods'].append({
-            'name': f'IS (α={alpha})',
-            'estimate': is_est,
-            'variance': is_var,
-            'std_error': is_se,
-            'error': abs(is_est - true_kl),
-            'estimates': is_estimates
-        })
-    
-  
-    
-    return results, P_probs, Q_probs
+    return results, P_probs, Q_probs, r_probs_list
+
 
 # ============================================================
 # MAIN EXECUTION
@@ -286,10 +326,14 @@ def run_comparison_experiment(vocab_size=1000, n_samples=100,
 
 if __name__ == "__main__":
     # Run experiment with long-tailed distributions
-    results, P_probs, Q_probs = run_comparison_experiment(
+    results, P_probs, Q_probs, r_probs_list = run_comparison_experiment(
         vocab_size=1000,
         n_samples=100,
         alpha_values=[0.3, 0.5, 0.7, 0.9],
         divergence='medium'
     )
+    print("\n" + "=" * 80)
+    print("GENERATING VISUALIZATIONS")
+    print("=" * 80)
     
+    ess_results = create_comprehensive_report(P_probs, Q_probs, r_probs_list)
