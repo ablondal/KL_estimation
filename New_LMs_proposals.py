@@ -444,9 +444,9 @@ if __name__ == "__main__":
     # Run experiment with long-tailed distributions
     for model_type in ["create_model_pair", "create_model_pair_zipCutoff", "create_model_pair_mixture"]:
         results, P_probs, Q_probs, r_probs_list = run_comparison_experiment(
-            vocab_size=1000,
+            vocab_size=3000,
             model_type=model_type,
-            n_samples=100,
+            n_samples=300,
             alpha_values=[0.3, 0.5, 0.7, 0.9],
             divergence='medium'
         )
