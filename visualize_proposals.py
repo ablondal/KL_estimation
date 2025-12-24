@@ -300,7 +300,7 @@ def plot_ess_comparison(ess_results):
     return fig
 
 
-def create_comprehensive_report(P_probs, Q_probs, r_probs_dict, n_samples=10000):
+def create_comprehensive_report(P_probs, Q_probs, model_type, r_probs_dict, n_samples=10000):
     """
     Generate all visualization plots and save them
     """
@@ -310,7 +310,7 @@ def create_comprehensive_report(P_probs, Q_probs, r_probs_dict, n_samples=10000)
     
     # Create plots directory in current working directory
     timestamp = datetime.now().strftime("%m%d_%H%M")
-    plots_dir = os.path.join(os.getcwd(), 'plots', timestamp)
+    plots_dir = os.path.join(os.getcwd(), model_type, 'plots', timestamp)
     os.makedirs(plots_dir, exist_ok=True)
     print(f"\nPlots will be saved to: {plots_dir}")
     
