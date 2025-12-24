@@ -10,7 +10,6 @@ import seaborn as sns
 import os
 from datetime import datetime
 
-# Set style
 sns.set_style("whitegrid")
 plt.rcParams['figure.figsize'] = (15, 10)
 
@@ -20,10 +19,10 @@ def plot_distribution_overlay(P_probs, Q_probs, r_probs_dict, max_tokens=200):
     Overlay plot: P(x), Q(x), r(x), and |log(P/Q)| on same axes
     
     Args:
-        P_probs: Fine-tuned model probabilities
-        Q_probs: Base model probabilities  
+        P_probs: Base model probabilities 
+        Q_probs: Fine-tuned model probabilities 
         r_probs_dict: Dict of {'name': name, 'r': r_probs} for different proposals
-        max_tokens: Number of tokens to show (for readability)
+        max_tokens: Number of tokens to show 
     """
     n_proposals = len(r_probs_dict)
     fig, axes = plt.subplots(n_proposals + 1, 1, figsize=(15, 4 * (n_proposals + 1)))
@@ -42,8 +41,8 @@ def plot_distribution_overlay(P_probs, Q_probs, r_probs_dict, max_tokens=200):
     
     # Plot P, Q, and |log(P/Q)| on first subplot
     ax = axes[0]
-    ax.plot(tokens, P_viz, label='P(x) - Fine-tuned', linewidth=2, alpha=0.8)
-    ax.plot(tokens, Q_viz, label='Q(x) - Base', linewidth=2, alpha=0.8)
+    ax.plot(tokens, P_viz, label='P(x) - Base', linewidth=2, alpha=0.8)
+    ax.plot(tokens, Q_viz, label='Q(x) - Fine-tuned', linewidth=2, alpha=0.8)
     ax.plot(tokens, log_ratio_scaled * P_viz.max(), label='|log(P/Q)| (scaled)', 
             linewidth=2, alpha=0.6, linestyle='--', color='red')
     ax.set_xlabel('Token Index')
@@ -58,8 +57,8 @@ def plot_distribution_overlay(P_probs, Q_probs, r_probs_dict, max_tokens=200):
         ax = axes[idx + 1]
         r_viz = proposal['r'][:max_tokens]
         
-        ax.plot(tokens, P_viz, label='P(x)', linewidth=2, alpha=0.6)
-        ax.plot(tokens, Q_viz, label='Q(x)', linewidth=2, alpha=0.6)
+        ax.plot(tokens, P_viz, label='P(x) - Target', linewidth=2, alpha=0.6)
+        ax.plot(tokens, Q_viz, label='Q(x) - Fine-tuned', linewidth=2, alpha=0.6)
         ax.plot(tokens, r_viz, label=f"r(x) - {proposal['name']}", 
                 linewidth=3, alpha=0.9, color='green')
         ax.plot(tokens, log_ratio_scaled * P_viz.max(), label='|log(P/Q)| (scaled)', 
@@ -67,7 +66,7 @@ def plot_distribution_overlay(P_probs, Q_probs, r_probs_dict, max_tokens=200):
         
         ax.set_xlabel('Token Index')
         ax.set_ylabel('Probability')
-        ax.set_title(f"Proposal: {proposal['name']}", fontsize=12, fontweight='bold')
+        ax.set_title(f"Importance Sampling Proposal: {proposal['name']}", fontsize=12, fontweight='bold')
         ax.legend(loc='upper right')
         ax.set_yscale('log')
         ax.grid(True, alpha=0.3)
@@ -78,11 +77,11 @@ def plot_distribution_overlay(P_probs, Q_probs, r_probs_dict, max_tokens=200):
 
 def plot_importance_weights(P_probs, Q_probs, r_probs_dict, n_samples=10000):
     """
-    Histogram of importance weights P(x)/r(x) to spot exploding weights
+    Histogram of importance weights P(x)/r(x) for different proposals
     
     Args:
-        P_probs: Fine-tuned model probabilities
-        Q_probs: Base model probabilities
+        P_probs: Base model probabilities  
+        Q_probs: Fine-tuned model probabilities
         r_probs_dict: List of {'name': name, 'r': r_probs} for different proposals
         n_samples: Number of samples to draw for histogram
     """
@@ -97,7 +96,9 @@ def plot_importance_weights(P_probs, Q_probs, r_probs_dict, n_samples=10000):
         # Sample from r
         samples = np.random.choice(len(r_probs), size=n_samples, p=r_probs)
         
-        # Compute importance weights
+        # Compute importance weights for estimating KL(P||Q) via importance sampling
+        # In standard importance sampling for KL(P||Q):
+        # weights = P(x) / r(x)
         weights = P_probs[samples] / r_probs[samples]
         
         # Compute ESS
@@ -137,8 +138,8 @@ def plot_coverage_map(P_probs, Q_probs, r_probs_dict, n_samples=10000, n_regions
     Shows which vocab regions get sampled under different r's
     
     Args:
-        P_probs: Fine-tuned model probabilities
-        Q_probs: Base model probabilities
+        P_probs: Base model probabilities 
+        Q_probs: Fine-tuned model probabilities
         r_probs_dict: List of {'name': name, 'r': r_probs}
         n_samples: Number of samples to draw
         n_regions: Number of vocab regions to split into
@@ -150,15 +151,22 @@ def plot_coverage_map(P_probs, Q_probs, r_probs_dict, n_samples=10000, n_regions
     fig, axes = plt.subplots(1, 2, figsize=(15, 6))
     
     # Prepare data
-    coverage_data = np.zeros((n_proposals + 1, n_regions))  # +1 for P itself
+    coverage_data = np.zeros((n_proposals + 2, n_regions))  # +2 for P and Q
     region_labels = [f"{i*region_size}-{(i+1)*region_size-1}" for i in range(n_regions)]
     
-    # Sample from P (baseline)
+    # Sample from P (target distribution)
     samples_P = np.random.choice(vocab_size, size=n_samples, p=P_probs)
     for i in range(n_regions):
         start = i * region_size
         end = (i + 1) * region_size
         coverage_data[0, i] = np.sum((samples_P >= start) & (samples_P < end)) / n_samples
+    
+    # Sample from Q (fine-tuned model)
+    samples_Q = np.random.choice(vocab_size, size=n_samples, p=Q_probs)
+    for i in range(n_regions):
+        start = i * region_size
+        end = (i + 1) * region_size
+        coverage_data[1, i] = np.sum((samples_Q >= start) & (samples_Q < end)) / n_samples
     
     # Sample from each proposal
     for idx, proposal in enumerate(r_probs_dict):
@@ -168,7 +176,7 @@ def plot_coverage_map(P_probs, Q_probs, r_probs_dict, n_samples=10000, n_regions
         for i in range(n_regions):
             start = i * region_size
             end = (i + 1) * region_size
-            coverage_data[idx + 1, i] = np.sum((samples >= start) & (samples < end)) / n_samples
+            coverage_data[idx + 2, i] = np.sum((samples >= start) & (samples < end)) / n_samples
     
     # Plot 1: Heatmap of coverage
     ax1 = axes[0]
@@ -178,7 +186,7 @@ def plot_coverage_map(P_probs, Q_probs, r_probs_dict, n_samples=10000, n_regions
     ax1.set_xticklabels(region_labels, rotation=45, ha='right', fontsize=9)
     ax1.set_yticks(range(len(method_names)))
     ax1.set_yticklabels(method_names, fontsize=9)
-    ax1.set_xlabel('Vocabulary Region (Token Range)', fontsize=11)
+    ax1.set_xlabel('Vocabulary Region', fontsize=11)
     ax1.set_ylabel('Sampling Method', fontsize=11)
     ax1.set_title('Coverage Map: Proportion of Samples per Region', fontsize=12, fontweight='bold')
     
@@ -197,17 +205,19 @@ def plot_coverage_map(P_probs, Q_probs, r_probs_dict, n_samples=10000, n_regions
     tail_start = vocab_size // 2  # Define "tail" as second half
     
     tail_coverage = []
-    for idx in range(len(method_names)):
-        if idx == 0:
-            samples = samples_P
-        else:
-            samples = np.random.choice(vocab_size, size=n_samples, p=r_probs_dict[idx-1]['r'])
+    # For P
+    tail_coverage.append(np.sum(samples_P >= tail_start) / n_samples)
+    # For Q
+    tail_coverage.append(np.sum(samples_Q >= tail_start) / n_samples)
+    # For each proposal
+    for idx in range(len(r_probs_dict)):
+        samples = np.random.choice(vocab_size, size=n_samples, p=r_probs_dict[idx]['r'])
         tail_coverage.append(np.sum(samples >= tail_start) / n_samples)
     
     bars = ax2.bar(range(len(method_names)), tail_coverage, color='steelblue', alpha=0.7, edgecolor='black')
     ax2.set_xticks(range(len(method_names)))
     ax2.set_xticklabels(method_names, rotation=45, ha='right', fontsize=9)
-    ax2.set_ylabel('Proportion in Tail (2nd Half)', fontsize=11)
+    ax2.set_ylabel('Proportion in Tail (2nd half)', fontsize=11)
     ax2.set_title('Tail Coverage Comparison', fontsize=12, fontweight='bold')
     ax2.grid(True, alpha=0.3, axis='y')
     
@@ -225,7 +235,7 @@ def compute_ess_metrics(P_probs, r_probs_dict, n_samples=10000):
     """
     Compute Effective Sample Size (ESS) for different proposals
     
-    ESS = (Σw)² / Σw²
+    ESS = (Σw)² / Σw² where w = P(x)/r(x)
     
     Returns dict with ESS statistics
     """
@@ -237,7 +247,7 @@ def compute_ess_metrics(P_probs, r_probs_dict, n_samples=10000):
         # Sample from r
         samples = np.random.choice(len(r_probs), size=n_samples, p=r_probs)
         
-        # Compute importance weights
+        # Compute importance weights for KL(P||Q) estimation
         weights = P_probs[samples] / r_probs[samples]
         
         # Compute ESS
@@ -272,7 +282,7 @@ def plot_ess_comparison(ess_results):
     ax1.set_xticks(range(len(names)))
     ax1.set_xticklabels(names, rotation=45, ha='right', fontsize=9)
     ax1.set_ylabel('ESS Ratio (ESS / n_samples)', fontsize=11)
-    ax1.set_title('Effective Sample Size Comparison', fontsize=12, fontweight='bold')
+    ax1.set_title('Effective Sample Size Comparison\n(Higher is Better)', fontsize=12, fontweight='bold')
     ax1.axhline(y=1.0, color='red', linestyle='--', linewidth=2, label='Perfect (ESS=n)')
     ax1.legend()
     ax1.grid(True, alpha=0.3, axis='y')
@@ -288,7 +298,7 @@ def plot_ess_comparison(ess_results):
     ax2.set_xticks(range(len(names)))
     ax2.set_xticklabels(names, rotation=45, ha='right', fontsize=9)
     ax2.set_ylabel('Maximum Importance Weight', fontsize=11)
-    ax2.set_title('Weight Stability (Lower is Better)', fontsize=12, fontweight='bold')
+    ax2.set_title('Weight Stability\n(Lower is Better)', fontsize=12, fontweight='bold')
     ax2.grid(True, alpha=0.3, axis='y')
     
     for bar, val in zip(bars2, max_weights):
@@ -303,10 +313,19 @@ def plot_ess_comparison(ess_results):
 def create_comprehensive_report(P_probs, Q_probs, r_probs_dict, n_samples=10000):
     """
     Generate all visualization plots and save them
+    
+    Args:
+        P_probs: Base model probabilities 
+        Q_probs: Fine-tuned model probabilities  
+        r_probs_dict: Different importance sampling proposals
+        n_samples: Number of samples for estimation
     """
     print("=" * 80)
     print("GENERATING COMPREHENSIVE VISUALIZATION REPORT")
     print("=" * 80)
+    print(f"Number of IS Proposals: {len(r_probs_dict)}")
+    print(f"Samples per Estimation: {n_samples}")
+    print("-" * 80)
     
     # Create plots directory in current working directory
     timestamp = datetime.now().strftime("%m%d_%H%M")
@@ -336,7 +355,7 @@ def create_comprehensive_report(P_probs, Q_probs, r_probs_dict, n_samples=10000)
     print("[4/5] Computing ESS metrics...")
     ess_results = compute_ess_metrics(P_probs, r_probs_dict, n_samples)
     
-    print("\nESS Summary:")
+    print("\nESS Summary for KL(P||Q) Estimation:")
     print("-" * 80)
     print(f"{'Method':<25} {'ESS Ratio':>12} {'Max Weight':>12} {'Mean Weight':>12}")
     print("-" * 80)
