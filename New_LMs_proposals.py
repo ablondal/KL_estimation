@@ -24,7 +24,54 @@ class LongTailedDistribution:
         probs = 1.0 / (ranks ** alpha)
         probs = probs / probs.sum()
         return probs
+
+    @staticmethod
+    def mixture_distribution(vocab_size, components=3): # set vocab to >1000
+        """
+        Real LLM distributions often look like mixtures:
+        - Very heavy head (top ~100 tokens)
+        - Power law middle
+        - Very long flat tail
+        """
+        probs = np.zeros(vocab_size)
+        
+        # Component 1: Very heavy head (top 100)
+        head_size = min(100, vocab_size // 10)
+        probs[:head_size] = np.exp(-0.05 * np.arange(head_size))
+        
+        # Component 2: Power law middle
+        middle_start = head_size
+        middle_end = vocab_size // 2
+        middle_indices = np.arange(middle_start, middle_end)
+        probs[middle_indices] = 1.0 / (middle_indices ** 1.3)
+        
+        # Component 3: Uniform-ish tail
+        tail_start = middle_end
+        tail_indices = np.arange(tail_start, vocab_size)
+        probs[tail_indices] = 1.0 / (tail_indices ** 0.7)
+        
+        # Mix with some randomness
+        probs *= np.random.lognormal(0, 0.5, vocab_size)
+        
+        probs = probs / probs.sum()
+        return probs
     
+    @staticmethod
+    def zipfian_with_cutoff(vocab_size, alpha=1.5, cutoff_rank=100):
+        """
+        Real LLMs often have power law head + exponential tail
+        """
+        ranks = np.arange(1, vocab_size + 1)
+        probs = 1.0 / (ranks ** alpha)
+        
+        # Apply exponential cutoff after certain rank
+        cutoff_mask = ranks > cutoff_rank
+        decay_factor = np.exp(-(ranks[cutoff_mask] - cutoff_rank) / (vocab_size/10))
+        probs[cutoff_mask] *= decay_factor
+        
+        probs = probs / probs.sum()
+        return probs
+        
     @staticmethod
     def perturb_distribution(base_probs, shift_ratio=0.2, n_shift=100):
         """
@@ -85,6 +132,37 @@ def create_model_pair(vocab_size=1000, divergence='medium'):
     
     return P_probs, Q_probs
 
+def create_model_pair_zipCutoff(vocab_size=2000, divergence='medium'):
+    P_probs = LongTailedDistribution.zipfian_with_cutoff(vocab_size)
+    
+    if divergence == 'low':
+        Q_probs = LongTailedDistribution.perturb_distribution(P_probs, shift_ratio=0.1)
+    elif divergence == 'medium':
+        Q_probs = LongTailedDistribution.perturb_distribution(P_probs, shift_ratio=0.3)
+    elif divergence == 'high':
+        Q_probs = LongTailedDistribution.zipfian_with_cutoff(vocab_size, alpha=1.2)
+        Q_probs = LongTailedDistribution.perturb_distribution(Q_probs, shift_ratio=0.5)
+    else:
+        raise ValueError("divergence must be 'low', 'medium', or 'high'")
+    
+    return P_probs, Q_probs
+
+
+def create_model_pair_mixture(vocab_size=2000, divergence='medium'):
+    P_probs = LongTailedDistribution.mixture_distribution(vocab_size)
+    
+    if divergence == 'low':
+        Q_probs = LongTailedDistribution.perturb_distribution(P_probs, shift_ratio=0.1)
+    elif divergence == 'medium':
+        Q_probs = LongTailedDistribution.perturb_distribution(P_probs, shift_ratio=0.3)
+    elif divergence == 'high':
+        Q_probs = LongTailedDistribution.zipfian_with_cutoff(vocab_size, alpha=1.2)
+        Q_probs = LongTailedDistribution.perturb_distribution(Q_probs, shift_ratio=0.5)
+    else:
+        raise ValueError("divergence must be 'low', 'medium', or 'high'")
+    
+    return P_probs, Q_probs
+
 
 def compute_true_KL(P_probs, Q_probs, eps=1e-12):
     P_safe = np.clip(P_probs, eps, 1.0)
@@ -106,13 +184,38 @@ def compute_theoretical_variance(P_probs, Q_probs, true_kl, eps=1e-12):
     
     return variance
 
-
 def sample_from_distribution(probs, n_samples=1):
     vocab_size = len(probs)
     samples = np.random.choice(vocab_size, size=n_samples, p=probs)
     return samples
 
 
+def compute_proposal_balanced(P_probs, Q_probs, eps=1e-12):
+    """
+    Balanced proposal: r ∝ sqrt(P * |log(P/Q)| * Q / (P + Q))
+    Tries to balance P's coverage with high-divergence regions
+    """
+    P_safe = np.clip(P_probs, eps, 1.0)
+    Q_safe = np.clip(Q_probs, eps, 1.0)
+    
+    log_ratio = np.log(P_safe / Q_safe)
+    divergence_factor = np.sqrt(P_safe * np.abs(log_ratio) * Q_safe / (P_safe + Q_safe + eps))
+    
+    r_probs = P_safe * divergence_factor
+    return r_probs / r_probs.sum()
+
+def compute_proposal_adaptive_mixture(P_probs, Q_probs, eps=1e-12):
+    """
+    Adaptive: more weight on high-dKL when differences are large
+    r ∝ P * (1 + |log(P/Q)|)
+    """
+    P_safe = np.clip(P_probs, eps, 1.0)
+    Q_safe = np.clip(Q_probs, eps, 1.0)
+    
+    log_ratio = np.log(P_safe / Q_safe)
+    r_probs = P_safe * (1 + np.abs(log_ratio))
+    return r_probs / r_probs.sum()
+    
 def compute_proposal_alpha_mixture(P_probs, Q_probs, alpha=0.5, eps=1e-12):
     """
     Compute proposal distribution:
@@ -213,6 +316,12 @@ def importance_sampling_estimator(P_probs, Q_probs, n_samples=100, alpha_values=
         })
     
     r_probs_list.extend([
+        {'name': 'Balanced', 'r': compute_proposal_optimal(P_probs, Q_probs, eps)}
+    ])
+    r_probs_list.extend([
+        {'name': 'Adaptive', 'r': compute_proposal_optimal(P_probs, Q_probs, eps)}
+    ])
+    r_probs_list.extend([
         {'name': 'Optimal', 'r': compute_proposal_optimal(P_probs, Q_probs, eps)}
     ])
 
@@ -258,7 +367,7 @@ def importance_sampling_estimator(P_probs, Q_probs, n_samples=100, alpha_values=
     return r_probs_list, all_results
 
 
-def run_comparison_experiment(vocab_size=1000, n_samples=100, 
+def run_comparison_experiment(vocab_size=1000, model_type="create_model_pair", n_samples=100, 
                               alpha_values=[0.3, 0.5, 0.7, 0.9],
                               divergence='medium'):
     """
@@ -269,9 +378,16 @@ def run_comparison_experiment(vocab_size=1000, n_samples=100,
     print("=" * 80)
     
     # Create models P and Q
-    print(f"\nCreating long-tailed distributions (vocab_size={vocab_size})...")
-    P_probs, Q_probs = create_model_pair(vocab_size, divergence=divergence)
-    
+    print(f"\nCreating long-tailed distributions (vocab_size={vocab_size}) with {model_type}...")
+    if model_type == "create_model_pair":
+        P_probs, Q_probs = create_model_pair(vocab_size, divergence=divergence)
+    elif model_type == "create_model_pair_zipCutoff":
+        P_probs, Q_probs = create_model_pair_zipCutoff(vocab_size, divergence=divergence)
+    elif model_type == "create_model_pair_mixture":
+        P_probs, Q_probs = create_model_pair_mixture(vocab_size, divergence=divergence)
+    else:
+        raise ValueError("model_type must be create_model_pair, create_model_pair_zipCutoff, or create_model_pair_mixture")
+        
     # Show distribution statistics
     print(f"\nDistribution statistics:")
     print(f"  Top 10 tokens in P: {P_probs[:10].sum():.2%}")
@@ -326,14 +442,16 @@ def run_comparison_experiment(vocab_size=1000, n_samples=100,
 
 if __name__ == "__main__":
     # Run experiment with long-tailed distributions
-    results, P_probs, Q_probs, r_probs_list = run_comparison_experiment(
-        vocab_size=1000,
-        n_samples=100,
-        alpha_values=[0.3, 0.5, 0.7, 0.9],
-        divergence='medium'
-    )
-    print("\n" + "=" * 80)
-    print("GENERATING VISUALIZATIONS")
-    print("=" * 80)
-    
-    ess_results = create_comprehensive_report(P_probs, Q_probs, r_probs_list)
+    for model_type in ["create_model_pair", "create_model_pair_zipCutoff", "create_model_pair_mixture"]:
+        results, P_probs, Q_probs, r_probs_list = run_comparison_experiment(
+            vocab_size=1000,
+            model_type=model_type,
+            n_samples=100,
+            alpha_values=[0.3, 0.5, 0.7, 0.9],
+            divergence='medium'
+        )
+        print("\n" + "=" * 80)
+        print("GENERATING VISUALIZATIONS")
+        print("=" * 80)
+        
+        ess_results = create_comprehensive_report(P_probs, Q_probs, r_probs_list)
