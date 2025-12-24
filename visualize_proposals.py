@@ -58,8 +58,8 @@ def plot_distribution_overlay(P_probs, Q_probs, r_probs_dict, max_tokens=200):
         ax = axes[idx + 1]
         r_viz = proposal['r'][:max_tokens]
         
-        ax.plot(tokens, P_viz, label='P(x)', linewidth=2, alpha=0.6)
-        ax.plot(tokens, Q_viz, label='Q(x)', linewidth=2, alpha=0.6)
+        ax.plot(tokens, P_viz, label='P(x) - Base', linewidth=2, alpha=0.6)
+        ax.plot(tokens, Q_viz, label='Q(x) - Fine-tuned', linewidth=2, alpha=0.6)
         ax.plot(tokens, r_viz, label=f"r(x) - {proposal['name']}", 
                 linewidth=3, alpha=0.9, color='green')
         ax.plot(tokens, log_ratio_scaled * P_viz.max(), label='|log(P/Q)| (scaled)', 
