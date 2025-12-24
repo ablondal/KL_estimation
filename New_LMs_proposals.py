@@ -454,4 +454,4 @@ if __name__ == "__main__":
         print("GENERATING VISUALIZATIONS")
         print("=" * 80)
         
-        ess_results = create_comprehensive_report(P_probs, Q_probs, r_probs_list)
+        ess_results = create_comprehensive_report(P_probs, Q_probs, model_type, r_probs_list)
