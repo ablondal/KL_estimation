@@ -210,9 +210,12 @@ def plot_coverage_map(P_probs, Q_probs, r_probs_dict, n_samples=10000, n_regions
     # For Q
     tail_coverage.append(np.sum(samples_Q >= tail_start) / n_samples)
     # For each proposal
-    for idx in range(len(r_probs_dict)):
-        samples = np.random.choice(vocab_size, size=n_samples, p=r_probs_dict[idx]['r'])
-        tail_coverage.append(np.sum(samples >= tail_start) / n_samples)
+    for idx in range(len(method_names)):
+        if idx == 0:
+            samples = samples_P
+        else:
+            samples = np.random.choice(vocab_size, size=n_samples, p=r_probs_dict[idx-1]['r'])
+            tail_coverage.append(np.sum(samples >= tail_start) / n_samples)
     
     bars = ax2.bar(range(len(method_names)), tail_coverage, color='steelblue', alpha=0.7, edgecolor='black')
     ax2.set_xticks(range(len(method_names)))
