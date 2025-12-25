@@ -246,15 +246,25 @@ def compute_proposal_cross_entropy(P_probs, Q_probs, temperature=0.5, eps=1e-12)
 
 def compute_proposal_chi2_aware(P_probs, Q_probs, alpha=0.5, eps=1e-12):
     """
-    Proposal based on chi-square divergence: r ∝ P * sqrt(P/Q) for alpha=0.5
+    Proposal based on chi-square divergence: r ∝ P * sqrt(P/Q)  
     This corresponds to the χ²-divergence optimal proposal.
     """
     P_safe = np.clip(P_probs, eps, 1.0)
     Q_safe = np.clip(Q_probs, eps, 1.0)
+
+    log_P = np.log(P_safe)
+    log_Q = np.log(Q_safe)
     
-    # r ∝ P * (P/Q)^alpha
-    r_probs = P_safe * ((P_safe / Q_safe) ** alpha) 
-    return r_probs / r_probs.sum()
+    log_ratio = log_P - log_Q
+    log_ratio = np.clip(log_ratio, -50, 50)
+    log_r = log_P + alpha * log_ratio
+
+    log_r_max = np.max(log_r)
+    log_r_normalized = log_r - log_r_max
+    r = np.exp(log_r_normalized)
+
+    r = r / np.sum(r)    
+    return r
 
 def compute_proposal_exponential_family(P_probs, Q_probs, beta=0.5, eps=1e-12):
     """
