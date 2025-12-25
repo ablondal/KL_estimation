@@ -397,7 +397,7 @@ def importance_sampling_estimator(P_probs, Q_probs, n_samples=100, alpha_values=
 
     for beta in [0.1, 0.5, 1.0, 2.0, 5.0]:
         r_probs_list.append({
-            'name': f'Exponential family (beta={beta})', 
+            'name': f'Exp family (beta={beta})', 
             'r': compute_proposal_exponential_family(P_probs, Q_probs, beta=beta, eps=eps)
         })
         
