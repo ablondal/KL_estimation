@@ -310,7 +310,7 @@ def create_comprehensive_report(P_probs, Q_probs, model_type, r_probs_dict, n_sa
     
     # Create plots directory in current working directory
     timestamp = datetime.now().strftime("%m%d_%H%M")
-    plots_dir = os.path.join(os.getcwd(), model_type, 'plots', timestamp)
+    plots_dir = os.path.join(os.getcwd(), f"{model_type}_plots", timestamp)
     os.makedirs(plots_dir, exist_ok=True)
     print(f"\nPlots will be saved to: {plots_dir}")
     
