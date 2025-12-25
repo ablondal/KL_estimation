@@ -1,0 +1,716 @@
+====================================================================================================
+EXPERIMENT: CREATE_MODEL_PAIR
+====================================================================================================
+================================================================================
+KL DIVERGENCE ESTIMATION WITH LONG-TAILED DISTRIBUTIONS
+================================================================================
+
+Creating long-tailed distributions (vocab_size=3000) with create_model_pair...
+
+Distribution statistics:
+  Top 10 tokens in P: 77.46%
+  Top 100 tokens in P: 93.67%
+  Top 10 tokens in Q: 59.96%
+  Top 100 tokens in Q: 72.51%
+
+================================================================================
+Computing TRUE KL divergence...
+TRUE KL(P||Q) = 0.280348
+Theoretical MC variance = 0.420394
+================================================================================
+
+[METHOD 1] Naive Monte Carlo
+--------------------------------------------------------------------------------
+Naive Monte Carlo with 300 samples
+Final estimate: 0.299062
+Empirical variance: 0.552944
+Standard error: 0.042932
+
+================================================================================
+[METHOD 2] Importance Sampling
+Importance Sampling with n=300
+
+Testing Alpha-mixture (α=0.3)
+Final estimate: 0.279509
+Empirical variance: 0.040349
+Standard error: 0.011597
+
+Testing Geometric (α=0.3)
+Final estimate: 0.254470
+Empirical variance: 0.004546
+Standard error: 0.003893
+
+Testing Mixture (α=0.3)
+Final estimate: 0.253707
+Empirical variance: 0.014292
+Standard error: 0.006902
+
+Testing Alpha-mixture (α=0.5)
+Final estimate: 0.291040
+Empirical variance: 0.025914
+Standard error: 0.009294
+
+Testing Geometric (α=0.5)
+Final estimate: 0.247923
+Empirical variance: 0.006005
+Standard error: 0.004474
+
+Testing Mixture (α=0.5)
+Final estimate: 0.256013
+Empirical variance: 0.009857
+Standard error: 0.005732
+
+Testing Alpha-mixture (α=0.7)
+Final estimate: 0.277567
+Empirical variance: 0.016456
+Standard error: 0.007406
+
+Testing Geometric (α=0.7)
+Final estimate: 0.248670
+Empirical variance: 0.009294
+Standard error: 0.005566
+
+Testing Mixture (α=0.7)
+Final estimate: 0.257948
+Empirical variance: 0.007343
+Standard error: 0.004947
+
+Testing Alpha-mixture (α=0.9)
+Final estimate: 0.277095
+Empirical variance: 0.008659
+Standard error: 0.005373
+
+Testing Geometric (α=0.9)
+Final estimate: 0.244547
+Empirical variance: 0.038554
+Standard error: 0.011336
+
+Testing Mixture (α=0.9)
+Final estimate: 0.305028
+Empirical variance: 0.894696
+Standard error: 0.054611
+
+Testing Balanced
+Final estimate: 0.258365
+Empirical variance: 0.377443
+Standard error: 0.035470
+
+Testing Balanced1
+Final estimate: 0.238466
+Empirical variance: 0.023635
+Standard error: 0.008876
+
+Testing Balanced2
+Final estimate: 0.249311
+Empirical variance: 0.008032
+Standard error: 0.005174
+
+Testing Adaptive
+Final estimate: 0.292658
+Empirical variance: 0.037656
+Standard error: 0.011204
+
+Testing Optimal
+Final estimate: 0.282954
+Empirical variance: 0.003312
+Standard error: 0.003323
+
+====================================================================================================
+ESTIMATOR PERFORMANCE SUMMARY & RANKING
+====================================================================================================
+
+Method                    |     Estimate |      True KL |    Abs Error |  Rel Error % |     Variance |    Std Error
+------------------------------------------------------------------------------------------------------------------------
+Optimal                   |     0.282954 |     0.280348 |     0.002605 |        0.93% |     0.003312* |     0.003323
+Alpha-mixture (α=0.9)     |     0.277095 |     0.280348 |     0.003253 |        1.16% |     0.008659 |     0.005373
+Alpha-mixture (α=0.7)     |     0.277567 |     0.280348 |     0.002781 |        0.99% |     0.016456 |     0.007406
+Alpha-mixture (α=0.3)     |     0.279509 |     0.280348 |     0.000839* |        0.30% |     0.040349 |     0.011597
+Alpha-mixture (α=0.5)     |     0.291040 |     0.280348 |     0.010692 |        3.81% |     0.025914 |     0.009294
+Adaptive                  |     0.292658 |     0.280348 |     0.012310 |        4.39% |     0.037656 |     0.011204
+Mixture (α=0.7)           |     0.257948 |     0.280348 |     0.022400 |        7.99% |     0.007343 |     0.004947
+Mixture (α=0.5)           |     0.256013 |     0.280348 |     0.024335 |        8.68% |     0.009857 |     0.005732
+Geometric (α=0.3)         |     0.254470 |     0.280348 |     0.025878 |        9.23% |     0.004546 |     0.003893
+Mixture (α=0.3)           |     0.253707 |     0.280348 |     0.026641 |        9.50% |     0.014292 |     0.006902
+Balanced2                 |     0.249311 |     0.280348 |     0.031037 |       11.07% |     0.008032 |     0.005174
+Geometric (α=0.5)         |     0.247923 |     0.280348 |     0.032425 |       11.57% |     0.006005 |     0.004474
+Geometric (α=0.7)         |     0.248670 |     0.280348 |     0.031678 |       11.30% |     0.009294 |     0.005566
+Geometric (α=0.9)         |     0.244547 |     0.280348 |     0.035801 |       12.77% |     0.038554 |     0.011336
+Balanced1                 |     0.238466 |     0.280348 |     0.041882 |       14.94% |     0.023635 |     0.008876
+Balanced                  |     0.258365 |     0.280348 |     0.021983 |        7.84% |     0.377443 |     0.035470
+Naive MC                  |     0.299062 |     0.280348 |     0.018714 |        6.68% |     0.552944 |     0.042932
+Mixture (α=0.9)           |     0.305028 |     0.280348 |     0.024680 |        8.80% |     0.894696 |     0.054611
+------------------------------------------------------------------------------------------------------------------------
+* indicates best in category
+
+====================================================================================================
+TOP 5 ESTIMATORS BY ACCURACY
+====================================================================================================
+Rank   | Method                    |    Abs Error |  Rel Error %
+----------------------------------------------------------------------
+1      | Alpha-mixture (α=0.3)     |     0.000839 |        0.30%
+2      | Optimal                   |     0.002605 |        0.93%
+3      | Alpha-mixture (α=0.7)     |     0.002781 |        0.99%
+4      | Alpha-mixture (α=0.9)     |     0.003253 |        1.16%
+5      | Alpha-mixture (α=0.5)     |     0.010692 |        3.81%
+
+====================================================================================================
+TOP 5 ESTIMATORS BY LOWEST VARIANCE
+====================================================================================================
+Rank   | Method                    |     Variance |    Std Error
+----------------------------------------------------------------------
+1      | Optimal                   |     0.003312 |     0.003323
+2      | Geometric (α=0.3)         |     0.004546 |     0.003893
+3      | Geometric (α=0.5)         |     0.006005 |     0.004474
+4      | Mixture (α=0.7)           |     0.007343 |     0.004947
+5      | Balanced2                 |     0.008032 |     0.005174
+
+====================================================================================================
+TOP 5 ESTIMATORS BY COMBINED SCORE (Accuracy & Variance)
+====================================================================================================
+Rank   | Method                    |        Score |    Abs Error |     Variance
+-------------------------------------------------------------------------------------
+1      | Optimal                   |     0.008869 |     0.002605 |     0.003312
+2      | Alpha-mixture (α=0.9)     |     0.014303 |     0.003253 |     0.008659
+3      | Alpha-mixture (α=0.7)     |     0.018688 |     0.002781 |     0.016456
+4      | Alpha-mixture (α=0.3)     |     0.030888 |     0.000839 |     0.040349
+5      | Alpha-mixture (α=0.5)     |     0.045190 |     0.010692 |     0.025914
+
+====================================================================================================
+OVERALL STATISTICS
+====================================================================================================
+Number of estimators: 18
+True KL divergence: 0.280348
+Theoretical MC variance: 0.420394
+
+Best accuracy: Alpha-mixture (α=0.3) (error: 0.000839)
+Best variance: Optimal (variance: 0.003312)
+Best overall: Optimal (score: 0.008869)
+
+================================================================================
+GENERATING VISUALIZATIONS
+================================================================================
+================================================================================
+GENERATING COMPREHENSIVE VISUALIZATION REPORT
+================================================================================
+
+Plots will be saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_plots/1224_2132
+
+[1/5] Creating distribution overlay plots...
+    ✓ Saved: 01_distribution_overlay.png
+[2/5] Creating importance weight histograms...
+    ✓ Saved: 02_importance_weights.png
+[3/5] Creating coverage map...
+    ✓ Saved: 03_coverage_map.png
+[4/5] Computing ESS metrics...
+
+ESS Summary:
+--------------------------------------------------------------------------------
+Method                       ESS Ratio   Max Weight  Mean Weight
+--------------------------------------------------------------------------------
+Alpha-mixture (α=0.3)           98.94%         1.01         1.00
+Geometric (α=0.3)               95.88%         1.04         1.00
+Mixture (α=0.3)                 83.61%         3.33         1.00
+Alpha-mixture (α=0.5)           97.95%         1.03         1.00
+Geometric (α=0.5)               98.93%         1.01         1.00
+Mixture (α=0.5)                 89.17%         2.00         1.01
+Alpha-mixture (α=0.7)           95.66%         1.05         1.00
+Geometric (α=0.7)               89.69%        34.49         1.00
+Mixture (α=0.7)                 93.04%         1.43         1.00
+Alpha-mixture (α=0.9)           91.89%         1.09         1.00
+Geometric (α=0.9)               99.60%         4.35         1.00
+Mixture (α=0.9)                 97.74%         1.11         1.00
+Balanced                        16.70%        10.64         1.05
+Balanced1                       75.61%        19.15         1.00
+Balanced2                       93.50%         1.07         1.00
+Adaptive                        97.60%         1.03         1.00
+Optimal                         88.78%         1.13         1.00
+
+[5/5] Creating ESS comparison plot...
+    ✓ Saved: 04_ess_comparison.png
+
+================================================================================
+REPORT GENERATION COMPLETE
+All plots saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_plots/1224_2132
+================================================================================
+
+====================================================================================================
+EXPERIMENT: CREATE_MODEL_PAIR_ZIPCUTOFF
+====================================================================================================
+================================================================================
+KL DIVERGENCE ESTIMATION WITH LONG-TAILED DISTRIBUTIONS
+================================================================================
+
+Creating long-tailed distributions (vocab_size=3000) with create_model_pair_zipCutoff...
+
+Distribution statistics:
+  Top 10 tokens in P: 80.00%
+  Top 100 tokens in P: 96.74%
+  Top 10 tokens in Q: 62.13%
+  Top 100 tokens in Q: 75.14%
+
+================================================================================
+Computing TRUE KL divergence...
+TRUE KL(P||Q) = 0.255743
+Theoretical MC variance = 0.076383
+================================================================================
+
+[METHOD 1] Naive Monte Carlo
+--------------------------------------------------------------------------------
+Naive Monte Carlo with 300 samples
+Final estimate: 0.252780
+Empirical variance: 0.000000
+Standard error: 0.000000
+
+================================================================================
+[METHOD 2] Importance Sampling
+Importance Sampling with n=300
+
+Testing Alpha-mixture (α=0.3)
+Final estimate: 0.259799
+Empirical variance: 0.012036
+Standard error: 0.006334
+
+Testing Geometric (α=0.3)
+Final estimate: 0.251893
+Empirical variance: 0.002020
+Standard error: 0.002595
+
+Testing Mixture (α=0.3)
+Final estimate: 0.246353
+Empirical variance: 0.014462
+Standard error: 0.006943
+
+Testing Alpha-mixture (α=0.5)
+Final estimate: 0.236728
+Empirical variance: 0.022670
+Standard error: 0.008693
+
+Testing Geometric (α=0.5)
+Final estimate: 0.248443
+Empirical variance: 0.003221
+Standard error: 0.003277
+
+Testing Mixture (α=0.5)
+Final estimate: 0.244843
+Empirical variance: 0.010363
+Standard error: 0.005877
+
+Testing Alpha-mixture (α=0.7)
+Final estimate: 0.253525
+Empirical variance: 0.007025
+Standard error: 0.004839
+
+Testing Geometric (α=0.7)
+Final estimate: 0.246146
+Empirical variance: 0.007181
+Standard error: 0.004893
+
+Testing Mixture (α=0.7)
+Final estimate: 0.241841
+Empirical variance: 0.008476
+Standard error: 0.005315
+
+Testing Alpha-mixture (α=0.9)
+Final estimate: 0.259481
+Empirical variance: 0.000199
+Standard error: 0.000815
+
+Testing Geometric (α=0.9)
+Final estimate: 0.252778
+Empirical variance: 0.000000
+Standard error: 0.000000
+
+Testing Mixture (α=0.9)
+Final estimate: 0.300509
+Empirical variance: 0.757654
+Standard error: 0.050254
+
+Testing Balanced
+Final estimate: 0.251298
+Empirical variance: 0.189533
+Standard error: 0.025135
+
+Testing Balanced1
+Final estimate: 0.245399
+Empirical variance: 0.010950
+Standard error: 0.006042
+
+Testing Balanced2
+Final estimate: 0.250629
+Empirical variance: 0.003259
+Standard error: 0.003296
+
+Testing Adaptive
+Final estimate: 0.253119
+Empirical variance: 0.008026
+Standard error: 0.005172
+
+Testing Optimal
+Final estimate: 0.252858
+Empirical variance: 0.003563
+Standard error: 0.003446
+
+====================================================================================================
+ESTIMATOR PERFORMANCE SUMMARY & RANKING
+====================================================================================================
+
+Method                    |     Estimate |      True KL |    Abs Error |  Rel Error % |     Variance |    Std Error
+------------------------------------------------------------------------------------------------------------------------
+Naive MC                  |     0.252780 |     0.255743 |     0.002964 |        1.16% |     0.000000 |     0.000000
+Geometric (α=0.9)         |     0.252778 |     0.255743 |     0.002966 |        1.16% |     0.000000* |     0.000000
+Alpha-mixture (α=0.9)     |     0.259481 |     0.255743 |     0.003738 |        1.46% |     0.000199 |     0.000815
+Geometric (α=0.3)         |     0.251893 |     0.255743 |     0.003850 |        1.51% |     0.002020 |     0.002595
+Optimal                   |     0.252858 |     0.255743 |     0.002886 |        1.13% |     0.003563 |     0.003446
+Balanced2                 |     0.250629 |     0.255743 |     0.005114 |        2.00% |     0.003259 |     0.003296
+Geometric (α=0.5)         |     0.248443 |     0.255743 |     0.007300 |        2.85% |     0.003221 |     0.003277
+Alpha-mixture (α=0.7)     |     0.253525 |     0.255743 |     0.002218* |        0.87% |     0.007025 |     0.004839
+Adaptive                  |     0.253119 |     0.255743 |     0.002624 |        1.03% |     0.008026 |     0.005172
+Geometric (α=0.7)         |     0.246146 |     0.255743 |     0.009597 |        3.75% |     0.007181 |     0.004893
+Alpha-mixture (α=0.3)     |     0.259799 |     0.255743 |     0.004055 |        1.59% |     0.012036 |     0.006334
+Mixture (α=0.5)           |     0.244843 |     0.255743 |     0.010900 |        4.26% |     0.010363 |     0.005877
+Balanced1                 |     0.245399 |     0.255743 |     0.010344 |        4.04% |     0.010950 |     0.006042
+Mixture (α=0.7)           |     0.241841 |     0.255743 |     0.013902 |        5.44% |     0.008476 |     0.005315
+Mixture (α=0.3)           |     0.246353 |     0.255743 |     0.009391 |        3.67% |     0.014462 |     0.006943
+Alpha-mixture (α=0.5)     |     0.236728 |     0.255743 |     0.019015 |        7.44% |     0.022670 |     0.008693
+Balanced                  |     0.251298 |     0.255743 |     0.004445 |        1.74% |     0.189533 |     0.025135
+Mixture (α=0.9)           |     0.300509 |     0.255743 |     0.044766 |       17.50% |     0.757654 |     0.050254
+------------------------------------------------------------------------------------------------------------------------
+* indicates best in category
+
+====================================================================================================
+TOP 5 ESTIMATORS BY ACCURACY
+====================================================================================================
+Rank   | Method                    |    Abs Error |  Rel Error %
+----------------------------------------------------------------------
+1      | Alpha-mixture (α=0.7)     |     0.002218 |        0.87%
+2      | Adaptive                  |     0.002624 |        1.03%
+3      | Optimal                   |     0.002886 |        1.13%
+4      | Naive MC                  |     0.002964 |        1.16%
+5      | Geometric (α=0.9)         |     0.002966 |        1.16%
+
+====================================================================================================
+TOP 5 ESTIMATORS BY LOWEST VARIANCE
+====================================================================================================
+Rank   | Method                    |     Variance |    Std Error
+----------------------------------------------------------------------
+1      | Geometric (α=0.9)         |     0.000000 |     0.000000
+2      | Naive MC                  |     0.000000 |     0.000000
+3      | Alpha-mixture (α=0.9)     |     0.000199 |     0.000815
+4      | Geometric (α=0.3)         |     0.002020 |     0.002595
+5      | Geometric (α=0.5)         |     0.003221 |     0.003277
+
+====================================================================================================
+TOP 5 ESTIMATORS BY COMBINED SCORE (Accuracy & Variance)
+====================================================================================================
+Rank   | Method                    |        Score |    Abs Error |     Variance
+-------------------------------------------------------------------------------------
+1      | Naive MC                  |     0.008112 |     0.002964 |     0.000000
+2      | Geometric (α=0.9)         |     0.008117 |     0.002966 |     0.000000
+3      | Alpha-mixture (α=0.9)     |     0.011014 |     0.003738 |     0.000199
+4      | Geometric (α=0.3)         |     0.018472 |     0.003850 |     0.002020
+5      | Optimal                   |     0.021893 |     0.002886 |     0.003563
+
+====================================================================================================
+OVERALL STATISTICS
+====================================================================================================
+Number of estimators: 18
+True KL divergence: 0.255743
+Theoretical MC variance: 0.076383
+
+Best accuracy: Alpha-mixture (α=0.7) (error: 0.002218)
+Best variance: Geometric (α=0.9) (variance: 0.000000)
+Best overall: Naive MC (score: 0.008112)
+
+================================================================================
+GENERATING VISUALIZATIONS
+================================================================================
+================================================================================
+GENERATING COMPREHENSIVE VISUALIZATION REPORT
+================================================================================
+
+Plots will be saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_zipCutoff_plots/1224_2133
+
+[1/5] Creating distribution overlay plots...
+    ✓ Saved: 01_distribution_overlay.png
+[2/5] Creating importance weight histograms...
+    ✓ Saved: 02_importance_weights.png
+[3/5] Creating coverage map...
+    ✓ Saved: 03_coverage_map.png
+[4/5] Computing ESS metrics...
+
+ESS Summary:
+--------------------------------------------------------------------------------
+Method                       ESS Ratio   Max Weight  Mean Weight
+--------------------------------------------------------------------------------
+Alpha-mixture (α=0.3)           99.79%         1.00         1.00
+Geometric (α=0.3)               98.07%         1.02         1.00
+Mixture (α=0.3)                 84.29%         1.19         1.00
+Alpha-mixture (α=0.5)           99.51%         1.01         1.00
+Geometric (α=0.5)               99.42%         1.01         1.00
+Mixture (α=0.5)                 88.81%         2.00         1.00
+Alpha-mixture (α=0.7)           99.00%         1.01         1.00
+Geometric (α=0.7)               99.92%         1.00         1.00
+Mixture (α=0.7)                 93.59%         1.43         1.00
+Alpha-mixture (α=0.9)           98.25%         1.02         1.00
+Geometric (α=0.9)               99.97%         2.38         1.00
+Mixture (α=0.9)                 97.82%         1.11         1.00
+Balanced                        25.95%         6.63         1.00
+Balanced1                       88.04%         1.14         1.00
+Balanced2                       68.63%        66.61         1.01
+Adaptive                        99.47%         1.01         1.00
+Optimal                         97.65%         1.03         1.00
+
+[5/5] Creating ESS comparison plot...
+    ✓ Saved: 04_ess_comparison.png
+
+================================================================================
+REPORT GENERATION COMPLETE
+All plots saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_zipCutoff_plots/1224_2133
+================================================================================
+
+====================================================================================================
+EXPERIMENT: CREATE_MODEL_PAIR_MIXTURE
+====================================================================================================
+================================================================================
+KL DIVERGENCE ESTIMATION WITH LONG-TAILED DISTRIBUTIONS
+================================================================================
+
+Creating long-tailed distributions (vocab_size=3000) with create_model_pair_mixture...
+
+Distribution statistics:
+  Top 10 tokens in P: 35.85%
+  Top 100 tokens in P: 72.35%
+  Top 10 tokens in Q: 27.59%
+  Top 100 tokens in Q: 55.68%
+
+================================================================================
+Computing TRUE KL divergence...
+TRUE KL(P||Q) = 0.255125
+Theoretical MC variance = 0.181120
+================================================================================
+
+[METHOD 1] Naive Monte Carlo
+--------------------------------------------------------------------------------
+Naive Monte Carlo with 300 samples
+Final estimate: 0.215736
+Empirical variance: 0.163053
+Standard error: 0.023313
+
+================================================================================
+[METHOD 2] Importance Sampling
+Importance Sampling with n=300
+
+Testing Alpha-mixture (α=0.3)
+Final estimate: 0.252382
+Empirical variance: 0.046144
+Standard error: 0.012402
+
+Testing Geometric (α=0.3)
+Final estimate: 0.238614
+Empirical variance: 0.020210
+Standard error: 0.008208
+
+Testing Mixture (α=0.3)
+Final estimate: 0.256708
+Empirical variance: 0.020357
+Standard error: 0.008238
+
+Testing Alpha-mixture (α=0.5)
+Final estimate: 0.230355
+Empirical variance: 0.058797
+Standard error: 0.014000
+
+Testing Geometric (α=0.5)
+Final estimate: 0.246904
+Empirical variance: 0.016844
+Standard error: 0.007493
+
+Testing Mixture (α=0.5)
+Final estimate: 0.239680
+Empirical variance: 0.023242
+Standard error: 0.008802
+
+Testing Alpha-mixture (α=0.7)
+Final estimate: 0.259839
+Empirical variance: 0.015216
+Standard error: 0.007122
+
+Testing Geometric (α=0.7)
+Final estimate: 0.232307
+Empirical variance: 0.042355
+Standard error: 0.011882
+
+Testing Mixture (α=0.7)
+Final estimate: 0.232949
+Empirical variance: 0.024003
+Standard error: 0.008945
+
+Testing Alpha-mixture (α=0.9)
+Final estimate: 0.255153
+Empirical variance: 0.017451
+Standard error: 0.007627
+
+Testing Geometric (α=0.9)
+Final estimate: 0.237174
+Empirical variance: 0.061970
+Standard error: 0.014372
+
+Testing Mixture (α=0.9)
+Final estimate: 0.253243
+Empirical variance: 0.013202
+Standard error: 0.006634
+
+Testing Balanced
+Final estimate: 0.251486
+Empirical variance: 0.178914
+Standard error: 0.024421
+
+Testing Balanced1
+Final estimate: 0.246853
+Empirical variance: 0.038033
+Standard error: 0.011260
+
+Testing Balanced2
+Final estimate: 0.231211
+Empirical variance: 0.022783
+Standard error: 0.008714
+
+Testing Adaptive
+Final estimate: 0.235480
+Empirical variance: 0.051461
+Standard error: 0.013097
+
+Testing Optimal
+Final estimate: 0.254742
+Empirical variance: 0.016477
+Standard error: 0.007411
+
+====================================================================================================
+ESTIMATOR PERFORMANCE SUMMARY & RANKING
+====================================================================================================
+
+Method                    |     Estimate |      True KL |    Abs Error |  Rel Error % |     Variance |    Std Error
+------------------------------------------------------------------------------------------------------------------------
+Mixture (α=0.9)           |     0.253243 |     0.255125 |     0.001882 |        0.74% |     0.013202* |     0.006634
+Optimal                   |     0.254742 |     0.255125 |     0.000383 |        0.15% |     0.016477 |     0.007411
+Alpha-mixture (α=0.9)     |     0.255153 |     0.255125 |     0.000028* |        0.01% |     0.017451 |     0.007627
+Mixture (α=0.3)           |     0.256708 |     0.255125 |     0.001583 |        0.62% |     0.020357 |     0.008238
+Alpha-mixture (α=0.7)     |     0.259839 |     0.255125 |     0.004714 |        1.85% |     0.015216 |     0.007122
+Geometric (α=0.5)         |     0.246904 |     0.255125 |     0.008221 |        3.22% |     0.016844 |     0.007493
+Geometric (α=0.3)         |     0.238614 |     0.255125 |     0.016510 |        6.47% |     0.020210 |     0.008208
+Mixture (α=0.5)           |     0.239680 |     0.255125 |     0.015445 |        6.05% |     0.023242 |     0.008802
+Alpha-mixture (α=0.3)     |     0.252382 |     0.255125 |     0.002743 |        1.08% |     0.046144 |     0.012402
+Balanced1                 |     0.246853 |     0.255125 |     0.008272 |        3.24% |     0.038033 |     0.011260
+Mixture (α=0.7)           |     0.232949 |     0.255125 |     0.022176 |        8.69% |     0.024003 |     0.008945
+Balanced2                 |     0.231211 |     0.255125 |     0.023913 |        9.37% |     0.022783 |     0.008714
+Geometric (α=0.7)         |     0.232307 |     0.255125 |     0.022818 |        8.94% |     0.042355 |     0.011882
+Adaptive                  |     0.235480 |     0.255125 |     0.019645 |        7.70% |     0.051461 |     0.013097
+Geometric (α=0.9)         |     0.237174 |     0.255125 |     0.017950 |        7.04% |     0.061970 |     0.014372
+Alpha-mixture (α=0.5)     |     0.230355 |     0.255125 |     0.024769 |        9.71% |     0.058797 |     0.014000
+Balanced                  |     0.251486 |     0.255125 |     0.003639 |        1.43% |     0.178914 |     0.024421
+Naive MC                  |     0.215736 |     0.255125 |     0.039388 |       15.44% |     0.163053 |     0.023313
+------------------------------------------------------------------------------------------------------------------------
+* indicates best in category
+
+====================================================================================================
+TOP 5 ESTIMATORS BY ACCURACY
+====================================================================================================
+Rank   | Method                    |    Abs Error |  Rel Error %
+----------------------------------------------------------------------
+1      | Alpha-mixture (α=0.9)     |     0.000028 |        0.01%
+2      | Optimal                   |     0.000383 |        0.15%
+3      | Mixture (α=0.3)           |     0.001583 |        0.62%
+4      | Mixture (α=0.9)           |     0.001882 |        0.74%
+5      | Alpha-mixture (α=0.3)     |     0.002743 |        1.08%
+
+====================================================================================================
+TOP 5 ESTIMATORS BY LOWEST VARIANCE
+====================================================================================================
+Rank   | Method                    |     Variance |    Std Error
+----------------------------------------------------------------------
+1      | Mixture (α=0.9)           |     0.013202 |     0.006634
+2      | Alpha-mixture (α=0.7)     |     0.015216 |     0.007122
+3      | Optimal                   |     0.016477 |     0.007411
+4      | Geometric (α=0.5)         |     0.016844 |     0.007493
+5      | Alpha-mixture (α=0.9)     |     0.017451 |     0.007627
+
+====================================================================================================
+TOP 5 ESTIMATORS BY COMBINED SCORE (Accuracy & Variance)
+====================================================================================================
+Rank   | Method                    |        Score |    Abs Error |     Variance
+-------------------------------------------------------------------------------------
+1      | Mixture (α=0.9)           |     0.027032 |     0.001882 |     0.013202
+2      | Optimal                   |     0.028342 |     0.000383 |     0.016477
+3      | Alpha-mixture (α=0.9)     |     0.028983 |     0.000028 |     0.017451
+4      | Mixture (α=0.3)           |     0.038062 |     0.001583 |     0.020357
+5      | Alpha-mixture (α=0.7)     |     0.038138 |     0.004714 |     0.015216
+
+====================================================================================================
+OVERALL STATISTICS
+====================================================================================================
+Number of estimators: 18
+True KL divergence: 0.255125
+Theoretical MC variance: 0.181120
+
+Best accuracy: Alpha-mixture (α=0.9) (error: 0.000028)
+Best variance: Mixture (α=0.9) (variance: 0.013202)
+Best overall: Mixture (α=0.9) (score: 0.027032)
+
+================================================================================
+GENERATING VISUALIZATIONS
+================================================================================
+================================================================================
+GENERATING COMPREHENSIVE VISUALIZATION REPORT
+================================================================================
+
+Plots will be saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_mixture_plots/1224_2133
+
+[1/5] Creating distribution overlay plots...
+    ✓ Saved: 01_distribution_overlay.png
+[2/5] Creating importance weight histograms...
+    ✓ Saved: 02_importance_weights.png
+[3/5] Creating coverage map...
+    ✓ Saved: 03_coverage_map.png
+[4/5] Computing ESS metrics...
+
+ESS Summary:
+--------------------------------------------------------------------------------
+Method                       ESS Ratio   Max Weight  Mean Weight
+--------------------------------------------------------------------------------
+Alpha-mixture (α=0.3)           99.39%         1.01         1.00
+Geometric (α=0.3)               94.09%         1.07         1.00
+Mixture (α=0.3)                 83.58%         3.33         0.99
+Alpha-mixture (α=0.5)           98.72%         1.02         1.00
+Geometric (α=0.5)               97.98%         1.02         1.00
+Mixture (α=0.5)                 88.77%         2.00         1.00
+Alpha-mixture (α=0.7)           97.40%         1.03         1.00
+Geometric (α=0.7)               99.41%         1.01         1.00
+Mixture (α=0.7)                 93.27%         1.43         1.00
+Alpha-mixture (α=0.9)           94.58%         1.06         1.00
+Geometric (α=0.9)               99.72%         4.03         1.00
+Mixture (α=0.9)                 98.04%         1.11         1.00
+Balanced                        26.21%        10.77         0.98
+Balanced1                       70.73%         1.43         1.01
+Balanced2                       90.43%         1.11         1.00
+Adaptive                        98.57%         1.02         1.00
+Optimal                         92.30%         1.09         1.00
+
+[5/5] Creating ESS comparison plot...
+    ✓ Saved: 04_ess_comparison.png
+
+================================================================================
+REPORT GENERATION COMPLETE
+All plots saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_mixture_plots/1224_2133
+================================================================================
+
+========================================================================================================================
+CROSS-MODEL COMPARISON OF TOP 3 ESTIMATORS
+========================================================================================================================
+Method                    |       create_model_pair        |  create_model_pair_zipCutoff   |   create_model_pair_mixture    | 
+-------------------------------------------------------------------------------------------------------------------------
+Alpha-mixture (α=0.7)     | Err:  0.0028 Var:  0.0165 |              N/A               |              N/A               | 
+Alpha-mixture (α=0.9)     | Err:  0.0033 Var:  0.0087 | Err:  0.0037 Var:  0.0002 | Err:  0.0000 Var:  0.0175 | 
+Geometric (α=0.9)         |              N/A               | Err:  0.0030 Var:  0.0000 |              N/A               | 
+Mixture (α=0.9)           |              N/A               |              N/A               | Err:  0.0019 Var:  0.0132 | 
+Naive MC                  |              N/A               | Err:  0.0030 Var:  0.0000 |              N/A               | 
+Optimal                   | Err:  0.0026 Var:  0.0033 |              N/A               | Err:  0.0004 Var:  0.0165 | 
