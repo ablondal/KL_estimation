@@ -681,6 +681,7 @@ def create_comparison_table(results_dict):
 
 if __name__ == "__main__":
     # Run experiment with long-tailed distributions
+    n_repeats= 2
     all_results = []
     for rep in range(n_repeats):
         rep_results = {}
