@@ -87,10 +87,13 @@ class LongTailedDistribution:
             size=n_shift // 2,
             replace=False
         )
+
+        all_indices = np.arange(vocab_size)
+        boost_candidates = np.setdiff1d(all_indices, boost_indices)
         
         reduce_indices = np.random.choice(
-            range(n_shift, vocab_size // 2),
-            size=n_shift // 2,
+            boost_candidates,
+            size=min(n_shift // 2, len(boost_candidates)),
             replace=False
         )
         
@@ -225,6 +228,49 @@ def compute_proposal_balanced(P_probs, Q_probs, eps=1e-12):
     
     return r_probs / r_probs.sum()
 
+def compute_proposal_cross_entropy(P_probs, Q_probs, temperature=0.5, eps=1e-12):
+    """
+    Proposal based on cross-entropy: r ∝ exp(t * H(P,Q))
+    where H(P,Q) = -P log Q
+    """
+    P_safe = np.clip(P_probs, eps, 1.0)
+    Q_safe = np.clip(Q_probs, eps, 1.0)
+    
+    # Cross-entropy: -P log Q
+    cross_entropy = -P_safe * np.log(Q_safe)
+    
+    # Temperature-weighted proposal
+    r_probs = np.exp(temperature * cross_entropy) * P_safe
+    return r_probs / r_probs.sum()
+
+
+def compute_proposal_chi2_aware(P_probs, Q_probs, alpha=0.5, eps=1e-12):
+    """
+    Proposal based on chi-square divergence: r ∝ P * sqrt(P/Q) for alpha=0.5
+    This corresponds to the χ²-divergence optimal proposal.
+    """
+    P_safe = np.clip(P_probs, eps, 1.0)
+    Q_safe = np.clip(Q_probs, eps, 1.0)
+    
+    # r ∝ P * (P/Q)^alpha
+    r_probs = P_safe * ((P_safe / Q_safe) ** alpha) 
+    return r_probs / r_probs.sum()
+
+def compute_proposal_exponential_family(P_probs, Q_probs, beta=0.5, eps=1e-12):
+    """
+    Exponential family tilt: r(x) ∝ P(x) * exp(beta * |log(P/Q)|)
+    This is mathematically valid and smooth.
+    """
+    P_safe = np.clip(P_probs, eps, 1.0)
+    Q_safe = np.clip(Q_probs, eps, 1.0)
+    
+    log_ratios = np.log(P_safe / Q_safe)
+    abs_log_ratios = np.abs(log_ratios)
+    
+    # Exponential tilt: boosts high divergence regions
+    r_probs = P_safe * np.exp(beta * abs_log_ratios)
+    return r_probs = r_probs / r_probs.sum()
+    
 def compute_proposal_adaptive_mixture(P_probs, Q_probs, eps=1e-12):
     """
     Adaptive: more weight on high-dKL when differences are large
@@ -330,7 +376,21 @@ def importance_sampling_estimator(P_probs, Q_probs, n_samples=100, alpha_values=
             'name': f'Mixture (α={alpha})', 
             'r': compute_proposal_mixture(P_probs, Q_probs, lambda_mix=alpha, eps=eps)
         })
-    
+        r_probs_list.append({
+            'name': f'Chi-square (α={alpha})', 
+            'r': compute_proposal_chi2_aware(P_probs, Q_probs, alpha=alpha, eps=eps)
+        })
+        r_probs_list.append({
+            'name': f'Cross-entropy (α={alpha})', 
+            'r': compute_proposal_cross_entropy(P_probs, Q_probs, temperature=alpha, eps=eps)
+        })
+
+    for beta in [0.1, 0.5, 1.0, 2.0, 5.0]:
+        r_probs_list.append({
+            'name': f'Exponential family (α={alpha})', 
+            'r': compute_proposal_exponential_family(P_probs, Q_probs, beta=beta, eps=eps)
+        })
+        
     r_probs_list.extend([
         {'name': 'Balanced', 'r': compute_proposal_balanced(P_probs, Q_probs, eps)}
     ])    
@@ -346,6 +406,7 @@ def importance_sampling_estimator(P_probs, Q_probs, n_samples=100, alpha_values=
     r_probs_list.extend([
         {'name': 'Optimal', 'r': compute_proposal_optimal(P_probs, Q_probs, eps)}
     ])
+    
 
     all_results = []
 
@@ -620,26 +681,29 @@ def create_comparison_table(results_dict):
 
 if __name__ == "__main__":
     # Run experiment with long-tailed distributions
-    all_results = {}
-    for model_type in ["create_model_pair", "create_model_pair_zipCutoff", "create_model_pair_mixture"]:
-        print("\n" + "=" * 100)
-        print(f"EXPERIMENT: {model_type.upper()}")
-        print("=" * 100)
-        results, P_probs, Q_probs, r_probs_list = run_comparison_experiment(
-            vocab_size=3000,
-            model_type=model_type,
-            n_samples=300,
-            alpha_values=[0.3, 0.5, 0.7, 0.9],
-            divergence='medium'
-        )
-        all_results[model_type] = results
-        rankings = rank_estimators(results)
-        print_results_summary(results, rankings)
+    all_results = []
+    for rep in range(n_repeats):
+        rep_results = {}
+        for model_type in ["create_model_pair", "create_model_pair_zipCutoff", "create_model_pair_mixture"]:
+            print("\n" + "=" * 100)
+            print(f"EXPERIMENT: {model_type.upper()}")
+            print("=" * 100)
+            results, P_probs, Q_probs, r_probs_list = run_comparison_experiment(
+                vocab_size=3000,
+                model_type=model_type,
+                n_samples=300,
+                alpha_values=[0.3, 0.5, 0.7, 0.9],
+                divergence='medium'
+            )
+            rep_results[model_type] = results
+            rankings = rank_estimators(results)
+            print_results_summary(results, rankings)
+            
+            print("\n" + "=" * 80)
+            print("GENERATING VISUALIZATIONS")
+            print("=" * 80)
+            
+            ess_results = create_comprehensive_report(P_probs, Q_probs, model_type, r_probs_list)
         
-        print("\n" + "=" * 80)
-        print("GENERATING VISUALIZATIONS")
-        print("=" * 80)
-        
-        ess_results = create_comprehensive_report(P_probs, Q_probs, model_type, r_probs_list)
-    
-    create_comparison_table(all_results)
+        create_comparison_table(rep_results)
+        all_results.append(rep_results)
