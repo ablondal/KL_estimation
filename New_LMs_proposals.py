@@ -269,7 +269,7 @@ def compute_proposal_exponential_family(P_probs, Q_probs, beta=0.5, eps=1e-12):
     
     # Exponential tilt: boosts high divergence regions
     r_probs = P_safe * np.exp(beta * abs_log_ratios)
-    return r_probs = r_probs / r_probs.sum()
+    return r_probs / r_probs.sum()
     
 def compute_proposal_adaptive_mixture(P_probs, Q_probs, eps=1e-12):
     """
