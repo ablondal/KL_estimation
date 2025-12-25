@@ -1,0 +1,1993 @@
+====================================================================================================
+Iteration #: 0
+
+====================================================================================================
+EXPERIMENT: CREATE_MODEL_PAIR
+====================================================================================================
+================================================================================
+KL DIVERGENCE ESTIMATION WITH LONG-TAILED DISTRIBUTIONS
+================================================================================
+
+Creating long-tailed distributions (vocab_size=3000) with create_model_pair...
+
+Distribution statistics:
+  Top 10 tokens in P: 77.46%
+  Top 100 tokens in P: 93.67%
+  Top 10 tokens in Q: 60.01%
+  Top 100 tokens in Q: 71.92%
+
+================================================================================
+Computing TRUE KL divergence...
+TRUE KL(P||Q) = 0.308390
+Theoretical MC variance = 0.768724
+================================================================================
+
+[METHOD 1] Naive Monte Carlo
+--------------------------------------------------------------------------------
+Naive Monte Carlo with 300 samples
+Final estimate: 0.262161
+Empirical variance: 0.007029
+Standard error: 0.004840
+
+================================================================================
+[METHOD 2] Importance Sampling
+Importance Sampling with n=300
+
+Testing Alpha-mixture (α=0.3)
+Final estimate: 0.290274
+Empirical variance: 0.074257
+Standard error: 0.015733
+
+Testing Geometric (α=0.3)
+Final estimate: 0.247111
+Empirical variance: 0.006601
+Standard error: 0.004691
+
+Testing Mixture (α=0.3)
+Final estimate: 0.245839
+Empirical variance: 0.016340
+Standard error: 0.007380
+
+Testing Chi-square (α=0.3)
+Final estimate: 0.308133
+Empirical variance: 0.013931
+Standard error: 0.006814
+
+Testing Cross-entropy (α=0.3)
+Final estimate: 0.365136
+Empirical variance: 1.991141
+Standard error: 0.081469
+
+Testing Alpha-mixture (α=0.5)
+Final estimate: 0.316121
+Empirical variance: 0.039995
+Standard error: 0.011546
+
+Testing Geometric (α=0.5)
+Final estimate: 0.268276
+Empirical variance: 0.040670
+Standard error: 0.011643
+
+Testing Mixture (α=0.5)
+Final estimate: 0.358061
+Empirical variance: 3.475294
+Standard error: 0.107630
+
+Testing Chi-square (α=0.5)
+Final estimate: 0.336950
+Empirical variance: 0.535384
+Standard error: 0.042245
+
+Testing Cross-entropy (α=0.5)
+Final estimate: 0.439530
+Empirical variance: 3.238846
+Standard error: 0.103905
+
+Testing Alpha-mixture (α=0.7)
+Final estimate: 0.311462
+Empirical variance: 0.022140
+Standard error: 0.008591
+
+Testing Geometric (α=0.7)
+Final estimate: 0.264687
+Empirical variance: 0.014738
+Standard error: 0.007009
+
+Testing Mixture (α=0.7)
+Final estimate: 0.327934
+Empirical variance: 1.508266
+Standard error: 0.070905
+
+Testing Chi-square (α=0.7)
+Final estimate: 0.523198
+Empirical variance: 22.333299
+Standard error: 0.272845
+
+Testing Cross-entropy (α=0.7)
+Final estimate: 0.331506
+Empirical variance: 1.237382
+Standard error: 0.064223
+
+Testing Alpha-mixture (α=0.9)
+Final estimate: 0.312027
+Empirical variance: 0.005570
+Standard error: 0.004309
+
+Testing Geometric (α=0.9)
+Final estimate: 0.251122
+Empirical variance: 0.047063
+Standard error: 0.012525
+
+Testing Mixture (α=0.9)
+Final estimate: 0.428810
+Empirical variance: 2.872671
+Standard error: 0.097855
+
+Testing Chi-square (α=0.9)
+Final estimate: 0.045642
+Empirical variance: 0.001298
+Standard error: 0.002080
+
+Testing Cross-entropy (α=0.9)
+Final estimate: 0.401507
+Empirical variance: 2.657867
+Standard error: 0.094125
+
+Testing Exp family (beta=0.1)
+Final estimate: 0.316166
+Empirical variance: 0.161714
+Standard error: 0.023217
+
+Testing Exp family (beta=0.5)
+Final estimate: 0.361456
+Empirical variance: 0.570532
+Standard error: 0.043609
+
+Testing Exp family (beta=1.0)
+Final estimate: 0.052269
+Empirical variance: 0.023989
+Standard error: 0.008942
+
+Testing Exp family (beta=2.0)
+Final estimate: 0.037908
+Empirical variance: 0.000687
+Standard error: 0.001513
+
+Testing Exp family (beta=5.0)
+Final estimate: 0.032211
+Empirical variance: 0.000342
+Standard error: 0.001067
+
+Testing Balanced
+Final estimate: 0.251994
+Empirical variance: 0.289505
+Standard error: 0.031065
+
+Testing Balanced1
+Final estimate: 0.261340
+Empirical variance: 0.024120
+Standard error: 0.008967
+
+Testing Balanced2
+Final estimate: 0.265280
+Empirical variance: 0.014891
+Standard error: 0.007045
+
+Testing Adaptive
+Final estimate: 0.301729
+Empirical variance: 0.041664
+Standard error: 0.011785
+
+Testing Optimal
+Final estimate: 0.302072
+Empirical variance: 0.009183
+Standard error: 0.005533
+
+====================================================================================================
+ESTIMATOR PERFORMANCE SUMMARY & RANKING
+====================================================================================================
+
+Method                    |     Estimate |      True KL |    Abs Error |  Rel Error % |     Variance |    Std Error
+------------------------------------------------------------------------------------------------------------------------
+Chi-square (α=0.3)        |     0.308133 |     0.308390 |     0.000257* |        0.08% |     0.013931 |     0.006814
+Alpha-mixture (α=0.9)     |     0.312027 |     0.308390 |     0.003637 |        1.18% |     0.005570 |     0.004309
+Alpha-mixture (α=0.7)     |     0.311462 |     0.308390 |     0.003072 |        1.00% |     0.022140 |     0.008591
+Optimal                   |     0.302072 |     0.308390 |     0.006318 |        2.05% |     0.009183 |     0.005533
+Adaptive                  |     0.301729 |     0.308390 |     0.006660 |        2.16% |     0.041664 |     0.011785
+Alpha-mixture (α=0.5)     |     0.316121 |     0.308390 |     0.007731 |        2.51% |     0.039995 |     0.011546
+Alpha-mixture (α=0.3)     |     0.290274 |     0.308390 |     0.018116 |        5.87% |     0.074257 |     0.015733
+Exp family (beta=0.1)     |     0.316166 |     0.308390 |     0.007776 |        2.52% |     0.161714 |     0.023217
+Balanced2                 |     0.265280 |     0.308390 |     0.043110 |       13.98% |     0.014891 |     0.007045
+Geometric (α=0.7)         |     0.264687 |     0.308390 |     0.043703 |       14.17% |     0.014738 |     0.007009
+Geometric (α=0.5)         |     0.268276 |     0.308390 |     0.040114 |       13.01% |     0.040670 |     0.011643
+Naive MC                  |     0.262161 |     0.308390 |     0.046229 |       14.99% |     0.007029 |     0.004840
+Balanced1                 |     0.261340 |     0.308390 |     0.047050 |       15.26% |     0.024120 |     0.008967
+Geometric (α=0.3)         |     0.247111 |     0.308390 |     0.061279 |       19.87% |     0.006601 |     0.004691
+Geometric (α=0.9)         |     0.251122 |     0.308390 |     0.057268 |       18.57% |     0.047063 |     0.012525
+Mixture (α=0.3)           |     0.245839 |     0.308390 |     0.062551 |       20.28% |     0.016340 |     0.007380
+Balanced                  |     0.251994 |     0.308390 |     0.056396 |       18.29% |     0.289505 |     0.031065
+Chi-square (α=0.5)        |     0.336950 |     0.308390 |     0.028561 |        9.26% |     0.535384 |     0.042245
+Exp family (beta=0.5)     |     0.361456 |     0.308390 |     0.053067 |       17.21% |     0.570532 |     0.043609
+Cross-entropy (α=0.7)     |     0.331506 |     0.308390 |     0.023117 |        7.50% |     1.237382 |     0.064223
+Exp family (beta=1.0)     |     0.052269 |     0.308390 |     0.256121 |       83.05% |     0.023989 |     0.008942
+Chi-square (α=0.9)        |     0.045642 |     0.308390 |     0.262748 |       85.20% |     0.001298 |     0.002080
+Exp family (beta=2.0)     |     0.037908 |     0.308390 |     0.270482 |       87.71% |     0.000687 |     0.001513
+Exp family (beta=5.0)     |     0.032211 |     0.308390 |     0.276179 |       89.56% |     0.000342* |     0.001067
+Mixture (α=0.7)           |     0.327934 |     0.308390 |     0.019544 |        6.34% |     1.508266 |     0.070905
+Cross-entropy (α=0.3)     |     0.365136 |     0.308390 |     0.056746 |       18.40% |     1.991141 |     0.081469
+Cross-entropy (α=0.9)     |     0.401507 |     0.308390 |     0.093118 |       30.19% |     2.657867 |     0.094125
+Mixture (α=0.9)           |     0.428810 |     0.308390 |     0.120420 |       39.05% |     2.872671 |     0.097855
+Mixture (α=0.5)           |     0.358061 |     0.308390 |     0.049672 |       16.11% |     3.475294 |     0.107630
+Cross-entropy (α=0.5)     |     0.439530 |     0.308390 |     0.131140 |       42.52% |     3.238846 |     0.103905
+Chi-square (α=0.7)        |     0.523198 |     0.308390 |     0.214808 |       69.65% |    22.333299 |     0.272845
+------------------------------------------------------------------------------------------------------------------------
+* indicates best in category
+
+====================================================================================================
+TOP 5 ESTIMATORS BY ACCURACY
+====================================================================================================
+Rank   | Method                    |    Abs Error |  Rel Error %
+----------------------------------------------------------------------
+1      | Chi-square (α=0.3)        |     0.000257 |        0.08%
+2      | Alpha-mixture (α=0.7)     |     0.003072 |        1.00%
+3      | Alpha-mixture (α=0.9)     |     0.003637 |        1.18%
+4      | Optimal                   |     0.006318 |        2.05%
+5      | Adaptive                  |     0.006660 |        2.16%
+
+====================================================================================================
+TOP 5 ESTIMATORS BY LOWEST VARIANCE
+====================================================================================================
+Rank   | Method                    |     Variance |    Std Error
+----------------------------------------------------------------------
+1      | Exp family (beta=5.0)     |     0.000342 |     0.001067
+2      | Exp family (beta=2.0)     |     0.000687 |     0.001513
+3      | Chi-square (α=0.9)        |     0.001298 |     0.002080
+4      | Alpha-mixture (α=0.9)     |     0.005570 |     0.004309
+5      | Geometric (α=0.3)         |     0.006601 |     0.004691
+
+====================================================================================================
+TOP 5 ESTIMATORS BY COMBINED SCORE (Accuracy & Variance)
+====================================================================================================
+Rank   | Method                    |        Score |    Abs Error |     Variance
+-------------------------------------------------------------------------------------
+1      | Chi-square (α=0.3)        |     0.006019 |     0.000257 |     0.013931
+2      | Alpha-mixture (α=0.9)     |     0.010429 |     0.003637 |     0.005570
+3      | Alpha-mixture (α=0.7)     |     0.015614 |     0.003072 |     0.022140
+4      | Optimal                   |     0.017924 |     0.006318 |     0.009183
+5      | Adaptive                  |     0.031378 |     0.006660 |     0.041664
+
+====================================================================================================
+OVERALL STATISTICS
+====================================================================================================
+Number of estimators: 31
+True KL divergence: 0.308390
+Theoretical MC variance: 0.768724
+
+Best accuracy: Chi-square (α=0.3) (error: 0.000257)
+Best variance: Exp family (beta=5.0) (variance: 0.000342)
+Best overall: Chi-square (α=0.3) (score: 0.006019)
+
+================================================================================
+GENERATING VISUALIZATIONS
+================================================================================
+================================================================================
+GENERATING COMPREHENSIVE VISUALIZATION REPORT
+================================================================================
+
+Plots will be saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_plots/1225_0522
+
+[1/5] Creating distribution overlay plots...
+    ✓ Saved: 01_distribution_overlay.png
+[2/5] Creating importance weight histograms...
+/network/scratch/g/gus/KL_estimation/visualize_proposals.py:131: UserWarning: Tight layout not applied. tight_layout cannot make Axes width small enough to accommodate all Axes decorations
+  plt.tight_layout()
+    ✓ Saved: 02_importance_weights.png
+[3/5] Creating coverage map...
+    ✓ Saved: 03_coverage_map.png
+[4/5] Computing ESS metrics...
+
+ESS Summary:
+--------------------------------------------------------------------------------
+Method                       ESS Ratio   Max Weight  Mean Weight
+--------------------------------------------------------------------------------
+Alpha-mixture (α=0.3)           98.68%         1.02         1.01
+Geometric (α=0.3)               95.48%         2.13         1.00
+Mixture (α=0.3)                 83.25%         3.33         1.00
+Chi-square (α=0.3)              75.12%         6.93         1.00
+Cross-entropy (α=0.3)           99.70%         1.08         1.00
+Alpha-mixture (α=0.5)           96.03%         1.05         1.00
+Geometric (α=0.5)               98.67%         1.68         1.00
+Mixture (α=0.5)                 88.45%         2.00         1.00
+Chi-square (α=0.5)              11.80%        65.81         1.06
+Cross-entropy (α=0.5)           99.15%         1.15         1.00
+Alpha-mixture (α=0.7)           92.60%         1.09         1.00
+Geometric (α=0.7)               99.66%         1.36         1.00
+Mixture (α=0.7)                 93.06%         1.43         1.00
+Chi-square (α=0.7)               0.60%       185.91         1.12
+Cross-entropy (α=0.7)           98.32%         1.21         1.00
+Alpha-mixture (α=0.9)           86.44%         1.17         1.00
+Geometric (α=0.9)               99.14%         5.04         1.00
+Mixture (α=0.9)                 97.72%         1.11         1.00
+Chi-square (α=0.9)               0.03%      4494.44         1.35
+Cross-entropy (α=0.9)           97.26%         1.28         1.00
+Exp family (beta=0.1)           99.02%         1.01         1.00
+Exp family (beta=0.5)           11.43%         8.73         0.99
+Exp family (beta=1.0)           12.51%         0.34         0.00
+Exp family (beta=2.0)           11.38%         0.51         0.00
+Exp family (beta=5.0)            6.54%         0.19         0.00
+Balanced                        16.67%        10.70         1.02
+Balanced1                       76.15%         6.37         1.00
+Balanced2                       93.14%         1.14         1.00
+Adaptive                        96.14%         1.05         1.00
+Optimal                         81.66%         1.24         1.00
+
+[5/5] Creating ESS comparison plot...
+    ✓ Saved: 04_ess_comparison.png
+
+================================================================================
+REPORT GENERATION COMPLETE
+All plots saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_plots/1225_0522
+================================================================================
+
+====================================================================================================
+EXPERIMENT: CREATE_MODEL_PAIR_ZIPCUTOFF
+====================================================================================================
+================================================================================
+KL DIVERGENCE ESTIMATION WITH LONG-TAILED DISTRIBUTIONS
+================================================================================
+
+Creating long-tailed distributions (vocab_size=3000) with create_model_pair_zipCutoff...
+
+Distribution statistics:
+  Top 10 tokens in P: 80.00%
+  Top 100 tokens in P: 96.74%
+  Top 10 tokens in Q: 61.62%
+  Top 100 tokens in Q: 74.41%
+
+================================================================================
+Computing TRUE KL divergence...
+TRUE KL(P||Q) = 0.285802
+Theoretical MC variance = 0.423351
+================================================================================
+
+[METHOD 1] Naive Monte Carlo
+--------------------------------------------------------------------------------
+Naive Monte Carlo with 300 samples
+Final estimate: 0.261090
+Empirical variance: 0.000000
+Standard error: 0.000000
+
+================================================================================
+[METHOD 2] Importance Sampling
+Importance Sampling with n=300
+
+Testing Alpha-mixture (α=0.3)
+Final estimate: 0.297790
+Empirical variance: 0.068199
+Standard error: 0.015077
+
+Testing Geometric (α=0.3)
+Final estimate: 0.260587
+Empirical variance: 0.001744
+Standard error: 0.002411
+
+Testing Mixture (α=0.3)
+Final estimate: 0.258337
+Empirical variance: 0.014037
+Standard error: 0.006840
+
+Testing Chi-square (α=0.3)
+Final estimate: 0.285333
+Empirical variance: 0.004122
+Standard error: 0.003707
+
+Testing Cross-entropy (α=0.3)
+Final estimate: 0.304054
+Empirical variance: 1.118855
+Standard error: 0.061070
+
+Testing Alpha-mixture (α=0.5)
+Final estimate: 0.288762
+Empirical variance: 0.020324
+Standard error: 0.008231
+
+Testing Geometric (α=0.5)
+Final estimate: 0.259087
+Empirical variance: 0.001101
+Standard error: 0.001916
+
+Testing Mixture (α=0.5)
+Final estimate: 0.251716
+Empirical variance: 0.011273
+Standard error: 0.006130
+
+Testing Chi-square (α=0.5)
+Final estimate: 0.288676
+Empirical variance: 0.347035
+Standard error: 0.034011
+
+Testing Cross-entropy (α=0.5)
+Final estimate: 0.259539
+Empirical variance: 0.000549
+Standard error: 0.001352
+
+Testing Alpha-mixture (α=0.7)
+Final estimate: 0.276907
+Empirical variance: 0.006558
+Standard error: 0.004675
+
+Testing Geometric (α=0.7)
+Final estimate: 0.260954
+Empirical variance: 0.000000
+Standard error: 0.000000
+
+Testing Mixture (α=0.7)
+Final estimate: 0.258876
+Empirical variance: 0.006068
+Standard error: 0.004498
+
+Testing Chi-square (α=0.7)
+Final estimate: 0.024476
+Empirical variance: 0.000145
+Standard error: 0.000694
+
+Testing Cross-entropy (α=0.7)
+Final estimate: 0.391893
+Empirical variance: 2.577936
+Standard error: 0.092699
+
+Testing Alpha-mixture (α=0.9)
+Final estimate: 0.288090
+Empirical variance: 0.000848
+Standard error: 0.001681
+
+Testing Geometric (α=0.9)
+Final estimate: 0.260797
+Empirical variance: 0.000000
+Standard error: 0.000000
+
+Testing Mixture (α=0.9)
+Final estimate: 0.320142
+Empirical variance: 1.119689
+Standard error: 0.061093
+
+Testing Chi-square (α=0.9)
+Final estimate: 0.024748
+Empirical variance: 0.000771
+Standard error: 0.001603
+
+Testing Cross-entropy (α=0.9)
+Final estimate: 0.259704
+Empirical variance: 0.001938
+Standard error: 0.002542
+
+Testing Exp family (beta=0.1)
+Final estimate: 0.292676
+Empirical variance: 0.088557
+Standard error: 0.017181
+
+Testing Exp family (beta=0.5)
+Final estimate: 0.298501
+Empirical variance: 0.458825
+Standard error: 0.039108
+
+Testing Exp family (beta=1.0)
+Final estimate: 0.024232
+Empirical variance: 0.000396
+Standard error: 0.001148
+
+Testing Exp family (beta=2.0)
+Final estimate: 0.022943
+Empirical variance: 0.000000
+Standard error: 0.000000
+
+Testing Exp family (beta=5.0)
+Final estimate: 0.022938
+Empirical variance: 0.000000
+Standard error: 0.000000
+
+Testing Balanced
+Final estimate: 0.261726
+Empirical variance: 0.197642
+Standard error: 0.025667
+
+Testing Balanced1
+Final estimate: 0.258406
+Empirical variance: 0.008247
+Standard error: 0.005243
+
+Testing Balanced2
+Final estimate: 0.263571
+Empirical variance: 0.001315
+Standard error: 0.002094
+
+Testing Adaptive
+Final estimate: 0.291941
+Empirical variance: 0.023215
+Standard error: 0.008797
+
+Testing Optimal
+Final estimate: 0.286579
+Empirical variance: 0.001110
+Standard error: 0.001923
+
+====================================================================================================
+ESTIMATOR PERFORMANCE SUMMARY & RANKING
+====================================================================================================
+
+Method                    |     Estimate |      True KL |    Abs Error |  Rel Error % |     Variance |    Std Error
+------------------------------------------------------------------------------------------------------------------------
+Optimal                   |     0.286579 |     0.285802 |     0.000777 |        0.27% |     0.001110 |     0.001923
+Chi-square (α=0.3)        |     0.285333 |     0.285802 |     0.000469* |        0.16% |     0.004122 |     0.003707
+Alpha-mixture (α=0.9)     |     0.288090 |     0.285802 |     0.002287 |        0.80% |     0.000848 |     0.001681
+Alpha-mixture (α=0.5)     |     0.288762 |     0.285802 |     0.002960 |        1.04% |     0.020324 |     0.008231
+Alpha-mixture (α=0.7)     |     0.276907 |     0.285802 |     0.008895 |        3.11% |     0.006558 |     0.004675
+Adaptive                  |     0.291941 |     0.285802 |     0.006139 |        2.15% |     0.023215 |     0.008797
+Balanced2                 |     0.263571 |     0.285802 |     0.022231 |        7.78% |     0.001315 |     0.002094
+Naive MC                  |     0.261090 |     0.285802 |     0.024713 |        8.65% |     0.000000 |     0.000000
+Geometric (α=0.7)         |     0.260954 |     0.285802 |     0.024848 |        8.69% |     0.000000 |     0.000000
+Geometric (α=0.9)         |     0.260797 |     0.285802 |     0.025005 |        8.75% |     0.000000 |     0.000000
+Geometric (α=0.3)         |     0.260587 |     0.285802 |     0.025216 |        8.82% |     0.001744 |     0.002411
+Cross-entropy (α=0.5)     |     0.259539 |     0.285802 |     0.026264 |        9.19% |     0.000549 |     0.001352
+Cross-entropy (α=0.9)     |     0.259704 |     0.285802 |     0.026098 |        9.13% |     0.001938 |     0.002542
+Geometric (α=0.5)         |     0.259087 |     0.285802 |     0.026715 |        9.35% |     0.001101 |     0.001916
+Mixture (α=0.7)           |     0.258876 |     0.285802 |     0.026926 |        9.42% |     0.006068 |     0.004498
+Balanced1                 |     0.258406 |     0.285802 |     0.027396 |        9.59% |     0.008247 |     0.005243
+Mixture (α=0.3)           |     0.258337 |     0.285802 |     0.027465 |        9.61% |     0.014037 |     0.006840
+Alpha-mixture (α=0.3)     |     0.297790 |     0.285802 |     0.011988 |        4.19% |     0.068199 |     0.015077
+Exp family (beta=0.1)     |     0.292676 |     0.285802 |     0.006874 |        2.40% |     0.088557 |     0.017181
+Mixture (α=0.5)           |     0.251716 |     0.285802 |     0.034086 |       11.93% |     0.011273 |     0.006130
+Balanced                  |     0.261726 |     0.285802 |     0.024076 |        8.42% |     0.197642 |     0.025667
+Chi-square (α=0.5)        |     0.288676 |     0.285802 |     0.002873 |        1.01% |     0.347035 |     0.034011
+Exp family (beta=0.5)     |     0.298501 |     0.285802 |     0.012698 |        4.44% |     0.458825 |     0.039108
+Chi-square (α=0.9)        |     0.024748 |     0.285802 |     0.261054 |       91.34% |     0.000771 |     0.001603
+Chi-square (α=0.7)        |     0.024476 |     0.285802 |     0.261327 |       91.44% |     0.000145 |     0.000694
+Exp family (beta=1.0)     |     0.024232 |     0.285802 |     0.261570 |       91.52% |     0.000396 |     0.001148
+Exp family (beta=2.0)     |     0.022943 |     0.285802 |     0.262859 |       91.97% |     0.000000* |     0.000000
+Exp family (beta=5.0)     |     0.022938 |     0.285802 |     0.262865 |       91.97% |     0.000000 |     0.000000
+Cross-entropy (α=0.3)     |     0.304054 |     0.285802 |     0.018251 |        6.39% |     1.118855 |     0.061070
+Mixture (α=0.9)           |     0.320142 |     0.285802 |     0.034340 |       12.02% |     1.119689 |     0.061093
+Cross-entropy (α=0.7)     |     0.391893 |     0.285802 |     0.106091 |       37.12% |     2.577936 |     0.092699
+------------------------------------------------------------------------------------------------------------------------
+* indicates best in category
+
+====================================================================================================
+TOP 5 ESTIMATORS BY ACCURACY
+====================================================================================================
+Rank   | Method                    |    Abs Error |  Rel Error %
+----------------------------------------------------------------------
+1      | Chi-square (α=0.3)        |     0.000469 |        0.16%
+2      | Optimal                   |     0.000777 |        0.27%
+3      | Alpha-mixture (α=0.9)     |     0.002287 |        0.80%
+4      | Chi-square (α=0.5)        |     0.002873 |        1.01%
+5      | Alpha-mixture (α=0.5)     |     0.002960 |        1.04%
+
+====================================================================================================
+TOP 5 ESTIMATORS BY LOWEST VARIANCE
+====================================================================================================
+Rank   | Method                    |     Variance |    Std Error
+----------------------------------------------------------------------
+1      | Exp family (beta=2.0)     |     0.000000 |     0.000000
+2      | Exp family (beta=5.0)     |     0.000000 |     0.000000
+3      | Naive MC                  |     0.000000 |     0.000000
+4      | Geometric (α=0.7)         |     0.000000 |     0.000000
+5      | Geometric (α=0.9)         |     0.000000 |     0.000000
+
+====================================================================================================
+TOP 5 ESTIMATORS BY COMBINED SCORE (Accuracy & Variance)
+====================================================================================================
+Rank   | Method                    |        Score |    Abs Error |     Variance
+-------------------------------------------------------------------------------------
+1      | Optimal                   |     0.002690 |     0.000777 |     0.001110
+2      | Chi-square (α=0.3)        |     0.004070 |     0.000469 |     0.004122
+3      | Alpha-mixture (α=0.9)     |     0.006203 |     0.002287 |     0.000848
+4      | Alpha-mixture (α=0.5)     |     0.021651 |     0.002960 |     0.020324
+5      | Alpha-mixture (α=0.7)     |     0.026433 |     0.008895 |     0.006558
+
+====================================================================================================
+OVERALL STATISTICS
+====================================================================================================
+Number of estimators: 31
+True KL divergence: 0.285802
+Theoretical MC variance: 0.423351
+
+Best accuracy: Chi-square (α=0.3) (error: 0.000469)
+Best variance: Exp family (beta=2.0) (variance: 0.000000)
+Best overall: Optimal (score: 0.002690)
+
+================================================================================
+GENERATING VISUALIZATIONS
+================================================================================
+================================================================================
+GENERATING COMPREHENSIVE VISUALIZATION REPORT
+================================================================================
+
+Plots will be saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_zipCutoff_plots/1225_0522
+
+[1/5] Creating distribution overlay plots...
+    ✓ Saved: 01_distribution_overlay.png
+[2/5] Creating importance weight histograms...
+/network/scratch/g/gus/KL_estimation/visualize_proposals.py:131: UserWarning: Tight layout not applied. tight_layout cannot make Axes width small enough to accommodate all Axes decorations
+  plt.tight_layout()
+    ✓ Saved: 02_importance_weights.png
+[3/5] Creating coverage map...
+    ✓ Saved: 03_coverage_map.png
+[4/5] Computing ESS metrics...
+
+ESS Summary:
+--------------------------------------------------------------------------------
+Method                       ESS Ratio   Max Weight  Mean Weight
+--------------------------------------------------------------------------------
+Alpha-mixture (α=0.3)           99.09%         1.01         1.00
+Geometric (α=0.3)               98.28%         1.02         1.00
+Mixture (α=0.3)                 83.35%         3.33         1.00
+Chi-square (α=0.3)              83.60%         1.20         1.00
+Cross-entropy (α=0.3)           99.70%         1.09         1.00
+Alpha-mixture (α=0.5)           97.96%         1.02         1.00
+Geometric (α=0.5)               99.51%         1.00         1.00
+Mixture (α=0.5)                 88.23%         2.00         1.00
+Chi-square (α=0.5)              15.90%         6.26         0.99
+Cross-entropy (α=0.5)           99.16%         1.15         1.00
+Alpha-mixture (α=0.7)           96.49%         1.04         1.00
+Geometric (α=0.7)               99.92%         1.00         1.00
+Mixture (α=0.7)                 93.19%         1.43         1.00
+Chi-square (α=0.7)               0.63%       139.62         0.88
+Cross-entropy (α=0.7)           98.35%         1.22         1.00
+Alpha-mixture (α=0.9)           93.08%         1.07         1.00
+Geometric (α=0.9)               99.56%         5.17         1.00
+Mixture (α=0.9)                 97.49%         1.11         1.00
+Chi-square (α=0.9)               0.02%      3680.95         0.74
+Cross-entropy (α=0.9)           97.29%         1.30         1.00
+Exp family (beta=0.1)           99.51%         1.01         1.00
+Exp family (beta=0.5)           15.68%         6.27         0.98
+Exp family (beta=1.0)            7.27%         0.30         0.00
+Exp family (beta=2.0)            7.15%         0.51         0.00
+Exp family (beta=5.0)          100.00%         0.00         0.00
+Balanced                        25.55%         6.56         0.99
+Balanced1                       88.54%        15.18         1.00
+Balanced2                       97.00%         1.03         0.99
+Adaptive                        98.02%         1.02         1.00
+Optimal                         90.81%         1.10         1.00
+
+[5/5] Creating ESS comparison plot...
+    ✓ Saved: 04_ess_comparison.png
+
+================================================================================
+REPORT GENERATION COMPLETE
+All plots saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_zipCutoff_plots/1225_0522
+================================================================================
+
+====================================================================================================
+EXPERIMENT: CREATE_MODEL_PAIR_MIXTURE
+====================================================================================================
+================================================================================
+KL DIVERGENCE ESTIMATION WITH LONG-TAILED DISTRIBUTIONS
+================================================================================
+
+Creating long-tailed distributions (vocab_size=3000) with create_model_pair_mixture...
+
+Distribution statistics:
+  Top 10 tokens in P: 31.82%
+  Top 100 tokens in P: 72.16%
+  Top 10 tokens in Q: 24.88%
+  Top 100 tokens in Q: 55.11%
+
+================================================================================
+Computing TRUE KL divergence...
+TRUE KL(P||Q) = 0.490912
+Theoretical MC variance = 4.241213
+================================================================================
+
+[METHOD 1] Naive Monte Carlo
+--------------------------------------------------------------------------------
+Naive Monte Carlo with 300 samples
+Final estimate: 0.525492
+Empirical variance: 5.197343
+Standard error: 0.131622
+
+================================================================================
+[METHOD 2] Importance Sampling
+Importance Sampling with n=300
+
+Testing Alpha-mixture (α=0.3)
+Final estimate: 0.565632
+Empirical variance: 0.583097
+Standard error: 0.044087
+
+Testing Geometric (α=0.3)
+Final estimate: 0.217960
+Empirical variance: 0.041218
+Standard error: 0.011721
+
+Testing Mixture (α=0.3)
+Final estimate: 0.621661
+Empirical variance: 23.433252
+Standard error: 0.279483
+
+Testing Chi-square (α=0.3)
+Final estimate: 0.496385
+Empirical variance: 0.078729
+Standard error: 0.016200
+
+Testing Cross-entropy (α=0.3)
+Final estimate: 0.681320
+Empirical variance: 6.800313
+Standard error: 0.150558
+
+Testing Alpha-mixture (α=0.5)
+Final estimate: 0.516634
+Empirical variance: 0.261331
+Standard error: 0.029514
+
+Testing Geometric (α=0.5)
+Final estimate: 0.261965
+Empirical variance: 0.052188
+Standard error: 0.013189
+
+Testing Mixture (α=0.5)
+Final estimate: 0.484711
+Empirical variance: 7.953234
+Standard error: 0.162821
+
+Testing Chi-square (α=0.5)
+Final estimate: 0.621350
+Empirical variance: 6.638324
+Standard error: 0.148754
+
+Testing Cross-entropy (α=0.5)
+Final estimate: 0.647479
+Empirical variance: 6.458083
+Standard error: 0.146721
+
+Testing Alpha-mixture (α=0.7)
+Final estimate: 0.498220
+Empirical variance: 0.092206
+Standard error: 0.017532
+
+Testing Geometric (α=0.7)
+Final estimate: 0.221493
+Empirical variance: 0.056960
+Standard error: 0.013779
+
+Testing Mixture (α=0.7)
+Final estimate: 0.305993
+Empirical variance: 2.140650
+Standard error: 0.084472
+
+Testing Chi-square (α=0.7)
+Final estimate: 0.251359
+Empirical variance: 0.080279
+Standard error: 0.016358
+
+Testing Cross-entropy (α=0.7)
+Final estimate: 0.613823
+Empirical variance: 5.699092
+Standard error: 0.137830
+
+Testing Alpha-mixture (α=0.9)
+Final estimate: 0.506508
+Empirical variance: 0.034652
+Standard error: 0.010747
+
+Testing Geometric (α=0.9)
+Final estimate: 0.258028
+Empirical variance: 0.016542
+Standard error: 0.007426
+
+Testing Mixture (α=0.9)
+Final estimate: 0.428350
+Empirical variance: 3.462317
+Standard error: 0.107429
+
+Testing Chi-square (α=0.9)
+Final estimate: 0.272577
+Empirical variance: 0.211732
+Standard error: 0.026566
+
+Testing Cross-entropy (α=0.9)
+Final estimate: 0.467675
+Empirical variance: 3.700338
+Standard error: 0.111061
+
+Testing Exp family (beta=0.1)
+Final estimate: 0.502506
+Empirical variance: 0.715250
+Standard error: 0.048828
+
+Testing Exp family (beta=0.5)
+Final estimate: 0.565241
+Empirical variance: 5.566537
+Standard error: 0.136217
+
+Testing Exp family (beta=1.0)
+Final estimate: 0.231109
+Empirical variance: 0.112255
+Standard error: 0.019344
+
+Testing Exp family (beta=2.0)
+Final estimate: 0.198293
+Empirical variance: 0.020784
+Standard error: 0.008323
+
+Testing Exp family (beta=5.0)
+Final estimate: 0.157369
+Empirical variance: 0.008585
+Standard error: 0.005349
+
+Testing Balanced
+Final estimate: 0.202841
+Empirical variance: 0.174604
+Standard error: 0.024125
+
+Testing Balanced1
+Final estimate: 0.227741
+Empirical variance: 0.042530
+Standard error: 0.011907
+
+Testing Balanced2
+Final estimate: 0.231690
+Empirical variance: 0.028821
+Standard error: 0.009802
+
+Testing Adaptive
+Final estimate: 0.528777
+Empirical variance: 0.212822
+Standard error: 0.026635
+
+Testing Optimal
+Final estimate: 0.506474
+Empirical variance: 0.018056
+Standard error: 0.007758
+
+====================================================================================================
+ESTIMATOR PERFORMANCE SUMMARY & RANKING
+====================================================================================================
+
+Method                    |     Estimate |      True KL |    Abs Error |  Rel Error % |     Variance |    Std Error
+------------------------------------------------------------------------------------------------------------------------
+Chi-square (α=0.3)        |     0.496385 |     0.490912 |     0.005473* |        1.11% |     0.078729 |     0.016200
+Alpha-mixture (α=0.7)     |     0.498220 |     0.490912 |     0.007308 |        1.49% |     0.092206 |     0.017532
+Optimal                   |     0.506474 |     0.490912 |     0.015561 |        3.17% |     0.018056 |     0.007758
+Alpha-mixture (α=0.9)     |     0.506508 |     0.490912 |     0.015595 |        3.18% |     0.034652 |     0.010747
+Alpha-mixture (α=0.5)     |     0.516634 |     0.490912 |     0.025722 |        5.24% |     0.261331 |     0.029514
+Exp family (beta=0.1)     |     0.502506 |     0.490912 |     0.011593 |        2.36% |     0.715250 |     0.048828
+Adaptive                  |     0.528777 |     0.490912 |     0.037865 |        7.71% |     0.212822 |     0.026635
+Alpha-mixture (α=0.3)     |     0.565632 |     0.490912 |     0.074720 |       15.22% |     0.583097 |     0.044087
+Cross-entropy (α=0.9)     |     0.467675 |     0.490912 |     0.023238 |        4.73% |     3.700338 |     0.111061
+Chi-square (α=0.9)        |     0.272577 |     0.490912 |     0.218335 |       44.48% |     0.211732 |     0.026566
+Geometric (α=0.5)         |     0.261965 |     0.490912 |     0.228948 |       46.64% |     0.052188 |     0.013189
+Geometric (α=0.9)         |     0.258028 |     0.490912 |     0.232885 |       47.44% |     0.016542 |     0.007426
+Mixture (α=0.9)           |     0.428350 |     0.490912 |     0.062563 |       12.74% |     3.462317 |     0.107429
+Chi-square (α=0.7)        |     0.251359 |     0.490912 |     0.239553 |       48.80% |     0.080279 |     0.016358
+Balanced2                 |     0.231690 |     0.490912 |     0.259223 |       52.80% |     0.028821 |     0.009802
+Balanced1                 |     0.227741 |     0.490912 |     0.263171 |       53.61% |     0.042530 |     0.011907
+Exp family (beta=1.0)     |     0.231109 |     0.490912 |     0.259804 |       52.92% |     0.112255 |     0.019344
+Geometric (α=0.7)         |     0.221493 |     0.490912 |     0.269420 |       54.88% |     0.056960 |     0.013779
+Geometric (α=0.3)         |     0.217960 |     0.490912 |     0.272952 |       55.60% |     0.041218 |     0.011721
+Mixture (α=0.7)           |     0.305993 |     0.490912 |     0.184919 |       37.67% |     2.140650 |     0.084472
+Naive MC                  |     0.525492 |     0.490912 |     0.034579 |        7.04% |     5.197343 |     0.131622
+Exp family (beta=2.0)     |     0.198293 |     0.490912 |     0.292619 |       59.61% |     0.020784 |     0.008323
+Balanced                  |     0.202841 |     0.490912 |     0.288072 |       58.68% |     0.174604 |     0.024125
+Exp family (beta=5.0)     |     0.157369 |     0.490912 |     0.333543 |       67.94% |     0.008585* |     0.005349
+Exp family (beta=0.5)     |     0.565241 |     0.490912 |     0.074329 |       15.14% |     5.566537 |     0.136217
+Mixture (α=0.5)           |     0.484711 |     0.490912 |     0.006202 |        1.26% |     7.953234 |     0.162821
+Cross-entropy (α=0.7)     |     0.613823 |     0.490912 |     0.122911 |       25.04% |     5.699092 |     0.137830
+Chi-square (α=0.5)        |     0.621350 |     0.490912 |     0.130437 |       26.57% |     6.638324 |     0.148754
+Cross-entropy (α=0.5)     |     0.647479 |     0.490912 |     0.156567 |       31.89% |     6.458083 |     0.146721
+Cross-entropy (α=0.3)     |     0.681320 |     0.490912 |     0.190408 |       38.79% |     6.800313 |     0.150558
+Mixture (α=0.3)           |     0.621661 |     0.490912 |     0.130748 |       26.63% |    23.433252 |     0.279483
+------------------------------------------------------------------------------------------------------------------------
+* indicates best in category
+
+====================================================================================================
+TOP 5 ESTIMATORS BY ACCURACY
+====================================================================================================
+Rank   | Method                    |    Abs Error |  Rel Error %
+----------------------------------------------------------------------
+1      | Chi-square (α=0.3)        |     0.005473 |        1.11%
+2      | Mixture (α=0.5)           |     0.006202 |        1.26%
+3      | Alpha-mixture (α=0.7)     |     0.007308 |        1.49%
+4      | Exp family (beta=0.1)     |     0.011593 |        2.36%
+5      | Optimal                   |     0.015561 |        3.17%
+
+====================================================================================================
+TOP 5 ESTIMATORS BY LOWEST VARIANCE
+====================================================================================================
+Rank   | Method                    |     Variance |    Std Error
+----------------------------------------------------------------------
+1      | Exp family (beta=5.0)     |     0.008585 |     0.005349
+2      | Geometric (α=0.9)         |     0.016542 |     0.007426
+3      | Optimal                   |     0.018056 |     0.007758
+4      | Exp family (beta=2.0)     |     0.020784 |     0.008323
+5      | Balanced2                 |     0.028821 |     0.009802
+
+====================================================================================================
+TOP 5 ESTIMATORS BY COMBINED SCORE (Accuracy & Variance)
+====================================================================================================
+Rank   | Method                    |        Score |    Abs Error |     Variance
+-------------------------------------------------------------------------------------
+1      | Chi-square (α=0.3)        |     0.013373 |     0.005473 |     0.078729
+2      | Alpha-mixture (α=0.7)     |     0.016943 |     0.007308 |     0.092206
+3      | Optimal                   |     0.023466 |     0.015561 |     0.018056
+4      | Alpha-mixture (α=0.9)     |     0.024689 |     0.015595 |     0.034652
+5      | Alpha-mixture (α=0.5)     |     0.055162 |     0.025722 |     0.261331
+
+====================================================================================================
+OVERALL STATISTICS
+====================================================================================================
+Number of estimators: 31
+True KL divergence: 0.490912
+Theoretical MC variance: 4.241213
+
+Best accuracy: Chi-square (α=0.3) (error: 0.005473)
+Best variance: Exp family (beta=5.0) (variance: 0.008585)
+Best overall: Chi-square (α=0.3) (score: 0.013373)
+
+================================================================================
+GENERATING VISUALIZATIONS
+================================================================================
+================================================================================
+GENERATING COMPREHENSIVE VISUALIZATION REPORT
+================================================================================
+
+Plots will be saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_mixture_plots/1225_0523
+
+[1/5] Creating distribution overlay plots...
+    ✓ Saved: 01_distribution_overlay.png
+[2/5] Creating importance weight histograms...
+/network/scratch/g/gus/KL_estimation/visualize_proposals.py:131: UserWarning: Tight layout not applied. tight_layout cannot make Axes width small enough to accommodate all Axes decorations
+  plt.tight_layout()
+    ✓ Saved: 02_importance_weights.png
+[3/5] Creating coverage map...
+    ✓ Saved: 03_coverage_map.png
+[4/5] Computing ESS metrics...
+
+ESS Summary:
+--------------------------------------------------------------------------------
+Method                       ESS Ratio   Max Weight  Mean Weight
+--------------------------------------------------------------------------------
+Alpha-mixture (α=0.3)           92.18%         1.11         1.00
+Geometric (α=0.3)               93.36%         2.11         0.98
+Mixture (α=0.3)                 82.36%         3.33         1.00
+Chi-square (α=0.3)              30.27%        10.78         1.01
+Cross-entropy (α=0.3)           99.97%         1.02         1.00
+Alpha-mixture (α=0.5)           84.06%         1.22         1.01
+Geometric (α=0.5)               97.46%         1.66         0.98
+Mixture (α=0.5)                 88.22%         2.00         1.00
+Chi-square (α=0.5)               1.32%        75.63         0.97
+Cross-entropy (α=0.5)           99.91%         1.03         1.00
+Alpha-mixture (α=0.7)           72.26%         1.41         0.99
+Geometric (α=0.7)               18.30%       202.50         1.01
+Mixture (α=0.7)                 93.58%         1.43         1.00
+Chi-square (α=0.7)               0.04%      2404.52         0.98
+Cross-entropy (α=0.7)           99.83%         1.05         1.00
+Alpha-mixture (α=0.9)           58.04%         1.78         1.01
+Geometric (α=0.9)               95.61%         5.82         1.00
+Mixture (α=0.9)                 98.03%         1.11         1.00
+Chi-square (α=0.9)              20.44%         0.65         0.01
+Cross-entropy (α=0.9)           99.72%         1.06         1.00
+Exp family (beta=0.1)           95.19%         1.07         1.00
+Exp family (beta=0.5)            1.24%        75.66         0.92
+Exp family (beta=1.0)           15.38%         0.86         0.01
+Exp family (beta=2.0)            0.54%        17.56         0.01
+Exp family (beta=5.0)            7.60%         0.70         0.01
+Balanced                        27.09%        56.91         1.01
+Balanced1                       29.62%       130.02         1.00
+Balanced2                       89.84%         1.17         0.98
+Adaptive                        83.73%         1.22         1.00
+Optimal                         48.19%         2.13         1.00
+
+[5/5] Creating ESS comparison plot...
+    ✓ Saved: 04_ess_comparison.png
+
+================================================================================
+REPORT GENERATION COMPLETE
+All plots saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_mixture_plots/1225_0523
+================================================================================
+
+========================================================================================================================
+CROSS-MODEL COMPARISON OF TOP 3 ESTIMATORS
+========================================================================================================================
+Method                    |       create_model_pair        |  create_model_pair_zipCutoff   |   create_model_pair_mixture    | 
+-------------------------------------------------------------------------------------------------------------------------
+Alpha-mixture (α=0.7)     | Err:  0.0031 Var:  0.0221 |              N/A               | Err:  0.0073 Var:  0.0922 | 
+Alpha-mixture (α=0.9)     | Err:  0.0036 Var:  0.0056 | Err:  0.0023 Var:  0.0008 |              N/A               | 
+Chi-square (α=0.3)        | Err:  0.0003 Var:  0.0139 | Err:  0.0005 Var:  0.0041 | Err:  0.0055 Var:  0.0787 | 
+Optimal                   |              N/A               | Err:  0.0008 Var:  0.0011 | Err:  0.0156 Var:  0.0181 | 
+
+====================================================================================================
+Iteration #: 1
+
+====================================================================================================
+EXPERIMENT: CREATE_MODEL_PAIR
+====================================================================================================
+================================================================================
+KL DIVERGENCE ESTIMATION WITH LONG-TAILED DISTRIBUTIONS
+================================================================================
+
+Creating long-tailed distributions (vocab_size=3000) with create_model_pair...
+
+Distribution statistics:
+  Top 10 tokens in P: 77.46%
+  Top 100 tokens in P: 93.67%
+  Top 10 tokens in Q: 59.64%
+  Top 100 tokens in Q: 72.12%
+
+================================================================================
+Computing TRUE KL divergence...
+TRUE KL(P||Q) = 0.273305
+Theoretical MC variance = 0.241852
+================================================================================
+
+[METHOD 1] Naive Monte Carlo
+--------------------------------------------------------------------------------
+Naive Monte Carlo with 300 samples
+Final estimate: 0.296188
+Empirical variance: 0.362090
+Standard error: 0.034741
+
+================================================================================
+[METHOD 2] Importance Sampling
+Importance Sampling with n=300
+
+Testing Alpha-mixture (α=0.3)
+Final estimate: 0.263452
+Empirical variance: 0.000000
+Standard error: 0.000000
+
+Testing Geometric (α=0.3)
+Final estimate: 0.250947
+Empirical variance: 0.009368
+Standard error: 0.005588
+
+Testing Mixture (α=0.3)
+Final estimate: 0.263025
+Empirical variance: 0.014509
+Standard error: 0.006954
+
+Testing Chi-square (α=0.3)
+Final estimate: 0.275524
+Empirical variance: 0.000435
+Standard error: 0.001204
+
+Testing Cross-entropy (α=0.3)
+Final estimate: 0.252515
+Empirical variance: 0.032296
+Standard error: 0.010376
+
+Testing Alpha-mixture (α=0.5)
+Final estimate: 0.277150
+Empirical variance: 0.019194
+Standard error: 0.007999
+
+Testing Geometric (α=0.5)
+Final estimate: 0.262414
+Empirical variance: 0.000965
+Standard error: 0.001794
+
+Testing Mixture (α=0.5)
+Final estimate: 0.263198
+Empirical variance: 0.009534
+Standard error: 0.005637
+
+Testing Chi-square (α=0.5)
+Final estimate: 0.256036
+Empirical variance: 0.074030
+Standard error: 0.015709
+
+Testing Cross-entropy (α=0.5)
+Final estimate: 0.262882
+Empirical variance: 0.000613
+Standard error: 0.001430
+
+Testing Alpha-mixture (α=0.7)
+Final estimate: 0.271124
+Empirical variance: 0.009342
+Standard error: 0.005580
+
+Testing Geometric (α=0.7)
+Final estimate: 0.252854
+Empirical variance: 0.012437
+Standard error: 0.006439
+
+Testing Mixture (α=0.7)
+Final estimate: 0.253738
+Empirical variance: 0.008855
+Standard error: 0.005433
+
+Testing Chi-square (α=0.7)
+Final estimate: 0.306270
+Empirical variance: 1.594588
+Standard error: 0.072906
+
+Testing Cross-entropy (α=0.7)
+Final estimate: 0.320313
+Empirical variance: 1.053064
+Standard error: 0.059247
+
+Testing Alpha-mixture (α=0.9)
+Final estimate: 0.276337
+Empirical variance: 0.003502
+Standard error: 0.003417
+
+Testing Geometric (α=0.9)
+Final estimate: 0.261363
+Empirical variance: 0.000000
+Standard error: 0.000000
+
+Testing Mixture (α=0.9)
+Final estimate: 0.314549
+Empirical variance: 0.890042
+Standard error: 0.054468
+
+Testing Chi-square (α=0.9)
+Final estimate: 0.662831
+Empirical variance: 63.075446
+Standard error: 0.458532
+
+Testing Cross-entropy (α=0.9)
+Final estimate: 0.260175
+Empirical variance: 0.001912
+Standard error: 0.002525
+
+Testing Exp family (beta=0.1)
+Final estimate: 0.262477
+Empirical variance: 0.000000
+Standard error: 0.000000
+
+Testing Exp family (beta=0.5)
+Final estimate: 0.278451
+Empirical variance: 0.089361
+Standard error: 0.017259
+
+Testing Exp family (beta=1.0)
+Final estimate: 0.016996
+Empirical variance: 0.001080
+Standard error: 0.001897
+
+Testing Exp family (beta=2.0)
+Final estimate: 0.018029
+Empirical variance: 0.003699
+Standard error: 0.003512
+
+Testing Exp family (beta=5.0)
+Final estimate: 0.020560
+Empirical variance: 0.011700
+Standard error: 0.006245
+
+Testing Balanced
+Final estimate: 0.304623
+Empirical variance: 0.440024
+Standard error: 0.038298
+
+Testing Balanced1
+Final estimate: 0.247270
+Empirical variance: 0.022915
+Standard error: 0.008740
+
+Testing Balanced2
+Final estimate: 0.255944
+Empirical variance: 0.007394
+Standard error: 0.004965
+
+Testing Adaptive
+Final estimate: 0.264594
+Empirical variance: 0.029628
+Standard error: 0.009938
+
+Testing Optimal
+Final estimate: 0.279468
+Empirical variance: 0.001055
+Standard error: 0.001876
+
+====================================================================================================
+ESTIMATOR PERFORMANCE SUMMARY & RANKING
+====================================================================================================
+
+Method                    |     Estimate |      True KL |    Abs Error |  Rel Error % |     Variance |    Std Error
+------------------------------------------------------------------------------------------------------------------------
+Chi-square (α=0.3)        |     0.275524 |     0.273305 |     0.002219 |        0.81% |     0.000435 |     0.001204
+Alpha-mixture (α=0.9)     |     0.276337 |     0.273305 |     0.003032 |        1.11% |     0.003502 |     0.003417
+Optimal                   |     0.279468 |     0.273305 |     0.006163 |        2.25% |     0.001055 |     0.001876
+Alpha-mixture (α=0.7)     |     0.271124 |     0.273305 |     0.002181* |        0.80% |     0.009342 |     0.005580
+Alpha-mixture (α=0.3)     |     0.263452 |     0.273305 |     0.009853 |        3.61% |     0.000000* |     0.000000
+Cross-entropy (α=0.5)     |     0.262882 |     0.273305 |     0.010423 |        3.81% |     0.000613 |     0.001430
+Exp family (beta=0.1)     |     0.262477 |     0.273305 |     0.010828 |        3.96% |     0.000000 |     0.000000
+Geometric (α=0.5)         |     0.262414 |     0.273305 |     0.010891 |        3.99% |     0.000965 |     0.001794
+Geometric (α=0.9)         |     0.261363 |     0.273305 |     0.011942 |        4.37% |     0.000000 |     0.000000
+Alpha-mixture (α=0.5)     |     0.277150 |     0.273305 |     0.003845 |        1.41% |     0.019194 |     0.007999
+Cross-entropy (α=0.9)     |     0.260175 |     0.273305 |     0.013130 |        4.80% |     0.001912 |     0.002525
+Mixture (α=0.5)           |     0.263198 |     0.273305 |     0.010107 |        3.70% |     0.009534 |     0.005637
+Mixture (α=0.3)           |     0.263025 |     0.273305 |     0.010280 |        3.76% |     0.014509 |     0.006954
+Balanced2                 |     0.255944 |     0.273305 |     0.017360 |        6.35% |     0.007394 |     0.004965
+Adaptive                  |     0.264594 |     0.273305 |     0.008711 |        3.19% |     0.029628 |     0.009938
+Mixture (α=0.7)           |     0.253738 |     0.273305 |     0.019567 |        7.16% |     0.008855 |     0.005433
+Geometric (α=0.7)         |     0.252854 |     0.273305 |     0.020451 |        7.48% |     0.012437 |     0.006439
+Geometric (α=0.3)         |     0.250947 |     0.273305 |     0.022358 |        8.18% |     0.009368 |     0.005588
+Cross-entropy (α=0.3)     |     0.252515 |     0.273305 |     0.020789 |        7.61% |     0.032296 |     0.010376
+Balanced1                 |     0.247270 |     0.273305 |     0.026035 |        9.53% |     0.022915 |     0.008740
+Exp family (beta=0.5)     |     0.278451 |     0.273305 |     0.005146 |        1.88% |     0.089361 |     0.017259
+Chi-square (α=0.5)        |     0.256036 |     0.273305 |     0.017269 |        6.32% |     0.074030 |     0.015709
+Naive MC                  |     0.296188 |     0.273305 |     0.022883 |        8.37% |     0.362090 |     0.034741
+Balanced                  |     0.304623 |     0.273305 |     0.031318 |       11.46% |     0.440024 |     0.038298
+Exp family (beta=1.0)     |     0.016996 |     0.273305 |     0.256309 |       93.78% |     0.001080 |     0.001897
+Exp family (beta=2.0)     |     0.018029 |     0.273305 |     0.255276 |       93.40% |     0.003699 |     0.003512
+Exp family (beta=5.0)     |     0.020560 |     0.273305 |     0.252745 |       92.48% |     0.011700 |     0.006245
+Mixture (α=0.9)           |     0.314549 |     0.273305 |     0.041244 |       15.09% |     0.890042 |     0.054468
+Cross-entropy (α=0.7)     |     0.320313 |     0.273305 |     0.047008 |       17.20% |     1.053064 |     0.059247
+Chi-square (α=0.7)        |     0.306270 |     0.273305 |     0.032965 |       12.06% |     1.594588 |     0.072906
+Chi-square (α=0.9)        |     0.662831 |     0.273305 |     0.389526 |      142.52% |    63.075446 |     0.458532
+------------------------------------------------------------------------------------------------------------------------
+* indicates best in category
+
+====================================================================================================
+TOP 5 ESTIMATORS BY ACCURACY
+====================================================================================================
+Rank   | Method                    |    Abs Error |  Rel Error %
+----------------------------------------------------------------------
+1      | Alpha-mixture (α=0.7)     |     0.002181 |        0.80%
+2      | Chi-square (α=0.3)        |     0.002219 |        0.81%
+3      | Alpha-mixture (α=0.9)     |     0.003032 |        1.11%
+4      | Alpha-mixture (α=0.5)     |     0.003845 |        1.41%
+5      | Exp family (beta=0.5)     |     0.005146 |        1.88%
+
+====================================================================================================
+TOP 5 ESTIMATORS BY LOWEST VARIANCE
+====================================================================================================
+Rank   | Method                    |     Variance |    Std Error
+----------------------------------------------------------------------
+1      | Alpha-mixture (α=0.3)     |     0.000000 |     0.000000
+2      | Geometric (α=0.9)         |     0.000000 |     0.000000
+3      | Exp family (beta=0.1)     |     0.000000 |     0.000000
+4      | Chi-square (α=0.3)        |     0.000435 |     0.001204
+5      | Cross-entropy (α=0.5)     |     0.000613 |     0.001430
+
+====================================================================================================
+TOP 5 ESTIMATORS BY COMBINED SCORE (Accuracy & Variance)
+====================================================================================================
+Rank   | Method                    |        Score |    Abs Error |     Variance
+-------------------------------------------------------------------------------------
+1      | Chi-square (α=0.3)        |     0.006223 |     0.002219 |     0.000435
+2      | Alpha-mixture (α=0.9)     |     0.012109 |     0.003032 |     0.003502
+3      | Optimal                   |     0.017094 |     0.006163 |     0.001055
+4      | Alpha-mixture (α=0.7)     |     0.017174 |     0.002181 |     0.009342
+5      | Alpha-mixture (α=0.3)     |     0.025237 |     0.009853 |     0.000000
+
+====================================================================================================
+OVERALL STATISTICS
+====================================================================================================
+Number of estimators: 31
+True KL divergence: 0.273305
+Theoretical MC variance: 0.241852
+
+Best accuracy: Alpha-mixture (α=0.7) (error: 0.002181)
+Best variance: Alpha-mixture (α=0.3) (variance: 0.000000)
+Best overall: Chi-square (α=0.3) (score: 0.006223)
+
+================================================================================
+GENERATING VISUALIZATIONS
+================================================================================
+================================================================================
+GENERATING COMPREHENSIVE VISUALIZATION REPORT
+================================================================================
+
+Plots will be saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_plots/1225_0524
+
+[1/5] Creating distribution overlay plots...
+    ✓ Saved: 01_distribution_overlay.png
+[2/5] Creating importance weight histograms...
+/network/scratch/g/gus/KL_estimation/visualize_proposals.py:131: UserWarning: Tight layout not applied. tight_layout cannot make Axes width small enough to accommodate all Axes decorations
+  plt.tight_layout()
+    ✓ Saved: 02_importance_weights.png
+[3/5] Creating coverage map...
+    ✓ Saved: 03_coverage_map.png
+[4/5] Computing ESS metrics...
+
+ESS Summary:
+--------------------------------------------------------------------------------
+Method                       ESS Ratio   Max Weight  Mean Weight
+--------------------------------------------------------------------------------
+Alpha-mixture (α=0.3)           99.41%         1.01         1.00
+Geometric (α=0.3)               96.14%         1.04         1.00
+Mixture (α=0.3)                 83.63%         3.33         1.00
+Chi-square (α=0.3)              93.44%         2.55         1.00
+Cross-entropy (α=0.3)           99.69%         1.08         1.00
+Alpha-mixture (α=0.5)           98.54%         1.02         1.00
+Geometric (α=0.5)               98.89%         1.01         1.00
+Mixture (α=0.5)                 88.29%         2.00         1.00
+Chi-square (α=0.5)              41.04%        50.50         1.01
+Cross-entropy (α=0.5)           99.14%         1.15         1.00
+Alpha-mixture (α=0.7)           97.47%         1.03         1.00
+Geometric (α=0.7)               99.76%         1.00         1.00
+Mixture (α=0.7)                 93.13%         1.43         1.00
+Chi-square (α=0.7)               5.03%        22.19         1.12
+Cross-entropy (α=0.7)           98.32%         1.21         1.00
+Alpha-mixture (α=0.9)           95.22%         1.05         1.00
+Geometric (α=0.9)               99.80%         3.91         1.00
+Mixture (α=0.9)                 97.51%         1.11         1.00
+Chi-square (α=0.9)               0.26%       372.72         0.97
+Cross-entropy (α=0.9)           97.22%         1.29         1.00
+Exp family (beta=0.1)           99.70%         1.00         1.00
+Exp family (beta=0.5)           45.32%         2.24         1.01
+Exp family (beta=1.0)            0.05%      1567.37         0.79
+Exp family (beta=2.0)            0.19%         2.70         0.00
+Exp family (beta=5.0)            3.52%         0.09         0.00
+Balanced                        16.35%        10.65         0.98
+Balanced1                       79.39%         6.31         1.01
+Balanced2                       90.17%        20.79         1.00
+Adaptive                        98.61%         1.02         1.00
+Optimal                         93.20%         1.08         1.00
+
+[5/5] Creating ESS comparison plot...
+    ✓ Saved: 04_ess_comparison.png
+
+================================================================================
+REPORT GENERATION COMPLETE
+All plots saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_plots/1225_0524
+================================================================================
+
+====================================================================================================
+EXPERIMENT: CREATE_MODEL_PAIR_ZIPCUTOFF
+====================================================================================================
+================================================================================
+KL DIVERGENCE ESTIMATION WITH LONG-TAILED DISTRIBUTIONS
+================================================================================
+
+Creating long-tailed distributions (vocab_size=3000) with create_model_pair_zipCutoff...
+
+Distribution statistics:
+  Top 10 tokens in P: 80.00%
+  Top 100 tokens in P: 96.74%
+  Top 10 tokens in Q: 61.69%
+  Top 100 tokens in Q: 74.39%
+
+================================================================================
+Computing TRUE KL divergence...
+TRUE KL(P||Q) = 0.310511
+Theoretical MC variance = 0.899556
+================================================================================
+
+[METHOD 1] Naive Monte Carlo
+--------------------------------------------------------------------------------
+Naive Monte Carlo with 300 samples
+Final estimate: 0.342692
+Empirical variance: 2.051589
+Standard error: 0.082696
+
+================================================================================
+[METHOD 2] Importance Sampling
+Importance Sampling with n=300
+
+Testing Alpha-mixture (α=0.3)
+Final estimate: 0.321999
+Empirical variance: 0.135050
+Standard error: 0.021217
+
+Testing Geometric (α=0.3)
+Final estimate: 0.259047
+Empirical variance: 0.001653
+Standard error: 0.002347
+
+Testing Mixture (α=0.3)
+Final estimate: 0.265705
+Empirical variance: 0.012864
+Standard error: 0.006548
+
+Testing Chi-square (α=0.3)
+Final estimate: 0.307210
+Empirical variance: 0.012085
+Standard error: 0.006347
+
+Testing Cross-entropy (α=0.3)
+Final estimate: 0.309336
+Empirical variance: 1.147921
+Standard error: 0.061858
+
+Testing Alpha-mixture (α=0.5)
+Final estimate: 0.317928
+Empirical variance: 0.062265
+Standard error: 0.014407
+
+Testing Geometric (α=0.5)
+Final estimate: 0.255811
+Empirical variance: 0.002571
+Standard error: 0.002927
+
+Testing Mixture (α=0.5)
+Final estimate: 0.255082
+Empirical variance: 0.010266
+Standard error: 0.005850
+
+Testing Chi-square (α=0.5)
+Final estimate: 0.298710
+Empirical variance: 0.916198
+Standard error: 0.055263
+
+Testing Cross-entropy (α=0.5)
+Final estimate: 0.380127
+Empirical variance: 2.164537
+Standard error: 0.084942
+
+Testing Alpha-mixture (α=0.7)
+Final estimate: 0.317462
+Empirical variance: 0.024072
+Standard error: 0.008958
+
+Testing Geometric (α=0.7)
+Final estimate: 0.259500
+Empirical variance: 0.000000
+Standard error: 0.000000
+
+Testing Mixture (α=0.7)
+Final estimate: 0.258342
+Empirical variance: 0.005442
+Standard error: 0.004259
+
+Testing Chi-square (α=0.7)
+Final estimate: 0.437649
+Empirical variance: 44.302183
+Standard error: 0.384284
+
+Testing Cross-entropy (α=0.7)
+Final estimate: 0.258085
+Empirical variance: 0.001137
+Standard error: 0.001946
+
+Testing Alpha-mixture (α=0.9)
+Final estimate: 0.310659
+Empirical variance: 0.003314
+Standard error: 0.003324
+
+Testing Geometric (α=0.9)
+Final estimate: 0.259308
+Empirical variance: 0.000000
+Standard error: 0.000000
+
+Testing Mixture (α=0.9)
+Final estimate: 0.319760
+Empirical variance: 1.213468
+Standard error: 0.063599
+
+Testing Chi-square (α=0.9)
+Final estimate: 0.055935
+Empirical variance: 0.002859
+Standard error: 0.003087
+
+Testing Cross-entropy (α=0.9)
+Final estimate: 0.328033
+Empirical variance: 1.478346
+Standard error: 0.070198
+
+Testing Exp family (beta=0.1)
+Final estimate: 0.302474
+Empirical variance: 0.112442
+Standard error: 0.019360
+
+Testing Exp family (beta=0.5)
+Final estimate: 0.259777
+Empirical variance: 0.771806
+Standard error: 0.050722
+
+Testing Exp family (beta=1.0)
+Final estimate: 0.051338
+Empirical variance: 0.002113
+Standard error: 0.002654
+
+Testing Exp family (beta=2.0)
+Final estimate: 0.047060
+Empirical variance: 0.000000
+Standard error: 0.000000
+
+Testing Exp family (beta=5.0)
+Final estimate: 0.047016
+Empirical variance: 0.000000
+Standard error: 0.000000
+
+Testing Balanced
+Final estimate: 0.271768
+Empirical variance: 0.204314
+Standard error: 0.026097
+
+Testing Balanced1
+Final estimate: 0.260691
+Empirical variance: 0.008286
+Standard error: 0.005256
+
+Testing Balanced2
+Final estimate: 0.249313
+Empirical variance: 0.006653
+Standard error: 0.004709
+
+Testing Adaptive
+Final estimate: 0.306151
+Empirical variance: 0.041688
+Standard error: 0.011788
+
+Testing Optimal
+Final estimate: 0.311302
+Empirical variance: 0.002646
+Standard error: 0.002970
+
+====================================================================================================
+ESTIMATOR PERFORMANCE SUMMARY & RANKING
+====================================================================================================
+
+Method                    |     Estimate |      True KL |    Abs Error |  Rel Error % |     Variance |    Std Error
+------------------------------------------------------------------------------------------------------------------------
+Alpha-mixture (α=0.9)     |     0.310659 |     0.310511 |     0.000148* |        0.05% |     0.003314 |     0.003324
+Optimal                   |     0.311302 |     0.310511 |     0.000790 |        0.25% |     0.002646 |     0.002970
+Chi-square (α=0.3)        |     0.307210 |     0.310511 |     0.003301 |        1.06% |     0.012085 |     0.006347
+Alpha-mixture (α=0.7)     |     0.317462 |     0.310511 |     0.006951 |        2.24% |     0.024072 |     0.008958
+Adaptive                  |     0.306151 |     0.310511 |     0.004360 |        1.40% |     0.041688 |     0.011788
+Alpha-mixture (α=0.5)     |     0.317928 |     0.310511 |     0.007417 |        2.39% |     0.062265 |     0.014407
+Exp family (beta=0.1)     |     0.302474 |     0.310511 |     0.008037 |        2.59% |     0.112442 |     0.019360
+Alpha-mixture (α=0.3)     |     0.321999 |     0.310511 |     0.011488 |        3.70% |     0.135050 |     0.021217
+Mixture (α=0.3)           |     0.265705 |     0.310511 |     0.044807 |       14.43% |     0.012864 |     0.006548
+Geometric (α=0.7)         |     0.259500 |     0.310511 |     0.051011 |       16.43% |     0.000000 |     0.000000
+Balanced1                 |     0.260691 |     0.310511 |     0.049820 |       16.04% |     0.008286 |     0.005256
+Geometric (α=0.9)         |     0.259308 |     0.310511 |     0.051204 |       16.49% |     0.000000 |     0.000000
+Geometric (α=0.3)         |     0.259047 |     0.310511 |     0.051465 |       16.57% |     0.001653 |     0.002347
+Cross-entropy (α=0.7)     |     0.258085 |     0.310511 |     0.052427 |       16.88% |     0.001137 |     0.001946
+Mixture (α=0.7)           |     0.258342 |     0.310511 |     0.052169 |       16.80% |     0.005442 |     0.004259
+Geometric (α=0.5)         |     0.255811 |     0.310511 |     0.054701 |       17.62% |     0.002571 |     0.002927
+Mixture (α=0.5)           |     0.255082 |     0.310511 |     0.055430 |       17.85% |     0.010266 |     0.005850
+Balanced2                 |     0.249313 |     0.310511 |     0.061198 |       19.71% |     0.006653 |     0.004709
+Balanced                  |     0.271768 |     0.310511 |     0.038744 |       12.48% |     0.204314 |     0.026097
+Chi-square (α=0.5)        |     0.298710 |     0.310511 |     0.011802 |        3.80% |     0.916198 |     0.055263
+Exp family (beta=0.5)     |     0.259777 |     0.310511 |     0.050735 |       16.34% |     0.771806 |     0.050722
+Cross-entropy (α=0.3)     |     0.309336 |     0.310511 |     0.001176 |        0.38% |     1.147921 |     0.061858
+Mixture (α=0.9)           |     0.319760 |     0.310511 |     0.009248 |        2.98% |     1.213468 |     0.063599
+Cross-entropy (α=0.9)     |     0.328033 |     0.310511 |     0.017521 |        5.64% |     1.478346 |     0.070198
+Chi-square (α=0.9)        |     0.055935 |     0.310511 |     0.254577 |       81.99% |     0.002859 |     0.003087
+Exp family (beta=1.0)     |     0.051338 |     0.310511 |     0.259173 |       83.47% |     0.002113 |     0.002654
+Exp family (beta=2.0)     |     0.047060 |     0.310511 |     0.263452 |       84.84% |     0.000000 |     0.000000
+Exp family (beta=5.0)     |     0.047016 |     0.310511 |     0.263496 |       84.86% |     0.000000* |     0.000000
+Naive MC                  |     0.342692 |     0.310511 |     0.032181 |       10.36% |     2.051589 |     0.082696
+Cross-entropy (α=0.5)     |     0.380127 |     0.310511 |     0.069615 |       22.42% |     2.164537 |     0.084942
+Chi-square (α=0.7)        |     0.437649 |     0.310511 |     0.127137 |       40.94% |    44.302183 |     0.384284
+------------------------------------------------------------------------------------------------------------------------
+* indicates best in category
+
+====================================================================================================
+TOP 5 ESTIMATORS BY ACCURACY
+====================================================================================================
+Rank   | Method                    |    Abs Error |  Rel Error %
+----------------------------------------------------------------------
+1      | Alpha-mixture (α=0.9)     |     0.000148 |        0.05%
+2      | Optimal                   |     0.000790 |        0.25%
+3      | Cross-entropy (α=0.3)     |     0.001176 |        0.38%
+4      | Chi-square (α=0.3)        |     0.003301 |        1.06%
+5      | Adaptive                  |     0.004360 |        1.40%
+
+====================================================================================================
+TOP 5 ESTIMATORS BY LOWEST VARIANCE
+====================================================================================================
+Rank   | Method                    |     Variance |    Std Error
+----------------------------------------------------------------------
+1      | Exp family (beta=5.0)     |     0.000000 |     0.000000
+2      | Exp family (beta=2.0)     |     0.000000 |     0.000000
+3      | Geometric (α=0.7)         |     0.000000 |     0.000000
+4      | Geometric (α=0.9)         |     0.000000 |     0.000000
+5      | Cross-entropy (α=0.7)     |     0.001137 |     0.001946
+
+====================================================================================================
+TOP 5 ESTIMATORS BY COMBINED SCORE (Accuracy & Variance)
+====================================================================================================
+Rank   | Method                    |        Score |    Abs Error |     Variance
+-------------------------------------------------------------------------------------
+1      | Alpha-mixture (α=0.9)     |     0.001438 |     0.000148 |     0.003314
+2      | Optimal                   |     0.002663 |     0.000790 |     0.002646
+3      | Chi-square (α=0.3)        |     0.011472 |     0.003301 |     0.012085
+4      | Alpha-mixture (α=0.7)     |     0.023697 |     0.006951 |     0.024072
+5      | Adaptive                  |     0.023732 |     0.004360 |     0.041688
+
+====================================================================================================
+OVERALL STATISTICS
+====================================================================================================
+Number of estimators: 31
+True KL divergence: 0.310511
+Theoretical MC variance: 0.899556
+
+Best accuracy: Alpha-mixture (α=0.9) (error: 0.000148)
+Best variance: Exp family (beta=5.0) (variance: 0.000000)
+Best overall: Alpha-mixture (α=0.9) (score: 0.001438)
+
+================================================================================
+GENERATING VISUALIZATIONS
+================================================================================
+================================================================================
+GENERATING COMPREHENSIVE VISUALIZATION REPORT
+================================================================================
+
+Plots will be saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_zipCutoff_plots/1225_0525
+
+[1/5] Creating distribution overlay plots...
+    ✓ Saved: 01_distribution_overlay.png
+[2/5] Creating importance weight histograms...
+/network/scratch/g/gus/KL_estimation/visualize_proposals.py:131: UserWarning: Tight layout not applied. tight_layout cannot make Axes width small enough to accommodate all Axes decorations
+  plt.tight_layout()
+    ✓ Saved: 02_importance_weights.png
+[3/5] Creating coverage map...
+    ✓ Saved: 03_coverage_map.png
+[4/5] Computing ESS metrics...
+
+ESS Summary:
+--------------------------------------------------------------------------------
+Method                       ESS Ratio   Max Weight  Mean Weight
+--------------------------------------------------------------------------------
+Alpha-mixture (α=0.3)           98.00%         1.02         1.00
+Geometric (α=0.3)               98.27%         1.02         1.00
+Mixture (α=0.3)                 83.59%         3.33         1.00
+Chi-square (α=0.3)              67.25%         3.55         1.00
+Cross-entropy (α=0.3)           99.70%         1.09         1.00
+Alpha-mixture (α=0.5)           96.15%         1.04         1.00
+Geometric (α=0.5)               99.58%         1.00         1.00
+Mixture (α=0.5)                 88.17%         2.00         1.00
+Chi-square (α=0.5)               6.65%        15.70         1.04
+Cross-entropy (α=0.5)           99.17%         1.15         1.00
+Alpha-mixture (α=0.7)           93.01%         1.08         1.00
+Geometric (α=0.7)               99.91%         1.00         1.00
+Mixture (α=0.7)                 93.17%         1.43         1.00
+Chi-square (α=0.7)               0.22%       443.78         0.98
+Cross-entropy (α=0.7)           98.35%         1.22         1.00
+Alpha-mixture (α=0.9)           87.44%         1.15         1.00
+Geometric (α=0.9)               99.27%         5.52         1.00
+Mixture (α=0.9)                 97.84%         1.11         1.00
+Chi-square (α=0.9)              30.76%         0.17         0.00
+Cross-entropy (α=0.9)           97.31%         1.30         1.00
+Exp family (beta=0.1)           98.93%         1.01         1.00
+Exp family (beta=0.5)            6.45%        15.70         1.01
+Exp family (beta=1.0)           42.22%         0.04         0.00
+Exp family (beta=2.0)           17.03%         0.36         0.00
+Exp family (beta=5.0)          100.00%         0.00         0.00
+Balanced                        25.68%         6.58         1.00
+Balanced1                       39.15%        86.77         1.01
+Balanced2                       97.22%         1.03         1.00
+Adaptive                        96.01%         1.04         1.00
+Optimal                         82.44%         1.21         1.00
+
+[5/5] Creating ESS comparison plot...
+    ✓ Saved: 04_ess_comparison.png
+
+================================================================================
+REPORT GENERATION COMPLETE
+All plots saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_zipCutoff_plots/1225_0525
+================================================================================
+
+====================================================================================================
+EXPERIMENT: CREATE_MODEL_PAIR_MIXTURE
+====================================================================================================
+================================================================================
+KL DIVERGENCE ESTIMATION WITH LONG-TAILED DISTRIBUTIONS
+================================================================================
+
+Creating long-tailed distributions (vocab_size=3000) with create_model_pair_mixture...
+
+Distribution statistics:
+  Top 10 tokens in P: 27.18%
+  Top 100 tokens in P: 70.57%
+  Top 10 tokens in Q: 20.66%
+  Top 100 tokens in Q: 54.18%
+
+================================================================================
+Computing TRUE KL divergence...
+TRUE KL(P||Q) = 0.354848
+Theoretical MC variance = 1.815402
+================================================================================
+
+[METHOD 1] Naive Monte Carlo
+--------------------------------------------------------------------------------
+Naive Monte Carlo with 300 samples
+Final estimate: 0.343817
+Empirical variance: 1.745552
+Standard error: 0.076279
+
+================================================================================
+[METHOD 2] Importance Sampling
+Importance Sampling with n=300
+
+Testing Alpha-mixture (α=0.3)
+Final estimate: 0.324621
+Empirical variance: 0.205148
+Standard error: 0.026150
+
+Testing Geometric (α=0.3)
+Final estimate: 0.237392
+Empirical variance: 0.022184
+Standard error: 0.008599
+
+Testing Mixture (α=0.3)
+Final estimate: 0.410273
+Empirical variance: 8.408753
+Standard error: 0.167419
+
+Testing Chi-square (α=0.3)
+Final estimate: 0.369786
+Empirical variance: 0.015860
+Standard error: 0.007271
+
+Testing Cross-entropy (α=0.3)
+Final estimate: 0.310379
+Empirical variance: 1.002355
+Standard error: 0.057803
+
+Testing Alpha-mixture (α=0.5)
+Final estimate: 0.379403
+Empirical variance: 0.107861
+Standard error: 0.018961
+
+Testing Geometric (α=0.5)
+Final estimate: 0.242241
+Empirical variance: 0.017002
+Standard error: 0.007528
+
+Testing Mixture (α=0.5)
+Final estimate: 0.223239
+Empirical variance: 0.028598
+Standard error: 0.009764
+
+Testing Chi-square (α=0.5)
+Final estimate: 0.351642
+Empirical variance: 1.150055
+Standard error: 0.061915
+
+Testing Cross-entropy (α=0.5)
+Final estimate: 0.440504
+Empirical variance: 2.858057
+Standard error: 0.097606
+
+Testing Alpha-mixture (α=0.7)
+Final estimate: 0.342905
+Empirical variance: 0.063126
+Standard error: 0.014506
+
+Testing Geometric (α=0.7)
+Final estimate: 0.248432
+Empirical variance: 0.014198
+Standard error: 0.006879
+
+Testing Mixture (α=0.7)
+Final estimate: 0.239201
+Empirical variance: 0.017337
+Standard error: 0.007602
+
+Testing Chi-square (α=0.7)
+Final estimate: 0.118794
+Empirical variance: 0.012472
+Standard error: 0.006448
+
+Testing Cross-entropy (α=0.7)
+Final estimate: 0.395977
+Empirical variance: 2.545170
+Standard error: 0.092108
+
+Testing Alpha-mixture (α=0.9)
+Final estimate: 0.351638
+Empirical variance: 0.035791
+Standard error: 0.010923
+
+Testing Geometric (α=0.9)
+Final estimate: 0.546205
+Empirical variance: 30.349581
+Standard error: 0.318065
+
+Testing Mixture (α=0.9)
+Final estimate: 0.364985
+Empirical variance: 2.133796
+Standard error: 0.084337
+
+Testing Chi-square (α=0.9)
+Final estimate: 0.115537
+Empirical variance: 0.048973
+Standard error: 0.012777
+
+Testing Cross-entropy (α=0.9)
+Final estimate: 0.405234
+Empirical variance: 2.759693
+Standard error: 0.095911
+
+Testing Exp family (beta=0.1)
+Final estimate: 0.380760
+Empirical variance: 0.425750
+Standard error: 0.037672
+
+Testing Exp family (beta=0.5)
+Final estimate: 0.477483
+Empirical variance: 1.724702
+Standard error: 0.075822
+
+Testing Exp family (beta=1.0)
+Final estimate: 0.101248
+Empirical variance: 0.023549
+Standard error: 0.008860
+
+Testing Exp family (beta=2.0)
+Final estimate: 0.102172
+Empirical variance: 0.323687
+Standard error: 0.032847
+
+Testing Exp family (beta=5.0)
+Final estimate: 0.046292
+Empirical variance: 0.000000
+Standard error: 0.000000
+
+Testing Balanced
+Final estimate: 0.247528
+Empirical variance: 0.149571
+Standard error: 0.022329
+
+Testing Balanced1
+Final estimate: 0.255654
+Empirical variance: 0.037124
+Standard error: 0.011124
+
+Testing Balanced2
+Final estimate: 0.251442
+Empirical variance: 0.019534
+Standard error: 0.008069
+
+Testing Adaptive
+Final estimate: 0.356346
+Empirical variance: 0.121179
+Standard error: 0.020098
+
+Testing Optimal
+Final estimate: 0.354074
+Empirical variance: 0.025005
+Standard error: 0.009130
+
+====================================================================================================
+ESTIMATOR PERFORMANCE SUMMARY & RANKING
+====================================================================================================
+
+Method                    |     Estimate |      True KL |    Abs Error |  Rel Error % |     Variance |    Std Error
+------------------------------------------------------------------------------------------------------------------------
+Optimal                   |     0.354074 |     0.354848 |     0.000774* |        0.22% |     0.025005 |     0.009130
+Alpha-mixture (α=0.9)     |     0.351638 |     0.354848 |     0.003210 |        0.90% |     0.035791 |     0.010923
+Adaptive                  |     0.356346 |     0.354848 |     0.001499 |        0.42% |     0.121179 |     0.020098
+Chi-square (α=0.3)        |     0.369786 |     0.354848 |     0.014938 |        4.21% |     0.015860 |     0.007271
+Alpha-mixture (α=0.7)     |     0.342905 |     0.354848 |     0.011943 |        3.37% |     0.063126 |     0.014506
+Alpha-mixture (α=0.5)     |     0.379403 |     0.354848 |     0.024555 |        6.92% |     0.107861 |     0.018961
+Alpha-mixture (α=0.3)     |     0.324621 |     0.354848 |     0.030227 |        8.52% |     0.205148 |     0.026150
+Exp family (beta=0.1)     |     0.380760 |     0.354848 |     0.025912 |        7.30% |     0.425750 |     0.037672
+Chi-square (α=0.5)        |     0.351642 |     0.354848 |     0.003206 |        0.90% |     1.150055 |     0.061915
+Balanced1                 |     0.255654 |     0.354848 |     0.099194 |       27.95% |     0.037124 |     0.011124
+Balanced2                 |     0.251442 |     0.354848 |     0.103406 |       29.14% |     0.019534 |     0.008069
+Geometric (α=0.7)         |     0.248432 |     0.354848 |     0.106416 |       29.99% |     0.014198 |     0.006879
+Geometric (α=0.5)         |     0.242241 |     0.354848 |     0.112607 |       31.73% |     0.017002 |     0.007528
+Mixture (α=0.7)           |     0.239201 |     0.354848 |     0.115647 |       32.59% |     0.017337 |     0.007602
+Geometric (α=0.3)         |     0.237392 |     0.354848 |     0.117456 |       33.10% |     0.022184 |     0.008599
+Balanced                  |     0.247528 |     0.354848 |     0.107320 |       30.24% |     0.149571 |     0.022329
+Cross-entropy (α=0.3)     |     0.310379 |     0.354848 |     0.044469 |       12.53% |     1.002355 |     0.057803
+Mixture (α=0.5)           |     0.223239 |     0.354848 |     0.131609 |       37.09% |     0.028598 |     0.009764
+Naive MC                  |     0.343817 |     0.354848 |     0.011031 |        3.11% |     1.745552 |     0.076279
+Mixture (α=0.9)           |     0.364985 |     0.354848 |     0.010137 |        2.86% |     2.133796 |     0.084337
+Chi-square (α=0.7)        |     0.118794 |     0.354848 |     0.236054 |       66.52% |     0.012472 |     0.006448
+Chi-square (α=0.9)        |     0.115537 |     0.354848 |     0.239311 |       67.44% |     0.048973 |     0.012777
+Cross-entropy (α=0.7)     |     0.395977 |     0.354848 |     0.041129 |       11.59% |     2.545170 |     0.092108
+Exp family (beta=1.0)     |     0.101248 |     0.354848 |     0.253600 |       71.47% |     0.023549 |     0.008860
+Exp family (beta=0.5)     |     0.477483 |     0.354848 |     0.122635 |       34.56% |     1.724702 |     0.075822
+Exp family (beta=2.0)     |     0.102172 |     0.354848 |     0.252676 |       71.21% |     0.323687 |     0.032847
+Cross-entropy (α=0.9)     |     0.405234 |     0.354848 |     0.050387 |       14.20% |     2.759693 |     0.095911
+Exp family (beta=5.0)     |     0.046292 |     0.354848 |     0.308556 |       86.95% |     0.000000* |     0.000000
+Cross-entropy (α=0.5)     |     0.440504 |     0.354848 |     0.085656 |       24.14% |     2.858057 |     0.097606
+Mixture (α=0.3)           |     0.410273 |     0.354848 |     0.055425 |       15.62% |     8.408753 |     0.167419
+Geometric (α=0.9)         |     0.546205 |     0.354848 |     0.191357 |       53.93% |    30.349581 |     0.318065
+------------------------------------------------------------------------------------------------------------------------
+* indicates best in category
+
+====================================================================================================
+TOP 5 ESTIMATORS BY ACCURACY
+====================================================================================================
+Rank   | Method                    |    Abs Error |  Rel Error %
+----------------------------------------------------------------------
+1      | Optimal                   |     0.000774 |        0.22%
+2      | Adaptive                  |     0.001499 |        0.42%
+3      | Chi-square (α=0.5)        |     0.003206 |        0.90%
+4      | Alpha-mixture (α=0.9)     |     0.003210 |        0.90%
+5      | Mixture (α=0.9)           |     0.010137 |        2.86%
+
+====================================================================================================
+TOP 5 ESTIMATORS BY LOWEST VARIANCE
+====================================================================================================
+Rank   | Method                    |     Variance |    Std Error
+----------------------------------------------------------------------
+1      | Exp family (beta=5.0)     |     0.000000 |     0.000000
+2      | Chi-square (α=0.7)        |     0.012472 |     0.006448
+3      | Geometric (α=0.7)         |     0.014198 |     0.006879
+4      | Chi-square (α=0.3)        |     0.015860 |     0.007271
+5      | Geometric (α=0.5)         |     0.017002 |     0.007528
+
+====================================================================================================
+TOP 5 ESTIMATORS BY COMBINED SCORE (Accuracy & Variance)
+====================================================================================================
+Rank   | Method                    |        Score |    Abs Error |     Variance
+-------------------------------------------------------------------------------------
+1      | Optimal                   |     0.005659 |     0.000774 |     0.025005
+2      | Alpha-mixture (α=0.9)     |     0.012246 |     0.003210 |     0.035791
+3      | Adaptive                  |     0.022981 |     0.001499 |     0.121179
+4      | Chi-square (α=0.3)        |     0.032089 |     0.014938 |     0.015860
+5      | Alpha-mixture (α=0.7)     |     0.033991 |     0.011943 |     0.063126
+
+====================================================================================================
+OVERALL STATISTICS
+====================================================================================================
+Number of estimators: 31
+True KL divergence: 0.354848
+Theoretical MC variance: 1.815402
+
+Best accuracy: Optimal (error: 0.000774)
+Best variance: Exp family (beta=5.0) (variance: 0.000000)
+Best overall: Optimal (score: 0.005659)
+
+================================================================================
+GENERATING VISUALIZATIONS
+================================================================================
+================================================================================
+GENERATING COMPREHENSIVE VISUALIZATION REPORT
+================================================================================
+
+Plots will be saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_mixture_plots/1225_0525
+
+[1/5] Creating distribution overlay plots...
+    ✓ Saved: 01_distribution_overlay.png
+[2/5] Creating importance weight histograms...
+/network/scratch/g/gus/KL_estimation/visualize_proposals.py:131: UserWarning: Tight layout not applied. tight_layout cannot make Axes width small enough to accommodate all Axes decorations
+  plt.tight_layout()
+    ✓ Saved: 02_importance_weights.png
+[3/5] Creating coverage map...
+    ✓ Saved: 03_coverage_map.png
+[4/5] Computing ESS metrics...
+
+ESS Summary:
+--------------------------------------------------------------------------------
+Method                       ESS Ratio   Max Weight  Mean Weight
+--------------------------------------------------------------------------------
+Alpha-mixture (α=0.3)           96.05%         1.05         1.00
+Geometric (α=0.3)               93.86%         1.25         0.99
+Mixture (α=0.3)                 83.65%         3.33         1.00
+Chi-square (α=0.3)              55.26%         5.74         0.99
+Cross-entropy (α=0.3)           99.98%         1.02         1.00
+Alpha-mixture (α=0.5)           91.53%         1.11         1.00
+Geometric (α=0.5)               97.81%         1.15         0.99
+Mixture (α=0.5)                 88.46%         2.00         1.00
+Chi-square (α=0.5)               4.74%        21.29         1.00
+Cross-entropy (α=0.5)           99.95%         1.03         1.00
+Alpha-mixture (α=0.7)           84.85%         1.20         1.00
+Geometric (α=0.7)               99.33%         1.07         0.99
+Mixture (α=0.7)                 93.06%         1.43         1.00
+Chi-square (α=0.7)               0.22%       542.35         1.19
+Cross-entropy (α=0.7)           99.89%         1.04         1.00
+Alpha-mixture (α=0.9)           74.13%         1.37         0.99
+Geometric (α=0.9)               98.11%         5.50         1.00
+Mixture (α=0.9)                 98.02%         1.11         1.00
+Chi-square (α=0.9)               0.01%     15118.36         1.52
+Cross-entropy (α=0.9)           99.83%         1.05         1.00
+Exp family (beta=0.1)           97.83%         1.03         1.00
+Exp family (beta=0.5)            4.66%        21.31         0.98
+Exp family (beta=1.0)           16.34%         0.58         0.01
+Exp family (beta=2.0)            2.11%         1.51         0.01
+Exp family (beta=5.0)          100.00%         0.00         0.00
+Balanced                        32.58%         6.93         0.97
+Balanced1                       68.18%         6.63         1.00
+Balanced2                       89.55%         1.16         0.99
+Adaptive                        91.84%         1.11         1.00
+Optimal                         67.92%         1.54         1.02
+
+[5/5] Creating ESS comparison plot...
+    ✓ Saved: 04_ess_comparison.png
+
+================================================================================
+REPORT GENERATION COMPLETE
+All plots saved to: /network/scratch/g/gus/KL_estimation/create_model_pair_mixture_plots/1225_0525
+================================================================================
+
+========================================================================================================================
+CROSS-MODEL COMPARISON OF TOP 3 ESTIMATORS
+========================================================================================================================
+Method                    |       create_model_pair        |  create_model_pair_zipCutoff   |   create_model_pair_mixture    | 
+-------------------------------------------------------------------------------------------------------------------------
+Adaptive                  |              N/A               |              N/A               | Err:  0.0015 Var:  0.1212 | 
+Alpha-mixture (α=0.9)     | Err:  0.0030 Var:  0.0035 | Err:  0.0001 Var:  0.0033 | Err:  0.0032 Var:  0.0358 | 
+Chi-square (α=0.3)        | Err:  0.0022 Var:  0.0004 | Err:  0.0033 Var:  0.0121 |              N/A               | 
+Optimal                   | Err:  0.0062 Var:  0.0011 | Err:  0.0008 Var:  0.0026 | Err:  0.0008 Var:  0.0250 | 
