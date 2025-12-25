@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import zipf
 from visualize_proposals import create_comprehensive_report
 
+np.random.seed(62)
 
 class LongTailedDistribution:
     
@@ -189,6 +190,27 @@ def sample_from_distribution(probs, n_samples=1):
     samples = np.random.choice(vocab_size, size=n_samples, p=probs)
     return samples
 
+def compute_proposal_balanced2 (P_probs, Q_probs, eps=1e-12):
+    # r = np.sqrt(P_safe * Q_safe * (log_ratio**2 + 1))
+
+    P_safe = np.clip(P_probs, eps, 1.0)
+    Q_safe = np.clip(Q_probs, eps, 1.0)
+    
+    log_ratio = np.log(P_safe / Q_safe)
+    r_probs = np.sqrt(P_safe * Q_safe * (log_ratio**2 + 1))
+    
+    return r_probs / r_probs.sum()    
+
+def compute_proposal_balanced1 (P_probs, Q_probs, eps=1e-12):
+    # r = np.sqrt(P_safe * Q_safe * (log_ratio**2 + 1))
+
+    P_safe = np.clip(P_probs, eps, 1.0)
+    Q_safe = np.clip(Q_probs, eps, 1.0)
+    
+    log_ratio = np.log(P_safe / Q_safe)
+    r_probs = np.sqrt(P_safe * Q_safe) * np.abs(log_ratio)
+    
+    return r_probs / r_probs.sum()  
 
 def compute_proposal_balanced(P_probs, Q_probs, eps=1e-12):
     """
@@ -199,9 +221,8 @@ def compute_proposal_balanced(P_probs, Q_probs, eps=1e-12):
     Q_safe = np.clip(Q_probs, eps, 1.0)
     
     log_ratio = np.log(P_safe / Q_safe)
-    divergence_factor = np.sqrt(P_safe * np.abs(log_ratio) * Q_safe / (P_safe + Q_safe + eps))
+    r_probs = np.sqrt(P_safe * np.abs(log_ratio) * Q_safe / (P_safe + Q_safe + eps))
     
-    r_probs = P_safe * divergence_factor
     return r_probs / r_probs.sum()
 
 def compute_proposal_adaptive_mixture(P_probs, Q_probs, eps=1e-12):
@@ -277,14 +298,9 @@ def naive_MC_estimator(P_probs, Q_probs, n_samples=100, eps=1e-12):
     estimates = []
     for token in samples:
         p = P_probs[token]
-        q = Q_probs[token]
-        
-        if q < eps:
-            estimates.append(float('inf'))
-        else:
-            estimates.append(np.log(p / q))
+        q = max(Q_probs[token], eps)
+        estimates.append(np.log(p / q))
     
-    # Statistics
     estimate = np.mean(estimates)
     variance = np.var(estimates, ddof=1)
     std_error = np.sqrt(variance / n_samples)
@@ -316,10 +332,16 @@ def importance_sampling_estimator(P_probs, Q_probs, n_samples=100, alpha_values=
         })
     
     r_probs_list.extend([
-        {'name': 'Balanced', 'r': compute_proposal_optimal(P_probs, Q_probs, eps)}
+        {'name': 'Balanced', 'r': compute_proposal_balanced(P_probs, Q_probs, eps)}
+    ])    
+    r_probs_list.extend([
+        {'name': 'Balanced1', 'r': compute_proposal_balanced1(P_probs, Q_probs, eps)}
+    ])    
+    r_probs_list.extend([
+        {'name': 'Balanced2', 'r': compute_proposal_balanced2(P_probs, Q_probs, eps)}
     ])
     r_probs_list.extend([
-        {'name': 'Adaptive', 'r': compute_proposal_optimal(P_probs, Q_probs, eps)}
+        {'name': 'Adaptive', 'r': compute_proposal_adaptive_mixture(P_probs, Q_probs, eps)}
     ])
     r_probs_list.extend([
         {'name': 'Optimal', 'r': compute_proposal_optimal(P_probs, Q_probs, eps)}
