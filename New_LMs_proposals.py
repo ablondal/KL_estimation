@@ -695,7 +695,7 @@ if __name__ == "__main__":
     all_results = []
     for rep in range(n_repeats):
         print("\n" + "=" * 100)
-        print(f"Iteration #: {rep}"
+        print(f"Iteration #: {rep}")
         rep_results = {}
         for model_type in ["create_model_pair", "create_model_pair_zipCutoff", "create_model_pair_mixture"]:
             print("\n" + "=" * 100)
