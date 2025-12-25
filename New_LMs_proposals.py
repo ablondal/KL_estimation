@@ -457,6 +457,162 @@ def run_comparison_experiment(vocab_size=1000, model_type="create_model_pair", n
     
     return results, P_probs, Q_probs, r_probs_list
 
+def rank_estimators(results):
+    """
+    Rank all estimation methods by accuracy (closeness to true KL) 
+    and variance (lower is better).
+    """
+    true_kl = results['true_kl']
+    
+    # Calculate ranking metrics for each method
+    for method in results['methods']:
+        # Absolute error (lower is better)
+        method['abs_error'] = abs(method['estimate'] - true_kl)
+        
+        # Relative error percentage (lower is better)
+        method['rel_error_pct'] = (method['abs_error'] / true_kl * 100) if true_kl > 0 else float('inf')
+        
+        # Combined score (weighted combination of error and variance)
+        # Lower score is better
+        method['score'] = (0.7 * method['abs_error'] / true_kl + 
+                          0.3 * method['variance'] / results['theoretical_variance']) if true_kl > 0 else float('inf')
+    
+    # Sort by different criteria
+    by_accuracy = sorted(results['methods'], key=lambda x: x['abs_error'])
+    by_variance = sorted(results['methods'], key=lambda x: x['variance'])
+    by_combined = sorted(results['methods'], key=lambda x: x['score'])
+    
+    return {
+        'by_accuracy': by_accuracy,
+        'by_variance': by_variance,
+        'by_combined': by_combined
+    }
+
+def print_results_summary(results, rankings):
+    """
+    Print comprehensive summary table with rankings.
+    """
+    true_kl = results['true_kl']
+    
+    print("\n" + "=" * 100)
+    print("ESTIMATOR PERFORMANCE SUMMARY & RANKING")
+    print("=" * 100)
+    
+    # Header
+    print(f"\n{'Method':<25} | {'Estimate':>12} | {'True KL':>12} | {'Abs Error':>12} | {'Rel Error %':>12} | {'Variance':>12} | {'Std Error':>12}")
+    print("-" * 120)
+    
+    # Data rows - sort by combined score
+    for method in rankings['by_combined']:
+        error_star = "*" if method['abs_error'] == min([m['abs_error'] for m in results['methods']]) else ""
+        var_star = "*" if method['variance'] == min([m['variance'] for m in results['methods']]) else ""
+        
+        print(f"{method['name']:<25} | "
+              f"{method['estimate']:>12.6f} | "
+              f"{true_kl:>12.6f} | "
+              f"{method['abs_error']:>12.6f}{error_star} | "
+              f"{method['rel_error_pct']:>11.2f}% | "
+              f"{method['variance']:>12.6f}{var_star} | "
+              f"{method['std_error']:>12.6f}")
+    
+    print("-" * 120)
+    print("* indicates best in category")
+    
+    # Print rankings
+    print("\n" + "=" * 100)
+    print("TOP 5 ESTIMATORS BY ACCURACY")
+    print("=" * 100)
+    print(f"{'Rank':<6} | {'Method':<25} | {'Abs Error':>12} | {'Rel Error %':>12}")
+    print("-" * 70)
+    for i, method in enumerate(rankings['by_accuracy'][:5], 1):
+        print(f"{i:<6} | {method['name']:<25} | {method['abs_error']:>12.6f} | {method['rel_error_pct']:>11.2f}%")
+    
+    print("\n" + "=" * 100)
+    print("TOP 5 ESTIMATORS BY LOWEST VARIANCE")
+    print("=" * 100)
+    print(f"{'Rank':<6} | {'Method':<25} | {'Variance':>12} | {'Std Error':>12}")
+    print("-" * 70)
+    for i, method in enumerate(rankings['by_variance'][:5], 1):
+        print(f"{i:<6} | {method['name']:<25} | {method['variance']:>12.6f} | {method['std_error']:>12.6f}")
+    
+    print("\n" + "=" * 100)
+    print("TOP 5 ESTIMATORS BY COMBINED SCORE (Accuracy & Variance)")
+    print("=" * 100)
+    print(f"{'Rank':<6} | {'Method':<25} | {'Score':>12} | {'Abs Error':>12} | {'Variance':>12}")
+    print("-" * 85)
+    for i, method in enumerate(rankings['by_combined'][:5], 1):
+        print(f"{i:<6} | {method['name']:<25} | {method['score']:>12.6f} | {method['abs_error']:>12.6f} | {method['variance']:>12.6f}")
+    
+    # Statistical summary
+    print("\n" + "=" * 100)
+    print("OVERALL STATISTICS")
+    print("=" * 100)
+    print(f"Number of estimators: {len(results['methods'])}")
+    print(f"True KL divergence: {true_kl:.6f}")
+    print(f"Theoretical MC variance: {results['theoretical_variance']:.6f}")
+    
+    # Find best performers
+    best_accuracy = rankings['by_accuracy'][0]
+    best_variance = rankings['by_variance'][0]
+    best_combined = rankings['by_combined'][0]
+    
+    print(f"\nBest accuracy: {best_accuracy['name']} (error: {best_accuracy['abs_error']:.6f})")
+    print(f"Best variance: {best_variance['name']} (variance: {best_variance['variance']:.6f})")
+    print(f"Best overall: {best_combined['name']} (score: {best_combined['score']:.6f})")
+    '''
+    # Calculate improvements over naive MC
+    naive_mc = next((m for m in results['methods'] if m['name'] == 'Naive MC'), None)
+    if naive_mc:
+        print(f"\nIMPROVEMENTS OVER NAIVE MONTE CARLO:")
+        for method in rankings['by_combined'][:3]:
+            if method['name'] != 'Naive MC':
+                error_improvement = (naive_mc['abs_error'] - method['abs_error']) / naive_mc['abs_error'] * 100
+                var_improvement = (naive_mc['variance'] - method['variance']) / naive_mc['variance'] * 100
+                print(f"  {method['name']:<25}: "
+                      f"Error ↓ {error_improvement:>6.1f}%, "
+                      f"Variance ↓ {var_improvement:>6.1f}%")
+'''
+def create_comparison_table(results_dict):
+    """
+    Create a comparison table across different model types.
+    
+    Args:
+        results_dict: Dictionary with model_type as key and results as value
+    """
+    print("\n" + "=" * 120)
+    print("CROSS-MODEL COMPARISON OF TOP 3 ESTIMATORS")
+    print("=" * 120)
+    
+    # Collect top 3 methods from each model type
+    all_top_methods = {}
+    for model_type, results in results_dict.items():
+        rankings = rank_estimators(results)
+        top_methods = rankings['by_combined'][:3]
+        all_top_methods[model_type] = top_methods
+    
+    # Print header
+    header = f"{'Method':<25} | "
+    for model_type in all_top_methods.keys():
+        header += f"{model_type:^30} | "
+    print(header)
+    
+    print("-" * (25 + len(all_top_methods) * 32))
+    
+    # Print each method's performance across model types
+    unique_methods = set()
+    for methods in all_top_methods.values():
+        for method in methods:
+            unique_methods.add(method['name'])
+    
+    for method_name in sorted(unique_methods):
+        row = f"{method_name:<25} | "
+        for model_type, methods in all_top_methods.items():
+            method_data = next((m for m in methods if m['name'] == method_name), None)
+            if method_data:
+                row += f"Err:{method_data['abs_error']:>8.4f} Var:{method_data['variance']:>8.4f} | "
+            else:
+                row += f"{'N/A':^30} | "
+        print(row)
 
 # ============================================================
 # MAIN EXECUTION
@@ -464,7 +620,11 @@ def run_comparison_experiment(vocab_size=1000, model_type="create_model_pair", n
 
 if __name__ == "__main__":
     # Run experiment with long-tailed distributions
+    all_results = {}
     for model_type in ["create_model_pair", "create_model_pair_zipCutoff", "create_model_pair_mixture"]:
+        print("\n" + "=" * 100)
+        print(f"EXPERIMENT: {model_type.upper()}")
+        print("=" * 100)
         results, P_probs, Q_probs, r_probs_list = run_comparison_experiment(
             vocab_size=3000,
             model_type=model_type,
@@ -472,8 +632,14 @@ if __name__ == "__main__":
             alpha_values=[0.3, 0.5, 0.7, 0.9],
             divergence='medium'
         )
+        all_results[model_type] = results
+        rankings = rank_estimators(results)
+        print_results_summary(results, rankings)
+        
         print("\n" + "=" * 80)
         print("GENERATING VISUALIZATIONS")
         print("=" * 80)
         
         ess_results = create_comprehensive_report(P_probs, Q_probs, model_type, r_probs_list)
+    
+    create_comparison_table(all_results)
