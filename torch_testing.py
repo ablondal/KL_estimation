@@ -292,7 +292,7 @@ def compute_kl_with_different_averaging(particles: List[Dict]) -> Dict:
     normalized_weights = weights / np.sum(weights)
     weight_entropy = -np.sum(normalized_weights * np.log(normalized_weights + 1e-10))
 
-    bootstrap_mean = np.mean(bootstrap_estimates)) if bootstrap_estimates else 0.0
+    bootstrap_mean = np.mean(bootstrap_estimates) if bootstrap_estimates else 0.0
 
     print("\nKL with different averaging techniques:")
     print(f"\nStandard: {float(kl_standard)}")
