@@ -1,6 +1,29 @@
 import torch, math, json, sys
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
+PROMPT_CATEGORIES = {
+    'factual': [
+        "An interesting fact is that",
+        "The scientific discovery shows that",
+        "Historically, it was known that"
+    ],
+    'creative': [
+        "Once upon a time, there was",
+        "In a distant galaxy, the",
+        "The magical forest contained"
+    ],
+    'instructional': [
+        "To solve this problem, first",
+        "The best way to approach this is",
+        "Following these steps will"
+    ],
+    'reasoning': [
+        "Given that X is true, then",
+        "If we assume Y, it follows that",
+        "The logical conclusion is that"
+    ]
+}
+
 device = "mps" if torch.backends.mps.is_available() else "cpu"
 dtype = torch.float16 if device == "mps" else torch.float32
 
@@ -199,7 +222,131 @@ def geometric(p, l_p, l_q, lg_p, lg_q):
 # with open(sys.argv[2], 'w') as f:
 #     json.dump(kls, f, indent=2)
 
-def run_smc(func, length, reps, outp):
+def compute_variance(particles, kl_est):
+    var_sum = 0
+    for p in particles:
+        var_sum += p['weight'] * (p['val'] - kl_est) * (p['val'] - kl_est)
+    var = var_sum / w_sum
+    return var
+    
+def analyze_temperature_effect(func, temperatures=[0.1, 0.4, 0.7, 1.0, 1.5]):
+    """Analyze how temperature affects KL estimates and variance"""
+    results = {}
+    for temp in temperatures:
+        print(f"\n=== Temperature: {temp} ===")
+        
+        # Run importance sampling at this temperature
+        particles = []
+        kl_sum = 0
+        w_sum = 0
+        
+        for k in range(n_reps):
+            text, lg_r, lg_p, lg_q = sample_once(
+                "An interesting fact is that",
+                max_new_tokens=20,
+                temperature=temp,
+                next_token_weight=func
+            )
+            weight = math.exp(lg_p - lg_r)
+            particles.append({
+                'text': text, 
+                'weight': weight,
+                'val': lg_p - lg_q, 
+                'temp': temp})
+            kl_sum += weight * (lg_p - lg_q)
+            w_sum += weight
+        
+        kl_est = kl_sum / w_sum
+        var = compute_variance(particles, kl_est)
+        
+        results[temp] = {
+            'kl_estimate': kl_est,
+            'variance': var,
+            'effective_sample_size': w_sum**2 / sum(p['weight']**2 for p in particles)
+        }
+    
+    return results
+
+
+def analyze_prompt_variance(func, n_prompts_per_category=3):
+    """Test how KL estimates vary across different prompt types"""
+    results_by_category = {}
+    
+    for category, prompts in PROMPT_CATEGORIES.items():
+        category_results = []
+        
+        for prompt in prompts[:n_prompts_per_category]:
+            # Run estimation for this prompt
+            prompt_kl, prompt_var = run_smc(func, 20, 200, func_name, prompt)
+            
+            category_results.append({
+                'prompt': prompt,
+                'kl': prompt_kl,
+                'variance': prompt_var
+            })
+        
+        # Compute statistics across prompts
+        avg_kl = np.mean([r['kl'] for r in category_results])
+        kl_std = np.std([r['kl'] for r in category_results])
+        avg_var = np.mean([r['variance'] for r in category_results])
+        
+        results_by_category[category] = {
+            'avg_kl': avg_kl,
+            'kl_std_across_prompts': kl_std,
+            'avg_variance': avg_var,
+            'prompt_specific_results': category_results
+        }
+    
+    return results_by_category
+
+def compute_kl_with_different_averaging(particles):
+    """Compare different weighting/averaging strategies"""
+    
+    # 1. Standard importance sampling (current)
+    weights = [p['weight'] for p in particles]
+    values = [p['val'] for p in particles]
+    
+    kl_standard = np.average(values, weights=weights)
+    
+    # 2. Self-normalized with clipping (more robust)
+    clipped_weights = np.clip(weights, np.percentile(weights, 5), 
+                               np.percentile(weights, 95))
+    kl_clipped = np.average(values, weights=clipped_weights)
+    
+    # 3. Bayesian averaging (assuming prior)
+    # Assuming KL ~ Normal(μ, σ²) with weak prior
+    prior_strength = 0.1
+    prior_mean = np.median(values)
+    
+    # Weighted mean and variance
+    weighted_mean = kl_standard
+    weighted_var = np.average((values - weighted_mean)**2, weights=weights)
+    
+    # Bayesian shrinkage
+    kl_bayesian = (prior_strength * prior_mean + weighted_mean) / (1 + prior_strength)
+    
+    # 4. Bootstrap confidence intervals
+    bootstrap_estimates = []
+    for _ in range(1000):
+        idx = np.random.choice(len(particles), size=len(particles), replace=True)
+        bs_weights = [weights[i] for i in idx]
+        bs_values = [values[i] for i in idx]
+        bootstrap_estimates.append(np.average(bs_values, weights=bs_weights))
+    
+    ci_lower = np.percentile(bootstrap_estimates, 2.5)
+    ci_upper = np.percentile(bootstrap_estimates, 97.5)
+    
+    return {
+        'standard': kl_standard,
+        'clipped': kl_clipped,
+        'bayesian': kl_bayesian,
+        'bootstrap_ci': (ci_lower, ci_upper),
+        'bootstrap_mean': np.mean(bootstrap_estimates),
+        'weight_entropy': -np.sum(weights/np.sum(weights) * 
+                                  np.log(weights/np.sum(weights) + 1e-10))
+    }
+    
+def run_smc(func, length, reps, outp, prompt="An interesting fact is that"):
     print(f"Proposal distribution: {outp}\nReps, Length: {reps}, {length}")
 
     particles = []
@@ -207,7 +354,7 @@ def run_smc(func, length, reps, outp):
     w_sum = 0
     for k in range(reps):
         text, lg_r, lg_p, lg_q = sample_once(
-            "An interesting fact is that",
+            prompt,
             max_new_tokens=length,
             temperature=0.4,
             next_token_weight = func
@@ -218,10 +365,7 @@ def run_smc(func, length, reps, outp):
             {'text': text,
             'weight': weight,
             'val': lg_p - lg_q})
-
-        # print(text)
-        # print(f"The weight is {weight:0.6f}")
-        # print(f"Value of lg_p - lg_q is {lg_p - lg_q}")
+        
         kl_sum += weight * (lg_p - lg_q)
         w_sum += weight
         print(f"KL: {kl_sum / w_sum}\t\t", end='\r')
@@ -231,12 +375,9 @@ def run_smc(func, length, reps, outp):
 
     kl = kl_sum / w_sum
     print(f"KL estimate: {kl:0.6f}")
-    # calc variance
-    var_sum = 0
-    for p in particles:
-        var_sum += p['weight'] * (p['val'] - kl) * (p['val'] - kl)
-    var = var_sum / w_sum
+    var = compute_variance(particles, kl)
     print(f"KL var: {var:0.6f}")
+    return (kl, var)
 
 n_reps = 1000
 t_length = 20
