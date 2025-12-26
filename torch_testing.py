@@ -135,6 +135,19 @@ def balanced(p, l_p, l_q, lg_p, lg_q):
     prop = torch.sqrt((p * q * torch.abs(l_p - l_q + lg_p - lg_q)) / (p + q + 1e-5))
     return torch.nn.functional.normalize(prop, p=1, dim=0)
 
+def exponential_family(p, l_p, l_q, lg_p, lg_q, beta=1.0):
+    # r ∝ P * exp(beta * |log(P/Q)|)
+    log_ratio = l_p - l_q + (lg_p - lg_q)
+    prop = p * torch.exp(beta * torch.abs(log_ratio))
+    return torch.nn.functional.normalize(prop, p=1, dim=0)
+    
+def cross_entropy((p, l_p, l_q, lg_p, lg_q, beta=1.0):
+    # r ∝ P * exp(beta * (-P * log Q))
+    q = torch.exp(l_q)
+    ptwise_ce = -p * l_q
+    prop = p * torch.exp(beta * ptwise_ce)
+    return torch.nn.functional.normalize(prop, p=1, dim=0)
+    
 def adaptive(p, l_p, l_q, lg_p, lg_q):
     # prop to P * (1 + |log(P/Q)|)
     prop = p * (1 + torch.abs(l_p - l_q + lg_p - lg_q))
