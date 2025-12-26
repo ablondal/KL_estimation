@@ -70,7 +70,7 @@ def sample_once(
     input_ids = tokenizer(prompt, return_tensors="pt").input_ids.to(device)
 
     log_r = 0
-    log_p = 0
+    log_p = 0     # sum_t log P(x_t | x_{x<t}); culmulative divergence
     log_q = 0
 
     p_probs = []
@@ -84,7 +84,7 @@ def sample_once(
             logits_a = out_a.logits[0, -1] / temperature
             logits_b = out_b.logits[0, -1] / temperature
 
-            l_p = torch.log_softmax(logits_a, dim=-1)
+            l_p = torch.log_softmax(logits_a, dim=-1) # log P(x_t|x_<t); current token divergence
             l_q = torch.log_softmax(logits_b, dim=-1)
             p = torch.exp(l_p)
 
