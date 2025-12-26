@@ -291,13 +291,23 @@ def compute_kl_with_different_averaging(particles: List[Dict]) -> Dict:
     # Weight entropy
     normalized_weights = weights / np.sum(weights)
     weight_entropy = -np.sum(normalized_weights * np.log(normalized_weights + 1e-10))
+
+    bootstrap_mean = np.mean(bootstrap_estimates)) if bootstrap_estimates else 0.0
+
+    print("\nKL with different averaging techniques:")
+    print(f"\nStandard: {float(kl_standard)}")
+    print(f"\nClipped: {float(kl_clipped)}")
+    print(f"\nbayesian: {float(kl_bayesian)}")
+    print(f"\nbootstrap_ci: {(float(ci_lower), float(ci_upper))}")
+    print(f"\nbootstrap_mean: {float(bootstrap_mean)}")
+    print(f"\nweight_entropy: {float(weight_entropy)}")
     
     return {
         'standard': float(kl_standard),
         'clipped': float(kl_clipped),
         'bayesian': float(kl_bayesian),
         'bootstrap_ci': (float(ci_lower), float(ci_upper)),
-        'bootstrap_mean': float(np.mean(bootstrap_estimates)) if bootstrap_estimates else 0.0,
+        'bootstrap_mean': float(bootstrap_mean),
         'weight_entropy': float(weight_entropy)
     }
 
@@ -354,6 +364,9 @@ def run_experiment(
         ess = 1.0 / sum(w * w for w in norm_weights)
     else:
         ess = 0.0
+
+    print(f"\nKL_estimate: {float(kl_est)}")
+    print(f"\nVariance: {float(variance)}")
     
     # Different averaging methods
     averaging_results = compute_kl_with_different_averaging(particles)
