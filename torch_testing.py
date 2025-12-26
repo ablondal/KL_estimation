@@ -169,7 +169,7 @@ def exponential_family(p, l_p, l_q, lg_p, lg_q, beta=1.0):
     log_ratio = l_p - l_q + (lg_p - lg_q)
     prop = p * torch.exp(beta * torch.abs(log_ratio))
     return torch.nn.functional.normalize(prop, p=1, dim=0)
-
+    
 def cross_entropy(p, l_p, l_q, lg_p, lg_q, beta=1.0):
     # r ∝ P * exp(beta * (-P * log Q))
     q = torch.exp(l_q)
@@ -413,7 +413,9 @@ def main():
         'mix03': mix03,
         'balanced2': balanced2,
         'geometric': geometric,
+        'exponential_family_0.5': lambda p, l_p, l_q, lg_p, lg_q: exponential_family(p, l_p, l_q, lg_p, lg_q, beta=0.5),
         'exponential_family_1.0': lambda p, l_p, l_q, lg_p, lg_q: exponential_family(p, l_p, l_q, lg_p, lg_q, beta=1.0),
+        'cross_entropy_0.5': lambda p, l_p, l_q, lg_p, lg_q: cross_entropy(p, l_p, l_q, lg_p, lg_q, beta=0.5),
         'cross_entropy_1.0': lambda p, l_p, l_q, lg_p, lg_q: cross_entropy(p, l_p, l_q, lg_p, lg_q, beta=1.0),
     }
     
