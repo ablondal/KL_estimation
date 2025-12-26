@@ -466,14 +466,14 @@ def main():
     }
     
     # Define experimental parameters
-    temperatures = [0.1, 0.4, 1.0, 2.0]
+    temperatures = [0.4, 1.0]
     max_new_tokens = 20
     n_reps = 200  # Reduced for speed; increase for better statistics
     
     # Select subset of prompts for testing (to keep runtime reasonable)
     test_prompts = []
-    for category in ['factual', 'creative']:
-        test_prompts.extend(PROMPT_CATEGORIES[category][:2])  # 2 prompts from each category
+    for category in ['factual', 'creative', "instructional"]:
+        test_prompts.extend(PROMPT_CATEGORIES[category][:1])  # 1 prompt from each category
     
     print(f"Running comprehensive experiments with {len(proposals)} proposals")
     print(f"Temperatures: {temperatures}")
@@ -500,7 +500,7 @@ def main():
         print(f"\nPrompt: '{prompt}'")
         mean_kl, variance, kls = compute_baseline_RB(
             prompt=prompt,
-            n_runs=10,  # Adjust as needed
+            n_runs=200,  
             max_new_tokens=max_new_tokens,
             temperature=0.4  # Use a standard temperature
         )
