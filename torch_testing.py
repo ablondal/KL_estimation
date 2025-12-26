@@ -543,7 +543,12 @@ def main():
                 
                 # Store result
                 all_results[proposal_name].append(result)
-    
+                
+        with open(f'results_{proposal_name}.json', 'w') as f:
+            json.dump(proposal_results, f, indent=2, default=str)
+
+        print(f"✓ Saved {len(proposal_results)} experiments to results_{proposal_name}.json")
+            
     print(f"\n{'='*80}")
     print("All experiments completed!")
     print(f"Total experiments run: {experiment_count}")
