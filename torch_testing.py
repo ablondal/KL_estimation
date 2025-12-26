@@ -39,12 +39,12 @@ tokenizer = AutoTokenizer.from_pretrained(model_a_id)
 
 model_a = AutoModelForCausalLM.from_pretrained(
     model_a_id,
-    dtype=dtype
+    torch_dtype=dtype
 ).to(device).eval()
 
 model_b = AutoModelForCausalLM.from_pretrained(
     model_b_id,
-    dtype=dtype
+    torch_dtype=dtype
 ).to(device).eval()
 
 def kl_divergence_from_logits(logits_p, logits_q, eps=1e-8):
