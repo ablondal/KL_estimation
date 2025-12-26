@@ -206,6 +206,39 @@ def geometric(p, l_p, l_q, lg_p, lg_q):
 
 # ========== Helper Functions ==========
 
+def compute_baseline_RB(prompt, n_runs=10, max_new_tokens=20, temperature=0.4):
+    """
+    Compute Rao-Blackwellized baseline KL estimate.
+    Returns: (mean_kl, variance, all_kls)
+    """
+    kls = []  # Store total KL for each run
+    kl_sum = 0
+    
+    print(f"Computing Rao-Blackwellized baseline (n={n_runs})...")
+    
+    for k in range(n_runs):
+        text, kl_expectations = calc_kl_RB(
+            prompt,
+            max_new_tokens=max_new_tokens,
+            temperature=temperature
+        )
+        
+        total_kl = sum(kl_expectations)
+        kls.append(total_kl)
+        kl_sum += total_kl
+        
+        current_mean = kl_sum / (k + 1)
+        print(f"Run {k+1}/{n_runs}: Current mean KL = {current_mean:.6f}", end='\r')
+    
+    print()  # New line after progress
+    mean_kl = kl_sum / n_runs
+    
+    # Compute variance
+    var_sum = sum((kl - mean_kl) ** 2 for kl in kls)
+    variance = var_sum / n_runs if n_runs > 1 else 0
+    
+    return mean_kl, variance, kls
+    
 def compute_variance(particles: List[Dict], kl_est: float, w_sum: float) -> float:
     """Compute variance of KL estimate"""
     var_sum = 0.0
@@ -441,6 +474,39 @@ def main():
     # Run experiments
     total_experiments = len(proposals) * len(temperatures) * len(test_prompts)
     experiment_count = 0
+
+
+    
+    # ===== 1. COMPUTE BASELINE FIRST =====
+    print("=" * 80)
+    print("COMPUTING RAO-BLACKWELLIZED BASELINE ESTIMATE")
+    print("=" * 80)
+    
+    baseline_results = {}
+    for prompt in test_prompts[:2]:  # Compute baseline for first 2 prompts
+        print(f"\nPrompt: '{prompt}'")
+        mean_kl, variance, kls = compute_baseline_RB(
+            prompt=prompt,
+            n_runs=10,  # Adjust as needed
+            max_new_tokens=max_new_tokens,
+            temperature=0.4  # Use a standard temperature
+        )
+        
+        baseline_results[prompt] = {
+            'mean_kl': mean_kl,
+            'variance': variance,
+            'std_error': np.sqrt(variance / len(kls)),
+            'n_runs': len(kls)
+        }
+        
+    with open('baseline_results.json', 'w') as f:
+        json.dump(baseline_results, f, indent=2)
+
+    
+    # ===== 2. RUN IMPORTANCE SAMPLING EXPERIMENTS =====
+    print("\n" + "=" * 80)
+    print("RUNNING IMPORTANCE SAMPLING EXPERIMENTS")
+    print("=" * 80)
     
     for proposal_name, proposal_func in proposals.items():
         print(f"\n{'='*60}")
@@ -491,6 +557,16 @@ def main():
         json.dump(output_data, f, indent=2, default=str)
     
     print("Results saved to 'comprehensive_kl_results.json'")
+
+    print("\n" + "=" * 80)
+    print("COMPARISON WITH BASELINE")
+    print("=" * 80)
+
+    for prompt, baseline in baseline_results.items():
+        print(f"\nBaseline for '{prompt[:30]}...':")
+        print(f"  KL estimate: {baseline['mean_kl']:.6f}")
+        print(f"  Variance: {baseline['variance']:.6f}")
+        print(f"  Std Error: {baseline['std_error']:.6f}")
     
     # Print summary
     print("\n" + "="*80)
