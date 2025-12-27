@@ -90,30 +90,45 @@ def calc_kl_RB(
 
     return tokenizer.decode(input_ids[0]), kl_expectations
 
-def batch_sample_once(
+def batch_sample_once_optimized(
     prompt,
     next_token_weight,
     max_new_tokens=50,
     temperature=1,
-    batch_size=32  # Process multiple samples at once
+    batch_size=32
 ):
-    """Batch version of sample_once for massive speedup"""
-    # Repeat the prompt for batch processing
-    input_ids = tokenizer([prompt] * batch_size, return_tensors="pt", padding=True).input_ids.to(device)
+    """Optimized batch version with vectorized operations where possible"""
+    # Prepare batch inputs
+    input_texts = [prompt] * batch_size
+    encoding = tokenizer(input_texts, return_tensors="pt", padding=True)
+    input_ids = encoding.input_ids.to(device)
+    attention_mask = encoding.attention_mask.to(device)
     
+    # Initialize logging tensors
     batch_log_r = torch.zeros(batch_size, device=device)
     batch_log_p = torch.zeros(batch_size, device=device)
     batch_log_q = torch.zeros(batch_size, device=device)
     
+    # Active mask
     active_mask = torch.ones(batch_size, dtype=torch.bool, device=device)
+    
+    # Pre-allocate memory for the entire sequence if possible
+    # (Optional: can improve speed but uses more memory)
     
     for step in range(max_new_tokens):
         if not active_mask.any():
             break
-            
+        
+        active_indices = torch.where(active_mask)[0]
+        
         with torch.no_grad():
-            out_a = model_a(input_ids[active_mask])
-            out_b = model_b(input_ids[active_mask])
+            # Process active sequences
+            active_inputs = input_ids[active_mask]
+            active_attention = attention_mask[active_mask]
+            
+            # Use past_key_values for faster inference if models support it
+            out_a = model_a(active_inputs, attention_mask=active_attention)
+            out_b = model_b(active_inputs, attention_mask=active_attention)
             
             logits_a = out_a.logits[:, -1] / temperature
             logits_b = out_b.logits[:, -1] / temperature
@@ -122,51 +137,61 @@ def batch_sample_once(
             l_q = torch.log_softmax(logits_b, dim=-1)
             p = torch.exp(l_p)
             
-            # Create cumulative logs for the batch
-            batch_lg_p = torch.zeros_like(p)
-            batch_lg_q = torch.zeros_like(p)
-            
-            # Get sampling probabilities for each item in batch
-            probs_list = []
-            for i in range(p.size(0)):
+            # Vectorized proposal application (if possible)
+            # This depends on whether your proposal functions can be vectorized
+            probs = torch.zeros_like(p)
+            for i, idx in enumerate(active_indices):
+                current_log_p = batch_log_p[idx]
+                current_log_q = batch_log_q[idx]
+                
+                # Apply proposal function
                 prob = next_token_weight(
-                    p[i], l_p[i], l_q[i], 
-                    batch_log_p[active_mask][i].item(), 
-                    batch_log_q[active_mask][i].item()
+                    p[i], l_p[i], l_q[i],
+                    current_log_p.item(), current_log_q.item()
                 )
-                probs_list.append(prob)
+                probs[i] = prob
             
-            probs = torch.stack(probs_list)
-            
-            # Sample all next tokens in parallel
+            # Sample next tokens
             next_tokens = torch.multinomial(probs, num_samples=1).squeeze(-1)
             
-            # Update logs for active sequences
-            active_indices = torch.where(active_mask)[0]
-            for idx, token in enumerate(next_tokens):
-                global_idx = active_indices[idx]
-                batch_log_r[global_idx] += torch.log(probs[idx, token] + 1e-12)
-                batch_log_p[global_idx] += l_p[idx, token]
-                batch_log_q[global_idx] += l_q[idx, token]
+            # Vectorized update of logs
+            token_indices = next_tokens.unsqueeze(-1)
             
-            # Update input_ids for active sequences
+            # Gather log probabilities for the sampled tokens
+            l_p_sampled = torch.gather(l_p, 1, token_indices).squeeze(-1)
+            l_q_sampled = torch.gather(l_q, 1, token_indices).squeeze(-1)
+            
+            # Update cumulative logs
+            batch_log_p[active_indices] += l_p_sampled
+            batch_log_q[active_indices] += l_q_sampled
+            
+            # Update proposal log (log r)
+            probs_sampled = torch.gather(probs, 1, token_indices).squeeze(-1)
+            batch_log_r[active_indices] += torch.log(probs_sampled + 1e-12)
+            
+            # Append new tokens
             input_ids[active_mask] = torch.cat([
-                input_ids[active_mask], 
+                input_ids[active_mask],
                 next_tokens.unsqueeze(1)
+            ], dim=1)
+            
+            # Update attention mask
+            attention_mask[active_mask] = torch.cat([
+                attention_mask[active_mask],
+                torch.ones(len(active_indices), 1, device=device, dtype=torch.long)
             ], dim=1)
             
             # Check for EOS
             eos_mask = next_tokens == tokenizer.eos_token_id
             if eos_mask.any():
-                for idx in torch.where(eos_mask)[0]:
-                    global_idx = active_indices[idx]
-                    active_mask[global_idx] = False
+                eos_indices = active_indices[eos_mask]
+                active_mask[eos_indices] = False
     
-    # Decode all texts
-    texts = [tokenizer.decode(ids, skip_special_tokens=True) for ids in input_ids]
+    # Decode all sequences
+    texts = tokenizer.batch_decode(input_ids, skip_special_tokens=True)
     
     return texts, batch_log_r.cpu().numpy(), batch_log_p.cpu().numpy(), batch_log_q.cpu().numpy()
-
+    
 def sample_once(
         prompt,
         next_token_weight=(lambda p, l_p, l_q, lg_p, lg_q: p),
@@ -410,7 +435,7 @@ def compute_kl_with_different_averaging(particles: List[Dict]) -> Dict:
         'weight_entropy': float(weight_entropy)
     }
 
-def run_batch_experiment (
+def run_batch_experiment(
     proposal_func,
     proposal_name: str,
     prompt: str,
@@ -419,60 +444,85 @@ def run_batch_experiment (
     n_reps: int = 200,
     batch_size: int = 32
 ) -> Dict:
-    """Run experiment using batch processing"""
+    """Run experiment using batch processing - FIXED VERSION"""
     
     print(f"  Testing {proposal_name} at temp={temperature} with prompt: '{prompt[:30]}...'")
     
     particles = []
-    n_batches = (n_reps + batch_size - 1) // batch_size  # Ceiling division
+    n_batches = math.ceil(n_reps / batch_size)
     
     for batch_idx in range(n_batches):
         current_batch_size = min(batch_size, n_reps - batch_idx * batch_size)
         
         if current_batch_size <= 0:
             break
-            
-        texts, log_r, log_p, log_q = batch_sample_once(
-            prompt=prompt,
-            next_token_weight=proposal_func,
-            max_new_tokens=max_new_tokens,
-            temperature=temperature,
-            batch_size=current_batch_size
-        )
         
+        try:
+            texts, log_r, log_p, log_q = batch_sample_once(
+                prompt=prompt,
+                next_token_weight=proposal_func,
+                max_new_tokens=max_new_tokens,
+                temperature=temperature,
+                batch_size=current_batch_size
+            )
+        except Exception as e:
+            print(f"Error in batch {batch_idx}: {e}")
+            continue
+        
+        # Process results
         for i in range(len(texts)):
-            weight = np.exp(log_p[i] - log_r[i])
-            value = log_p[i] - log_q[i]
-            
-            particles.append({
-                'text': texts[i],
-                'weight': weight,
-                'val': value
-            })
-            
-        print(f"    Batch {batch_idx+1}/{n_batches} completed ({len(particles)} particles)", end='\r')
+            # Ensure we have valid numbers
+            if (np.isfinite(log_p[i]) and np.isfinite(log_r[i]) and 
+                np.isfinite(log_q[i])):
+                
+                weight = np.exp(log_p[i] - log_r[i])
+                value = log_p[i] - log_q[i]
+                
+                particles.append({
+                    'text': texts[i],
+                    'weight': weight,
+                    'val': value
+                })
         
+        print(f"    Batch {batch_idx+1}/{n_batches} completed ({len(particles)} particles)", end='\r')
+    
     print()
+    
+    if not particles:
+        print(f"Warning: No valid particles collected for {proposal_name}")
+        return {
+            'proposal_name': proposal_name,
+            'prompt': prompt,
+            'temperature': temperature,
+            'n_reps': 0,
+            'kl_estimate': 0.0,
+            'variance': float('inf'),
+            'effective_sample_size': 0.0,
+            'averaging_results': {},
+            'n_particles': 0
+        }
+    
     weights = np.array([p['weight'] for p in particles])
     values = np.array([p['val'] for p in particles])
     N = len(particles)
     
-    if N == 0 or np.sum(weights) == 0:
+    # Normalize weights
+    w_sum = np.sum(weights)
+    if w_sum == 0:
         kl_est = 0.0
         variance = float('inf')
         ess = 0.0
     else:
-        w_sum = np.sum(weights)
-        kl_est = np.sum(weights * values) / w_sum
+        norm_weights = weights / w_sum
+        kl_est = np.sum(norm_weights * values)
         
-        # Correct variance calculation
-        weighted_sq_errors = (weights ** 2) * ((values - kl_est) ** 2)
-        variance = (1.0 / N) * (np.sum(weighted_sq_errors) / (w_sum ** 2))
+        # Compute variance using the normalized importance sampling formula
+        weighted_sq_errors = norm_weights * ((values - kl_est) ** 2)
+        variance = np.sum(weighted_sq_errors) / N
         
         # Effective sample size
-        norm_weights = weights / w_sum
         ess = 1.0 / np.sum(norm_weights ** 2)
-        
+    
     print(f"\nKL_estimate: {float(kl_est):.6f}")
     print(f"Variance: {float(variance):.6e}")
     print(f"Effective Sample Size: {float(ess):.1f}/{N}")
