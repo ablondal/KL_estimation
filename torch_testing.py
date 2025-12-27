@@ -90,6 +90,83 @@ def calc_kl_RB(
 
     return tokenizer.decode(input_ids[0]), kl_expectations
 
+def batch_sample_once(
+    prompt,
+    next_token_weight,
+    max_new_tokens=50,
+    temperature=1,
+    batch_size=32  # Process multiple samples at once
+):
+    """Batch version of sample_once for massive speedup"""
+    # Repeat the prompt for batch processing
+    input_ids = tokenizer([prompt] * batch_size, return_tensors="pt", padding=True).input_ids.to(device)
+    
+    batch_log_r = torch.zeros(batch_size, device=device)
+    batch_log_p = torch.zeros(batch_size, device=device)
+    batch_log_q = torch.zeros(batch_size, device=device)
+    
+    active_mask = torch.ones(batch_size, dtype=torch.bool, device=device)
+    
+    for step in range(max_new_tokens):
+        if not active_mask.any():
+            break
+            
+        with torch.no_grad():
+            out_a = model_a(input_ids[active_mask])
+            out_b = model_b(input_ids[active_mask])
+            
+            logits_a = out_a.logits[:, -1] / temperature
+            logits_b = out_b.logits[:, -1] / temperature
+            
+            l_p = torch.log_softmax(logits_a, dim=-1)
+            l_q = torch.log_softmax(logits_b, dim=-1)
+            p = torch.exp(l_p)
+            
+            # Create cumulative logs for the batch
+            batch_lg_p = torch.zeros_like(p)
+            batch_lg_q = torch.zeros_like(p)
+            
+            # Get sampling probabilities for each item in batch
+            probs_list = []
+            for i in range(p.size(0)):
+                prob = next_token_weight(
+                    p[i], l_p[i], l_q[i], 
+                    batch_log_p[active_mask][i].item(), 
+                    batch_log_q[active_mask][i].item()
+                )
+                probs_list.append(prob)
+            
+            probs = torch.stack(probs_list)
+            
+            # Sample all next tokens in parallel
+            next_tokens = torch.multinomial(probs, num_samples=1).squeeze(-1)
+            
+            # Update logs for active sequences
+            active_indices = torch.where(active_mask)[0]
+            for idx, token in enumerate(next_tokens):
+                global_idx = active_indices[idx]
+                batch_log_r[global_idx] += torch.log(probs[idx, token] + 1e-12)
+                batch_log_p[global_idx] += l_p[idx, token]
+                batch_log_q[global_idx] += l_q[idx, token]
+            
+            # Update input_ids for active sequences
+            input_ids[active_mask] = torch.cat([
+                input_ids[active_mask], 
+                next_tokens.unsqueeze(1)
+            ], dim=1)
+            
+            # Check for EOS
+            eos_mask = next_tokens == tokenizer.eos_token_id
+            if eos_mask.any():
+                for idx in torch.where(eos_mask)[0]:
+                    global_idx = active_indices[idx]
+                    active_mask[global_idx] = False
+    
+    # Decode all texts
+    texts = [tokenizer.decode(ids, skip_special_tokens=True) for ids in input_ids]
+    
+    return texts, batch_log_r.cpu().numpy(), batch_log_p.cpu().numpy(), batch_log_q.cpu().numpy()
+
 def sample_once(
         prompt,
         next_token_weight=(lambda p, l_p, l_q, lg_p, lg_q: p),
@@ -241,11 +318,33 @@ def compute_baseline_RB(prompt, n_runs=10, max_new_tokens=20, temperature=0.4):
     
 def compute_variance(particles: List[Dict], kl_est: float, w_sum: float) -> float:
     """Compute variance of KL estimate"""
-    var_sum = 0.0
-    for p in particles:
-        var_sum += p['weight'] * (p['val'] - kl_est) * (p['val'] - kl_est)
-    return var_sum / w_sum if w_sum > 0 else float('inf')
+    if len(particles) == 0 or w_sum == 0: 
+        return float('inf") 
+                    
+    N = len(particles)
+    weighted_sqr_error_sum = 0.0
 
+    for p in particles: 
+        weighted_sqr_error_sum += (p['weight'] ** 2) * ((p['val'] - kl_est) ** 2)
+
+    variance = (1.0/N) * (weighted_sqr_error_sum / (w_sum ** 2))
+    return variance 
+
+def compute_effective_sample_size(particles: List[Dict]) -> float:
+    """Compute effective sample size"""
+    if len(particles) == 0:
+        return 0.0
+    
+    weights = np.array([p['weight'] for p in particles])
+    w_sum = np.sum(weights)
+    
+    if w_sum == 0:
+        return 0.0
+    
+    norm_weights = weights / w_sum
+    ess = 1.0 / np.sum(norm_weights ** 2)
+    return ess
+    
 def compute_kl_with_different_averaging(particles: List[Dict]) -> Dict:
     """Compare different weighting/averaging strategies"""
     
@@ -311,6 +410,87 @@ def compute_kl_with_different_averaging(particles: List[Dict]) -> Dict:
         'weight_entropy': float(weight_entropy)
     }
 
+def run_batch_experiment (
+    proposal_func,
+    proposal_name: str,
+    prompt: str,
+    temperature: float,
+    max_new_tokens: int = 20,
+    n_reps: int = 200,
+    batch_size: int = 32
+) -> Dict:
+    """Run experiment using batch processing"""
+    
+    print(f"  Testing {proposal_name} at temp={temperature} with prompt: '{prompt[:30]}...'")
+    
+    particles = []
+    n_batches = (n_reps + batch_size - 1) // batch_size  # Ceiling division
+    
+    for batch_idx in range(n_batches):
+        current_batch_size = min(batch_size, n_reps - batch_idx * batch_size)
+        
+        if current_batch_size <= 0:
+            break
+            
+        texts, log_r, log_p, log_q = batch_sample_once(
+            prompt=prompt,
+            next_token_weight=proposal_func,
+            max_new_tokens=max_new_tokens,
+            temperature=temperature,
+            batch_size=current_batch_size
+        )
+        
+        for i in range(len(texts)):
+            weight = np.exp(log_p[i] - log_r[i])
+            value = log_p[i] - log_q[i]
+            
+            particles.append({
+                'text': texts[i],
+                'weight': weight,
+                'val': value
+            })
+            
+        print(f"    Batch {batch_idx+1}/{n_batches} completed ({len(particles)} particles)", end='\r')
+        
+    print()
+    weights = np.array([p['weight'] for p in particles])
+    values = np.array([p['val'] for p in particles])
+    N = len(particles)
+    
+    if N == 0 or np.sum(weights) == 0:
+        kl_est = 0.0
+        variance = float('inf')
+        ess = 0.0
+    else:
+        w_sum = np.sum(weights)
+        kl_est = np.sum(weights * values) / w_sum
+        
+        # Correct variance calculation
+        weighted_sq_errors = (weights ** 2) * ((values - kl_est) ** 2)
+        variance = (1.0 / N) * (np.sum(weighted_sq_errors) / (w_sum ** 2))
+        
+        # Effective sample size
+        norm_weights = weights / w_sum
+        ess = 1.0 / np.sum(norm_weights ** 2)
+        
+    print(f"\nKL_estimate: {float(kl_est):.6f}")
+    print(f"Variance: {float(variance):.6e}")
+    print(f"Effective Sample Size: {float(ess):.1f}/{N}")
+    
+    averaging_results = compute_kl_with_different_averaging(particles)
+    
+    return {
+        'proposal_name': proposal_name,
+        'prompt': prompt,
+        'temperature': temperature,
+        'n_reps': len(particles),
+        'kl_estimate': float(kl_est),
+        'variance': float(variance),
+        'effective_sample_size': float(ess),
+        'averaging_results': averaging_results,
+        'n_particles': N
+    }
+
 def run_experiment(
     proposal_func,
     proposal_name: str,
@@ -357,13 +537,7 @@ def run_experiment(
         kl_est = kl_sum / w_sum
         variance = compute_variance(particles, kl_est, w_sum)
     
-    # Compute effective sample size
-    weights = [p['weight'] for p in particles]
-    if sum(weights) > 0:
-        norm_weights = [w / sum(weights) for w in weights]
-        ess = 1.0 / sum(w * w for w in norm_weights)
-    else:
-        ess = 0.0
+    ess = compute_effective_sample_size(particles)
 
     print(f"\nKL_estimate: {float(kl_est)}")
     print(f"\nVariance: {float(variance)}")
@@ -487,8 +661,6 @@ def main():
     # Run experiments
     total_experiments = len(proposals) * len(temperatures) * len(test_prompts)
     experiment_count = 0
-
-
     
     # ===== 1. COMPUTE BASELINE FIRST =====
     print("=" * 80)
@@ -532,13 +704,14 @@ def main():
                 print(f"\nExperiment {experiment_count}/{total_experiments}")
                 
                 # Run the experiment
-                result = run_experiment(
+                result = run_batch_experiment(
                     proposal_func=proposal_func,
                     proposal_name=proposal_name,
                     prompt=prompt,
                     temperature=temperature,
                     max_new_tokens=max_new_tokens,
-                    n_reps=n_reps
+                    n_reps=n_reps,
+                    batch_size=32
                 )
                 
                 # Store result
