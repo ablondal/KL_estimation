@@ -1,6 +1,6 @@
 """
 KL Divergence Estimation with Long-Tailed Distributions
-Compares Naive MC vs Importance Sampling on realistic language model distributions
+Compares Naive MC vs Importance Sampling on synthetic language model distributions
 """
 
 import math
@@ -87,6 +87,8 @@ def create_model_pair(vocab_size=1000, divergence='medium'):
 
 
 def compute_true_KL(P_probs, Q_probs, eps=1e-12):
+    """Ground truth: KL(P||Q) = Σ P(x) log(P(x)/Q(x))"""
+
     P_safe = np.clip(P_probs, eps, 1.0)
     Q_safe = np.clip(Q_probs, eps, 1.0)
     
@@ -95,6 +97,8 @@ def compute_true_KL(P_probs, Q_probs, eps=1e-12):
 
 
 def compute_theoretical_variance(P_probs, Q_probs, true_kl, eps=1e-12):
+    """Theoretical variance of naive MC: Var_P[log(P/Q)]"""
+  
     P_safe = np.clip(P_probs, eps, 1.0)
     Q_safe = np.clip(Q_probs, eps, 1.0)
     
@@ -108,6 +112,8 @@ def compute_theoretical_variance(P_probs, Q_probs, true_kl, eps=1e-12):
 
 
 def sample_from_distribution(probs, n_samples=1):
+        """Sample tokens according to probability distribution"""
+
     vocab_size = len(probs)
     samples = np.random.choice(vocab_size, size=n_samples, p=probs)
     return samples
@@ -166,7 +172,8 @@ def compute_proposal_mixture(P_probs, Q_probs, lambda_mix=0.5, eps=1e-12):
 
 def naive_MC_estimator(P_probs, Q_probs, n_samples=100, eps=1e-12):
     print(f"Naive Monte Carlo with {n_samples} samples")
-    
+        """Baseline: sample from P, compute mean of log(P/Q)"""
+
     # Sample from P
     samples = sample_from_distribution(P_probs, n_samples)
     
@@ -194,6 +201,8 @@ def naive_MC_estimator(P_probs, Q_probs, n_samples=100, eps=1e-12):
 
 
 def importance_sampling_estimator(P_probs, Q_probs, n_samples=100, alpha_values=[0.3, 0.5, 0.7, 0.9], eps=1e-12):
+       """Test multiple proposal distributions with importance sampling"""
+
     print(f"Importance Sampling with n={n_samples}")
 
     r_probs_list = []
@@ -262,7 +271,7 @@ def run_comparison_experiment(vocab_size=1000, n_samples=100,
                               alpha_values=[0.3, 0.5, 0.7, 0.9],
                               divergence='medium'):
     """
-    Run complete comparison of naive MC vs importance sampling.
+    Run complete comparison of naive MC vs importance sampling using different proposals.
     """
     print("=" * 80)
     print("KL DIVERGENCE ESTIMATION WITH LONG-TAILED DISTRIBUTIONS")
