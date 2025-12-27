@@ -290,3 +290,78 @@ bootstrap_mean: 11.303607940673828
 
 weight_entropy: 5.089389324188232
 
+Experiment 12/14
+  Testing cross_entropy_0.5 at temp=1.0 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 8.575372
+Asymptotic Variance: 9.298645e-01
+Sample Variance: 9.473714e-01
+Effective Sample Size: 54.1/200
+
+KL with different averaging techniques:
+
+Standard: 8.575370788574219
+
+Clipped: 7.648744106292725
+
+bayesian: 8.39111614227295
+
+bootstrap_ci: (7.118527412414551, 9.997336387634277)
+
+bootstrap_mean: 8.447361946105957
+
+weight_entropy: 4.9596848487854
+✓ Saved 2 experiments to results_cross_entropy_0.5.json
+
+============================================================
+Testing proposal: cross_entropy_1.0
+============================================================
+
+Experiment 13/14
+  Testing cross_entropy_1.0 at temp=0.4 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 12.195351
+Asymptotic Variance: 4.034257e-01
+Sample Variance: 4.085725e-01
+Effective Sample Size: 79.4/200
+
+KL with different averaging techniques:
+
+Standard: 12.195350646972656
+
+Clipped: 12.218667984008789
+
+bayesian: 12.351072311401367
+
+bootstrap_ci: (11.062054634094238, 13.559735298156738)
+
+bootstrap_mean: 12.232479095458984
+
+weight_entropy: 4.819697856903076
+
+Experiment 14/14
+  Testing cross_entropy_1.0 at temp=1.0 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 7.787742
+Asymptotic Variance: 3.030014e-01
+Sample Variance: 3.060249e-01
+Effective Sample Size: 101.2/200
+
+KL with different averaging techniques:
+
+Standard: 7.787741661071777
+
+Clipped: 7.603121757507324
+
+bayesian: 7.754977703094482
+
+bootstrap_ci: (6.7600860595703125, 8.760306358337402)
+
+bootstrap_mean: 7.668290615081787
+
+weight_entropy: 4.980381965637207
+✓ Saved 2 experiments to results_cross_entropy_1.0.json
+
