@@ -861,7 +861,7 @@ def main():
     
     print("\nTop 5 by Variance (lower is better):")
     for i, (name, stats) in enumerate(rankings['rankings']['by_variance'][:5], 1):
-        print(f"{i}. {name}: variance={stats['avg_variance']:.6f}, ESS={stats['avg_effective_sample_size']:.1f}")
+        print(f"{i}. {name}: variance={stats['avg_sample_variance']:.6f}, ESS={stats['avg_effective_sample_size']:.1f}")
     
     print("\nTop 5 by Effective Sample Size (higher is better):")
     for i, (name, stats) in enumerate(rankings['rankings']['by_effective_sample_size'][:5], 1):
