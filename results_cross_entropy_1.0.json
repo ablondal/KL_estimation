@@ -1,0 +1,68 @@
+[
+  {
+    "proposal_name": "cross_entropy_1.0",
+    "prompt": "An interesting fact is that",
+    "temperature": 0.4,
+    "n_reps": 0,
+    "kl_estimate": 0.0,
+    "variance": Infinity,
+    "effective_sample_size": 0.0,
+    "averaging_results": {},
+    "n_particles": 0
+  },
+  {
+    "proposal_name": "cross_entropy_1.0",
+    "prompt": "Once upon a time, there was",
+    "temperature": 0.4,
+    "n_reps": 0,
+    "kl_estimate": 0.0,
+    "variance": Infinity,
+    "effective_sample_size": 0.0,
+    "averaging_results": {},
+    "n_particles": 0
+  },
+  {
+    "proposal_name": "cross_entropy_1.0",
+    "prompt": "To solve this problem, first",
+    "temperature": 0.4,
+    "n_reps": 0,
+    "kl_estimate": 0.0,
+    "variance": Infinity,
+    "effective_sample_size": 0.0,
+    "averaging_results": {},
+    "n_particles": 0
+  },
+  {
+    "proposal_name": "cross_entropy_1.0",
+    "prompt": "An interesting fact is that",
+    "temperature": 1.0,
+    "n_reps": 0,
+    "kl_estimate": 0.0,
+    "variance": Infinity,
+    "effective_sample_size": 0.0,
+    "averaging_results": {},
+    "n_particles": 0
+  },
+  {
+    "proposal_name": "cross_entropy_1.0",
+    "prompt": "Once upon a time, there was",
+    "temperature": 1.0,
+    "n_reps": 0,
+    "kl_estimate": 0.0,
+    "variance": Infinity,
+    "effective_sample_size": 0.0,
+    "averaging_results": {},
+    "n_particles": 0
+  },
+  {
+    "proposal_name": "cross_entropy_1.0",
+    "prompt": "To solve this problem, first",
+    "temperature": 1.0,
+    "n_reps": 0,
+    "kl_estimate": 0.0,
+    "variance": Infinity,
+    "effective_sample_size": 0.0,
+    "averaging_results": {},
+    "n_particles": 0
+  }
+]

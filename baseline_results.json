@@ -1,0 +1,20 @@
+{
+  "An interesting fact is that": {
+    "mean_kl": 11.256393955625938,
+    "variance": 39.962425284611975,
+    "std_error": 0.44700349710383686,
+    "n_runs": 200
+  },
+  "Once upon a time, there was": {
+    "mean_kl": 8.995596557062974,
+    "variance": 15.687630527502076,
+    "std_error": 0.28006812142318227,
+    "n_runs": 200
+  },
+  "To solve this problem, first": {
+    "mean_kl": 5.1676616044095365,
+    "variance": 6.328613986444334,
+    "std_error": 0.17788499074464284,
+    "n_runs": 200
+  }
+}

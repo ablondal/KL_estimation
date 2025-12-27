@@ -1,0 +1,98 @@
+[
+  {
+    "proposal_name": "exponential_family_1.0",
+    "prompt": "An interesting fact is that",
+    "temperature": 0.4,
+    "n_reps": 0,
+    "kl_estimate": 0.0,
+    "variance": Infinity,
+    "effective_sample_size": 0.0,
+    "averaging_results": {},
+    "n_particles": 0
+  },
+  {
+    "proposal_name": "exponential_family_1.0",
+    "prompt": "Once upon a time, there was",
+    "temperature": 0.4,
+    "n_reps": 0,
+    "kl_estimate": 0.0,
+    "variance": Infinity,
+    "effective_sample_size": 0.0,
+    "averaging_results": {},
+    "n_particles": 0
+  },
+  {
+    "proposal_name": "exponential_family_1.0",
+    "prompt": "To solve this problem, first",
+    "temperature": 0.4,
+    "n_reps": 8,
+    "kl_estimate": 2.6706979274749756,
+    "variance": 0.00022597686620429158,
+    "effective_sample_size": 1.0000057220458984,
+    "averaging_results": {
+      "standard": 2.6706979274749756,
+      "clipped": 2.670736789703369,
+      "bayesian": 4.999114513397217,
+      "bootstrap_ci": [
+        2.670630693435669,
+        29.00284194946289
+      ],
+      "bootstrap_mean": 11.48072624206543,
+      "weight_entropy": 4.25405778514687e-05
+    },
+    "n_particles": 8
+  },
+  {
+    "proposal_name": "exponential_family_1.0",
+    "prompt": "An interesting fact is that",
+    "temperature": 1.0,
+    "n_reps": 104,
+    "kl_estimate": 5.5423502922058105,
+    "variance": 0.3814156949520111,
+    "effective_sample_size": 4.138579368591309,
+    "averaging_results": {
+      "standard": 5.5423502922058105,
+      "clipped": 4.2952961921691895,
+      "bayesian": 7.986149311065674,
+      "bootstrap_ci": [
+        -0.31673210859298706,
+        9.008464813232422
+      ],
+      "bootstrap_mean": 5.01779842376709,
+      "weight_entropy": 1.7824351787567139
+    },
+    "n_particles": 104
+  },
+  {
+    "proposal_name": "exponential_family_1.0",
+    "prompt": "Once upon a time, there was",
+    "temperature": 1.0,
+    "n_reps": 0,
+    "kl_estimate": 0.0,
+    "variance": Infinity,
+    "effective_sample_size": 0.0,
+    "averaging_results": {},
+    "n_particles": 0
+  },
+  {
+    "proposal_name": "exponential_family_1.0",
+    "prompt": "To solve this problem, first",
+    "temperature": 1.0,
+    "n_reps": 168,
+    "kl_estimate": 8.18914794921875,
+    "variance": 0.14775021374225616,
+    "effective_sample_size": 5.702710151672363,
+    "averaging_results": {
+      "standard": 8.189146995544434,
+      "clipped": 9.399624824523926,
+      "bayesian": 9.581733703613281,
+      "bootstrap_ci": [
+        5.061012268066406,
+        11.67873764038086
+      ],
+      "bootstrap_mean": 8.577993392944336,
+      "weight_entropy": 2.255723714828491
+    },
+    "n_particles": 168
+  }
+]

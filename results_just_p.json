@@ -1,0 +1,128 @@
+[
+  {
+    "proposal_name": "just_p",
+    "prompt": "An interesting fact is that",
+    "temperature": 0.4,
+    "n_reps": 200,
+    "kl_estimate": 11.142681121826172,
+    "variance": 0.32418304681777954,
+    "effective_sample_size": 200.0,
+    "averaging_results": {
+      "standard": 11.142681121826172,
+      "clipped": 11.142681121826172,
+      "bayesian": 11.019680976867676,
+      "bootstrap_ci": [
+        10.047309875488281,
+        12.118289947509766
+      ],
+      "bootstrap_mean": 11.060794830322266,
+      "weight_entropy": 5.298317909240723
+    },
+    "n_particles": 200
+  },
+  {
+    "proposal_name": "just_p",
+    "prompt": "Once upon a time, there was",
+    "temperature": 0.4,
+    "n_reps": 200,
+    "kl_estimate": 9.39034366607666,
+    "variance": 0.21267402172088623,
+    "effective_sample_size": 199.99998474121094,
+    "averaging_results": {
+      "standard": 9.390342712402344,
+      "clipped": 9.390341758728027,
+      "bayesian": 9.329951286315918,
+      "bootstrap_ci": [
+        8.6449613571167,
+        10.368721008300781
+      ],
+      "bootstrap_mean": 9.466531753540039,
+      "weight_entropy": 5.2983174324035645
+    },
+    "n_particles": 200
+  },
+  {
+    "proposal_name": "just_p",
+    "prompt": "To solve this problem, first",
+    "temperature": 0.4,
+    "n_reps": 200,
+    "kl_estimate": 5.599849700927734,
+    "variance": 0.08589699864387512,
+    "effective_sample_size": 200.0,
+    "averaging_results": {
+      "standard": 5.599850177764893,
+      "clipped": 5.599850177764893,
+      "bayesian": 5.534317970275879,
+      "bootstrap_ci": [
+        5.161378383636475,
+        6.185276508331299
+      ],
+      "bootstrap_mean": 5.608853340148926,
+      "weight_entropy": 5.2983174324035645
+    },
+    "n_particles": 200
+  },
+  {
+    "proposal_name": "just_p",
+    "prompt": "An interesting fact is that",
+    "temperature": 1.0,
+    "n_reps": 200,
+    "kl_estimate": 7.590428352355957,
+    "variance": 0.14576716721057892,
+    "effective_sample_size": 200.0000457763672,
+    "averaging_results": {
+      "standard": 7.590428352355957,
+      "clipped": 7.590432167053223,
+      "bayesian": 7.524860382080078,
+      "bootstrap_ci": [
+        6.8916850090026855,
+        8.215121269226074
+      ],
+      "bootstrap_mean": 7.511660099029541,
+      "weight_entropy": 5.298316955566406
+    },
+    "n_particles": 200
+  },
+  {
+    "proposal_name": "just_p",
+    "prompt": "Once upon a time, there was",
+    "temperature": 1.0,
+    "n_reps": 200,
+    "kl_estimate": 6.984807968139648,
+    "variance": 0.1321927011013031,
+    "effective_sample_size": 199.99998474121094,
+    "averaging_results": {
+      "standard": 6.98480749130249,
+      "clipped": 6.984807968139648,
+      "bayesian": 6.926070690155029,
+      "bootstrap_ci": [
+        6.34464693069458,
+        7.611914157867432
+      ],
+      "bootstrap_mean": 7.009951591491699,
+      "weight_entropy": 5.2983174324035645
+    },
+    "n_particles": 200
+  },
+  {
+    "proposal_name": "just_p",
+    "prompt": "To solve this problem, first",
+    "temperature": 1.0,
+    "n_reps": 200,
+    "kl_estimate": 5.929141998291016,
+    "variance": 0.08989309519529343,
+    "effective_sample_size": 200.0,
+    "averaging_results": {
+      "standard": 5.929141998291016,
+      "clipped": 5.929141998291016,
+      "bayesian": 5.843534469604492,
+      "bootstrap_ci": [
+        5.233325004577637,
+        6.430574417114258
+      ],
+      "bootstrap_mean": 5.884133338928223,
+      "weight_entropy": 5.298317909240723
+    },
+    "n_particles": 200
+  }
+]
