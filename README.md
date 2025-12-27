@@ -74,6 +74,7 @@ alpha_values = [0.3, 0.5, 0.7, 0.9]  # Parameters to test
 
 ### Baseline
 - **Naive MC**: Samples from P, estimates E_P[log(P/Q)]
+- **Rao-Blackwellized MC**: 
 
 ### Importance Sampling Proposals
 
