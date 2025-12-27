@@ -97,100 +97,124 @@ def batch_sample_once(
     temperature=1,
     batch_size=32
 ):
-    """Optimized batch version with vectorized operations where possible"""
-    # Prepare batch inputs
+    """Batch version of sample_once with proper padding for variable-length sequences"""
+    
+    # Prepare initial inputs
     input_texts = [prompt] * batch_size
     encoding = tokenizer(input_texts, return_tensors="pt", padding=True)
     input_ids = encoding.input_ids.to(device)
     attention_mask = encoding.attention_mask.to(device)
+    
+    # Store original lengths
+    original_length = input_ids.shape[1]
     
     # Initialize logging tensors
     batch_log_r = torch.zeros(batch_size, device=device)
     batch_log_p = torch.zeros(batch_size, device=device)
     batch_log_q = torch.zeros(batch_size, device=device)
     
-    # Active mask
+    # Track active sequences (not terminated by EOS)
     active_mask = torch.ones(batch_size, dtype=torch.bool, device=device)
     
-    # Pre-allocate memory for the entire sequence if possible
-    # (Optional: can improve speed but uses more memory)
+    # Store all generated tokens in a list for each sequence
+    # This is more flexible than trying to maintain a fixed tensor
+    generated_tokens = [[] for _ in range(batch_size)]
     
     for step in range(max_new_tokens):
         if not active_mask.any():
             break
         
-        active_indices = torch.where(active_mask)[0]
+        # Get indices of active sequences
+        active_indices = active_mask.nonzero(as_tuple=True)[0]
+        num_active = len(active_indices)
+        
+        # Prepare inputs for active sequences
+        # We need to reconstruct the full sequence for each active sample
+        active_sequences = []
+        for idx in active_indices:
+            # Get the original tokens plus generated tokens
+            seq_tokens = input_ids[idx].tolist()
+            seq_tokens = [t for t, mask in zip(seq_tokens, attention_mask[idx].tolist()) if mask == 1]
+            seq_tokens.extend(generated_tokens[idx])
+            active_sequences.append(seq_tokens)
+        
+        # Pad sequences to same length
+        max_len = max(len(seq) for seq in active_sequences)
+        padded_sequences = []
+        padded_masks = []
+        
+        for seq in active_sequences:
+            padded_seq = seq + [tokenizer.pad_token_id] * (max_len - len(seq))
+            padded_mask = [1] * len(seq) + [0] * (max_len - len(seq))
+            padded_sequences.append(padded_seq)
+            padded_masks.append(padded_mask)
+        
+        # Convert to tensors
+        active_inputs = torch.tensor(padded_sequences, device=device, dtype=torch.long)
+        active_attention = torch.tensor(padded_masks, device=device, dtype=torch.long)
         
         with torch.no_grad():
-            # Process active sequences
-            active_inputs = input_ids[active_mask]
-            active_attention = attention_mask[active_mask]
-            
-            # Use past_key_values for faster inference if models support it
+            # Get model outputs
             out_a = model_a(active_inputs, attention_mask=active_attention)
             out_b = model_b(active_inputs, attention_mask=active_attention)
             
+            # Get logits for the last token
             logits_a = out_a.logits[:, -1] / temperature
             logits_b = out_b.logits[:, -1] / temperature
             
+            # Compute probabilities
             l_p = torch.log_softmax(logits_a, dim=-1)
             l_q = torch.log_softmax(logits_b, dim=-1)
             p = torch.exp(l_p)
             
-            # Vectorized proposal application (if possible)
-            # This depends on whether your proposal functions can be vectorized
-            probs = torch.zeros_like(p)
+            # Apply proposal function to get sampling probabilities
+            probs_list = []
             for i, idx in enumerate(active_indices):
-                current_log_p = batch_log_p[idx]
-                current_log_q = batch_log_q[idx]
+                current_log_p = batch_log_p[idx].item()
+                current_log_q = batch_log_q[idx].item()
                 
-                # Apply proposal function
                 prob = next_token_weight(
                     p[i], l_p[i], l_q[i],
-                    current_log_p.item(), current_log_q.item()
+                    current_log_p, current_log_q
                 )
-                probs[i] = prob
+                probs_list.append(prob)
+            
+            # Stack probabilities
+            probs = torch.stack(probs_list)
             
             # Sample next tokens
             next_tokens = torch.multinomial(probs, num_samples=1).squeeze(-1)
             
-            # Vectorized update of logs
-            token_indices = next_tokens.unsqueeze(-1)
-            
-            # Gather log probabilities for the sampled tokens
-            l_p_sampled = torch.gather(l_p, 1, token_indices).squeeze(-1)
-            l_q_sampled = torch.gather(l_q, 1, token_indices).squeeze(-1)
-            
-            # Update cumulative logs
-            batch_log_p[active_indices] += l_p_sampled
-            batch_log_q[active_indices] += l_q_sampled
-            
-            # Update proposal log (log r)
-            probs_sampled = torch.gather(probs, 1, token_indices).squeeze(-1)
-            batch_log_r[active_indices] += torch.log(probs_sampled + 1e-12)
-            
-            # Append new tokens
-            input_ids[active_mask] = torch.cat([
-                input_ids[active_mask],
-                next_tokens.unsqueeze(1)
-            ], dim=1)
-            
-            # Update attention mask
-            attention_mask[active_mask] = torch.cat([
-                attention_mask[active_mask],
-                torch.ones(len(active_indices), 1, device=device, dtype=torch.long)
-            ], dim=1)
-            
-            # Check for EOS
-            eos_mask = next_tokens == tokenizer.eos_token_id
-            if eos_mask.any():
-                eos_indices = active_indices[eos_mask]
-                active_mask[eos_indices] = False
+            # Update logs and store generated tokens
+            for i, idx in enumerate(active_indices):
+                token = next_tokens[i].item()
+                generated_tokens[idx].append(token)
+                
+                # Get the probabilities for this specific token
+                log_p_val = l_p[i, next_tokens[i]]
+                log_q_val = l_q[i, next_tokens[i]]
+                log_r_val = torch.log(probs[i, next_tokens[i]] + 1e-12)
+                
+                # Update cumulative logs
+                batch_log_r[idx] += log_r_val
+                batch_log_p[idx] += log_p_val
+                batch_log_q[idx] += log_q_val
+                
+                # Check for EOS
+                if token == tokenizer.eos_token_id:
+                    active_mask[idx] = False
     
-    # Decode all sequences
-    texts = tokenizer.batch_decode(input_ids, skip_special_tokens=True)
+    # Construct final sequences and decode
+    all_texts = []
+    for i in range(batch_size):
+        # Combine original tokens and generated tokens
+        original_seq = input_ids[i].tolist()
+        original_seq = [t for t, mask in zip(original_seq, attention_mask[i].tolist()) if mask == 1]
+        full_seq = original_seq + generated_tokens[i]
+        text = tokenizer.decode(full_seq, skip_special_tokens=True)
+        all_texts.append(text)
     
-    return texts, batch_log_r.cpu().numpy(), batch_log_p.cpu().numpy(), batch_log_q.cpu().numpy()
+    return all_texts, batch_log_r.cpu().numpy(), batch_log_p.cpu().numpy(), batch_log_q.cpu().numpy()
     
 def sample_once(
         prompt,
