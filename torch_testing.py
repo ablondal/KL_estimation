@@ -362,7 +362,8 @@ def compute_baseline_RB(prompt, n_runs=10, max_new_tokens=20, temperature=0.4):
     # Compute variance
     var_sum = sum((kl - mean_kl) ** 2 for kl in kls)
     variance = var_sum / n_runs if n_runs > 1 else 0
-    
+
+    print(f"Variance: {variance}")
     return mean_kl, variance, kls
     
 def compute_variance(particles: List[Dict], kl_est: float, w_sum: float) -> float:
@@ -735,7 +736,7 @@ def main():
     # Run experiments
     total_experiments = len(proposals) * len(temperatures) * len(test_prompts)
     experiment_count = 0
-    '''
+    
     # ===== 1. COMPUTE BASELINE FIRST =====
     print("=" * 80)
     print("COMPUTING RAO-BLACKWELLIZED BASELINE ESTIMATE")
@@ -760,7 +761,7 @@ def main():
         
     with open('baseline_results.json', 'w') as f:
         json.dump(baseline_results, f, indent=2)
-'''
+
     
     # ===== 2. RUN IMPORTANCE SAMPLING EXPERIMENTS =====
     print("\n" + "=" * 80)
