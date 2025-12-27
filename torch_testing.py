@@ -522,6 +522,7 @@ def run_batch_experiment(
             'n_reps': 0,
             'kl_estimate': 0.0,
             'variance': float('inf'),
+            'sample_var': float('inf'),
             'effective_sample_size': 0.0,
             'averaging_results': {},
             'n_particles': 0
@@ -548,8 +549,11 @@ def run_batch_experiment(
         # Effective sample size
         ess = 1.0 / np.sum(norm_weights ** 2)
 
-    correction_factor = ess / (ess - 1)
-    sample_var = correction_factor * variance 
+    if ess > 1:
+        correction_factor = ess / (ess - 1)
+        sample_var = correction_factor * variance 
+    else: 
+        sample_var = float('inf')
     
     print(f"\nKL_estimate: {float(kl_est):.6f}")
     print(f"Asymptotic Variance: {float(variance):.6e}")
@@ -565,6 +569,7 @@ def run_batch_experiment(
         'n_reps': len(particles),
         'kl_estimate': float(kl_est),
         'variance': float(variance),
+        'sample_var': float(sample_var),
         'effective_sample_size': float(ess),
         'averaging_results': averaging_results,
         'n_particles': N
