@@ -542,8 +542,8 @@ def run_batch_experiment(
         kl_est = np.sum(norm_weights * values)
         
         # Compute variance using the normalized importance sampling formula
-        weighted_sq_errors = norm_weights * ((values - kl_est) ** 2)
-        variance = np.sum(weighted_sq_errors) / N
+        weighted_sq_errors = (norm_weights ** 2) * ((values - kl_est) ** 2)
+        variance = np.sum(weighted_sq_errors) 
         
         # Effective sample size
         ess = 1.0 / np.sum(norm_weights ** 2)
@@ -700,11 +700,11 @@ def main():
         'just_p': just_p,
 #        'eps_01': eps_01,
 #        'eps_03': eps_03,
-#        'eps_05': eps_05,
-#        'eps_09': eps_09,
+        'eps_05': eps_05,
+        'eps_09': eps_09,
 #        'balanced': balanced,
-#        'adaptive': adaptive,
-#        'mix09': mix09,
+        'adaptive': adaptive,
+        'mix09': mix09,
 #        'mix03': mix03,
 #        'balanced2': balanced2,
 #        'geometric': geometric,
@@ -721,7 +721,7 @@ def main():
     
     # Select subset of prompts for testing (to keep runtime reasonable)
     test_prompts = []
-    for category in ['factual', 'creative', "instructional"]:
+    for category in ['factual']:
         test_prompts.extend(PROMPT_CATEGORIES[category][:1])  # 1 prompt from each category
     
     print(f"Running comprehensive experiments with {len(proposals)} proposals")
@@ -736,7 +736,7 @@ def main():
     # Run experiments
     total_experiments = len(proposals) * len(temperatures) * len(test_prompts)
     experiment_count = 0
-    
+    '''
     # ===== 1. COMPUTE BASELINE FIRST =====
     print("=" * 80)
     print("COMPUTING RAO-BLACKWELLIZED BASELINE ESTIMATE")
@@ -762,7 +762,7 @@ def main():
     with open('baseline_results.json', 'w') as f:
         json.dump(baseline_results, f, indent=2)
 
-    
+    '''
     # ===== 2. RUN IMPORTANCE SAMPLING EXPERIMENTS =====
     print("\n" + "=" * 80)
     print("RUNNING IMPORTANCE SAMPLING EXPERIMENTS")
