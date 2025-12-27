@@ -344,7 +344,7 @@ def compute_baseline_RB(prompt, n_runs=10, max_new_tokens=20, temperature=0.4):
 def compute_variance(particles: List[Dict], kl_est: float, w_sum: float) -> float:
     """Compute variance of KL estimate"""
     if len(particles) == 0 or w_sum == 0: 
-        return float('inf") 
+        return float('inf') 
                     
     N = len(particles)
     weighted_sqr_error_sum = 0.0
@@ -747,6 +747,7 @@ def main():
         print(f"\n{'='*60}")
         print(f"Testing proposal: {proposal_name}")
         print(f"{'='*60}")
+        proposal_results = [] 
         
         for temperature in temperatures:
             for prompt in test_prompts:
@@ -766,6 +767,7 @@ def main():
                 
                 # Store result
                 all_results[proposal_name].append(result)
+                proposal_results.append(result)
                 
         with open(f'results_{proposal_name}.json', 'w') as f:
             json.dump(proposal_results, f, indent=2, default=str)
