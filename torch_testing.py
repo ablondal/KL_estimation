@@ -163,28 +163,29 @@ def geometric(p, l_p, l_q, lg_p, lg_q):
     return torch.nn.functional.normalize(prop, p=1, dim=0)
 
 
-# kls = []
-# kl_sum = 0
-# kl_num = 0
-# for k in range(10):
-#     text, kl_expectations = calc_kl_RB(
-#         "An interesting fact is that",
-#         max_new_tokens=30,
-#         temperature=0.4
-#     )
-#     kl_sum += sum(kl_expectations)
-#     kl_num += 1
-#     kls.append(kl_expectations)
-#     print(f"KL #{k}: {kl_sum / kl_num}\t\t", end='\r')
-# mu = kl_sum / kl_num
-# print(f"KL estimate: {mu}\t\t")
-# var_sum = 0
-# for kl in kls:
-#     var_sum += (mu-sum(kl) )*(mu-sum(kl) )
-# print(f"Var: {var_sum / kl_num}\t\t")
+def RB_kl(length, reps, outp):
+    kls = []
+    kl_sum = 0
+    kl_num = 0
+    for k in range(reps):
+        text, kl_expectations = calc_kl_RB(
+            "An interesting fact is that",
+            max_new_tokens=length,
+            temperature=0.4
+        )
+        kl_sum += sum(kl_expectations)
+        kl_num += 1
+        kls.append(kl_expectations)
+        print(f"KL #{k}: {kl_sum / kl_num}\t\t", end='\r')
+    mu = kl_sum / kl_num
+    print(f"KL estimate #{k}: {mu}\t\t")
+    var_sum = 0
+    for kl in kls:
+        var_sum += (mu-sum(kl) )*(mu-sum(kl) )
+    print(f"Var: {var_sum / kl_num}\t\t")
 
-# with open(sys.argv[2], 'w') as f:
-#     json.dump(kls, f, indent=2)
+    with open('tests2/'+outp+'.json', 'w') as f:
+        json.dump(kls, f, indent=2)
 
 def run_smc(func, length, reps, outp):
     print(f"Proposal distribution: {outp}\nReps, Length: {reps}, {length}")
@@ -227,8 +228,8 @@ def run_smc(func, length, reps, outp):
 
 n_reps = 1000
 t_length = 20
-for ff in sys.argv[1:]:
-    run_smc(eval(ff), t_length, n_reps, ff)
-
+# for ff in sys.argv[1:]:
+#     run_smc(eval(ff), t_length, n_reps, ff)
+RB_kl(t_length, n_reps, "RB")
 
 # print("Mean KL:", sum(kl_per_token) / len(kl_per_token))
