@@ -90,7 +90,7 @@ def calc_kl_RB(
 
     return tokenizer.decode(input_ids[0]), kl_expectations
 
-def batch_sample_once_optimized(
+def batch_sample_once(
     prompt,
     next_token_weight,
     max_new_tokens=50,
