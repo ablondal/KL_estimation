@@ -1,0 +1,292 @@
+Running comprehensive experiments with 7 proposals
+Temperatures: [0.4, 1.0]
+Prompts: ['An interesting fact is that']
+Replications per condition: 200
+================================================================================
+
+================================================================================
+RUNNING IMPORTANCE SAMPLING EXPERIMENTS
+================================================================================
+
+============================================================
+Testing proposal: just_p
+============================================================
+
+Experiment 1/14
+  Testing just_p at temp=0.4 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 11.692642
+Asymptotic Variance: 3.202131e-01
+Sample Variance: 3.218222e-01
+Effective Sample Size: 200.0/200
+
+KL with different averaging techniques:
+
+Standard: 11.692642211914062
+
+Clipped: 11.692642211914062
+
+bayesian: 11.55757999420166
+
+bootstrap_ci: (10.707586288452148, 12.699259757995605)
+
+bootstrap_mean: 11.65388298034668
+
+weight_entropy: 5.2983174324035645
+
+Experiment 2/14
+  Testing just_p at temp=1.0 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 7.728017
+Asymptotic Variance: 1.304716e-01
+Sample Variance: 1.311272e-01
+Effective Sample Size: 200.0/200
+
+KL with different averaging techniques:
+
+Standard: 7.7280168533325195
+
+Clipped: 7.728017807006836
+
+bayesian: 7.662543296813965
+
+bootstrap_ci: (7.1265997886657715, 8.443143844604492)
+
+bootstrap_mean: 7.764745712280273
+
+weight_entropy: 5.298317909240723
+✓ Saved 2 experiments to results_just_p.json
+
+============================================================
+Testing proposal: eps_05
+============================================================
+
+Experiment 3/14
+  Testing eps_05 at temp=0.4 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 11.337362
+Asymptotic Variance: 5.828395e-01
+Sample Variance: 5.949154e-01
+Effective Sample Size: 49.3/200
+
+KL with different averaging techniques:
+
+Standard: 11.337362289428711
+
+Clipped: 11.734376907348633
+
+bayesian: 11.3326416015625
+
+bootstrap_ci: (9.885030746459961, 13.061692237854004)
+
+bootstrap_mean: 11.303366661071777
+
+weight_entropy: 4.598941326141357
+
+Experiment 4/14
+  Testing eps_05 at temp=1.0 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 6.090981
+Asymptotic Variance: 5.649189e-01
+Sample Variance: 5.787921e-01
+Effective Sample Size: 41.7/200
+
+KL with different averaging techniques:
+
+Standard: 6.090981483459473
+
+Clipped: 7.321419715881348
+
+bayesian: 6.293910026550293
+
+bootstrap_ci: (4.747190952301025, 7.475477695465088)
+
+bootstrap_mean: 6.275998115539551
+
+weight_entropy: 4.471005439758301
+✓ Saved 2 experiments to results_eps_05.json
+
+============================================================
+Testing proposal: eps_09
+============================================================
+
+Experiment 5/14
+  Testing eps_09 at temp=0.4 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 10.218462
+Asymptotic Variance: 2.906318e-01
+Sample Variance: 2.922703e-01
+Effective Sample Size: 178.4/200
+
+KL with different averaging techniques:
+
+Standard: 10.218461990356445
+
+Clipped: 10.265558242797852
+
+bayesian: 10.090712547302246
+
+bootstrap_ci: (8.963510513305664, 11.106557846069336)
+
+bootstrap_mean: 10.174901008605957
+
+weight_entropy: 5.226191997528076
+
+Experiment 6/14
+  Testing eps_09 at temp=1.0 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 7.936644
+Asymptotic Variance: 1.592368e-01
+Sample Variance: 1.600704e-01
+Effective Sample Size: 192.0/200
+
+KL with different averaging techniques:
+
+Standard: 7.936644077301025
+
+Clipped: 7.974668502807617
+
+bayesian: 7.928332328796387
+
+bootstrap_ci: (7.345643520355225, 8.654316902160645)
+
+bootstrap_mean: 7.996176719665527
+
+weight_entropy: 5.278082370758057
+✓ Saved 2 experiments to results_eps_09.json
+
+============================================================
+Testing proposal: adaptive
+============================================================
+
+Experiment 7/14
+  Testing adaptive at temp=0.4 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 11.437538
+Asymptotic Variance: 6.233475e-01
+Sample Variance: 6.433154e-01
+Effective Sample Size: 32.2/200
+
+KL with different averaging techniques:
+
+Standard: 11.437538146972656
+
+Clipped: 11.38281536102295
+
+bayesian: 11.597399711608887
+
+bootstrap_ci: (9.975484848022461, 12.770543098449707)
+
+bootstrap_mean: 11.392086029052734
+
+weight_entropy: 4.569860458374023
+
+Experiment 8/14
+  Testing adaptive at temp=1.0 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 8.473887
+Asymptotic Variance: 2.618020e-01
+Sample Variance: 2.647054e-01
+Effective Sample Size: 91.2/200
+
+KL with different averaging techniques:
+
+Standard: 8.47388744354248
+
+Clipped: 8.785244941711426
+
+bayesian: 8.597455978393555
+
+bootstrap_ci: (7.777076721191406, 9.574986457824707)
+
+bootstrap_mean: 8.525781631469727
+
+weight_entropy: 4.938882350921631
+✓ Saved 2 experiments to results_adaptive.json
+
+============================================================
+Testing proposal: mix09
+============================================================
+
+Experiment 9/14
+  Testing mix09 at temp=0.4 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 10.814175
+Asymptotic Variance: 4.719551e-01
+Sample Variance: 4.749469e-01
+Effective Sample Size: 158.8/200
+
+KL with different averaging techniques:
+
+Standard: 10.814175605773926
+
+Clipped: 10.577685356140137
+
+bayesian: 10.481856346130371
+
+bootstrap_ci: (9.802779197692871, 11.918774604797363)
+
+bootstrap_mean: 10.774005889892578
+
+weight_entropy: 5.131352424621582
+
+Experiment 10/14
+  Testing mix09 at temp=1.0 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 7.495552
+Asymptotic Variance: 1.662066e-01
+Sample Variance: 1.672077e-01
+Effective Sample Size: 167.0/200
+
+KL with different averaging techniques:
+
+Standard: 7.495551586151123
+
+Clipped: 7.369709014892578
+
+bayesian: 7.295353412628174
+
+bootstrap_ci: (6.678215980529785, 8.288459777832031)
+
+bootstrap_mean: 7.454397201538086
+
+weight_entropy: 5.190694808959961
+✓ Saved 2 experiments to results_mix09.json
+
+============================================================
+Testing proposal: cross_entropy_0.5
+============================================================
+
+Experiment 11/14
+  Testing cross_entropy_0.5 at temp=0.4 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 11.360138
+Asymptotic Variance: 4.943846e-01
+Sample Variance: 4.982380e-01
+Effective Sample Size: 129.3/200
+
+KL with different averaging techniques:
+
+Standard: 11.360136985778809
+
+Clipped: 11.484292030334473
+
+bayesian: 11.388721466064453
+
+bootstrap_ci: (9.814939498901367, 12.726643562316895)
+
+bootstrap_mean: 11.303607940673828
+
+weight_entropy: 5.089389324188232
+
