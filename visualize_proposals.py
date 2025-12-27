@@ -20,10 +20,10 @@ def plot_distribution_overlay(P_probs, Q_probs, r_probs_dict, max_tokens=200):
     Overlay plot: P(x), Q(x), r(x), and |log(P/Q)| on same axes
     
     Args:
-        P_probs: Fine-tuned model probabilities
-        Q_probs: Base model probabilities  
+        P_probs: Base model probabilities 
+        Q_probs: Fine-tuned model probabilities 
         r_probs_dict: Dict of {'name': name, 'r': r_probs} for different proposals
-        max_tokens: Number of tokens to show (for readability)
+        max_tokens: Number of tokens to show 
     """
     n_proposals = len(r_probs_dict)
     fig, axes = plt.subplots(n_proposals + 1, 1, figsize=(15, 4 * (n_proposals + 1)))
@@ -42,8 +42,8 @@ def plot_distribution_overlay(P_probs, Q_probs, r_probs_dict, max_tokens=200):
     
     # Plot P, Q, and |log(P/Q)| on first subplot
     ax = axes[0]
-    ax.plot(tokens, P_viz, label='P(x) - Fine-tuned', linewidth=2, alpha=0.8)
-    ax.plot(tokens, Q_viz, label='Q(x) - Base', linewidth=2, alpha=0.8)
+    ax.plot(tokens, P_viz, label='P(x) - Base', linewidth=2, alpha=0.8)
+    ax.plot(tokens, Q_viz, label='Q(x) - Fine-tuned', linewidth=2, alpha=0.8)
     ax.plot(tokens, log_ratio_scaled * P_viz.max(), label='|log(P/Q)| (scaled)', 
             linewidth=2, alpha=0.6, linestyle='--', color='red')
     ax.set_xlabel('Token Index')
@@ -58,8 +58,8 @@ def plot_distribution_overlay(P_probs, Q_probs, r_probs_dict, max_tokens=200):
         ax = axes[idx + 1]
         r_viz = proposal['r'][:max_tokens]
         
-        ax.plot(tokens, P_viz, label='P(x)', linewidth=2, alpha=0.6)
-        ax.plot(tokens, Q_viz, label='Q(x)', linewidth=2, alpha=0.6)
+        ax.plot(tokens, P_viz, label='P(x) - Base', linewidth=2, alpha=0.6)
+        ax.plot(tokens, Q_viz, label='Q(x) - Fine-tuned', linewidth=2, alpha=0.6)
         ax.plot(tokens, r_viz, label=f"r(x) - {proposal['name']}", 
                 linewidth=3, alpha=0.9, color='green')
         ax.plot(tokens, log_ratio_scaled * P_viz.max(), label='|log(P/Q)| (scaled)', 
@@ -67,7 +67,7 @@ def plot_distribution_overlay(P_probs, Q_probs, r_probs_dict, max_tokens=200):
         
         ax.set_xlabel('Token Index')
         ax.set_ylabel('Probability')
-        ax.set_title(f"Proposal: {proposal['name']}", fontsize=12, fontweight='bold')
+        ax.set_title(f"Importance Sampling Proposal: {proposal['name']}", fontsize=12, fontweight='bold')
         ax.legend(loc='upper right')
         ax.set_yscale('log')
         ax.grid(True, alpha=0.3)
@@ -81,8 +81,8 @@ def plot_importance_weights(P_probs, Q_probs, r_probs_dict, n_samples=10000):
     Histogram of importance weights P(x)/r(x) to spot exploding weights
     
     Args:
-        P_probs: Fine-tuned model probabilities
-        Q_probs: Base model probabilities
+        P_probs: Base model probabilities
+        Q_probs: Fine-tuned model probabilities
         r_probs_dict: List of {'name': name, 'r': r_probs} for different proposals
         n_samples: Number of samples to draw for histogram
     """
@@ -137,8 +137,8 @@ def plot_coverage_map(P_probs, Q_probs, r_probs_dict, n_samples=10000, n_regions
     Shows which vocab regions get sampled under different r's
     
     Args:
-        P_probs: Fine-tuned model probabilities
-        Q_probs: Base model probabilities
+        P_probs: Base model probabilities
+        Q_probs: Fine-tuned model probabilities
         r_probs_dict: List of {'name': name, 'r': r_probs}
         n_samples: Number of samples to draw
         n_regions: Number of vocab regions to split into
@@ -300,7 +300,7 @@ def plot_ess_comparison(ess_results):
     return fig
 
 
-def create_comprehensive_report(P_probs, Q_probs, r_probs_dict, n_samples=10000):
+def create_comprehensive_report(P_probs, Q_probs, model_type, r_probs_dict, n_samples=10000):
     """
     Generate all visualization plots and save them
     """
@@ -310,7 +310,7 @@ def create_comprehensive_report(P_probs, Q_probs, r_probs_dict, n_samples=10000)
     
     # Create plots directory in current working directory
     timestamp = datetime.now().strftime("%m%d_%H%M")
-    plots_dir = os.path.join(os.getcwd(), 'plots', timestamp)
+    plots_dir = os.path.join(os.getcwd(), f"{model_type}_plots", timestamp)
     os.makedirs(plots_dir, exist_ok=True)
     print(f"\nPlots will be saved to: {plots_dir}")
     
