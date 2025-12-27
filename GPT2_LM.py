@@ -172,6 +172,27 @@ def naive_MC_estimator(P_probs, Q_probs, n_samples=100, eps=1e-12):
     return estimate, variance, std_error, estimates
 
 
+def compute_proposal_chi2_aware(P_probs, Q_probs, alpha=0.5, eps=1e-12):
+    """
+    Proposal based on chi-square divergence: r ∝ P * sqrt(P/Q)  
+    This corresponds to the χ²-divergence optimal proposal.
+    """
+    P_safe = np.clip(P_probs, eps, 1.0)
+    Q_safe = np.clip(Q_probs, eps, 1.0)
+
+    log_P = np.log(P_safe)
+    log_Q = np.log(Q_safe)
+    
+    log_ratio = log_P - log_Q
+    log_ratio = np.clip(log_ratio, -50, 50)
+    log_r = log_P + alpha * log_ratio
+
+    log_r_max = np.max(log_r)
+    log_r_normalized = log_r - log_r_max
+    r = np.exp(log_r_normalized)
+
+    r = r / np.sum(r)    
+    return r
 def importance_sampling_estimator(P_probs, Q_probs, n_samples=100, alpha_values=[0.3, 0.5, 0.7, 0.9], eps=1e-12):
     print(f"Importance Sampling with n={n_samples}")
 
