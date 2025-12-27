@@ -17,7 +17,7 @@ Tests importance sampling proposals on controlled long-tailed distributions that
 ### Usage
 
 ```bash
-python New_LMs_proposals.py
+python Synthetic_tests.py
 ```
 
 ### What it does:
