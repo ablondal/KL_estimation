@@ -310,4 +310,1098 @@ weight_entropy: 0.4024689197540283
 
 Experiment 14/72
   Testing balanced at temp=0.4 with prompt: 'Once upon a time, there was...'
-    Batch 3/7 completed (96 particles)
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 7.961901
+Variance: 4.751403e-02
+Effective Sample Size: 4.3/200
+
+KL with different averaging techniques:
+
+Standard: 7.961902141571045
+
+Clipped: 6.315797328948975
+
+bayesian: 6.959723472595215
+
+bootstrap_ci: (5.629049777984619, 9.04513168334961)
+
+bootstrap_mean: 7.689385890960693
+
+weight_entropy: 2.0485219955444336
+
+Experiment 15/72
+  Testing balanced at temp=0.4 with prompt: 'To solve this problem, first...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 8.396099
+Variance: 1.064830e-01
+Effective Sample Size: 3.2/200
+
+KL with different averaging techniques:
+
+Standard: 8.396098136901855
+
+Clipped: 4.809376239776611
+
+bayesian: 7.507715702056885
+
+bootstrap_ci: (2.9152729511260986, 11.030742645263672)
+
+bootstrap_mean: 7.556787014007568
+
+weight_entropy: 1.6550638675689697
+
+Experiment 16/72
+  Testing balanced at temp=1.0 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 17.556322
+Variance: 2.016491e-02
+Effective Sample Size: 1.0/200
+
+KL with different averaging techniques:
+
+Standard: 17.556324005126953
+
+Clipped: 5.55379581451416
+
+bayesian: 16.111757278442383
+
+bootstrap_ci: (1.7202707529067993, 17.791460037231445)
+
+bootstrap_mean: 12.102264404296875
+
+weight_entropy: 0.10343471169471741
+
+Experiment 17/72
+  Testing balanced at temp=1.0 with prompt: 'Once upon a time, there was...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 16.704891
+Variance: 4.457035e-01
+Effective Sample Size: 2.0/200
+
+KL with different averaging techniques:
+
+Standard: 16.704891204833984
+
+Clipped: 9.026046752929688
+
+bayesian: 15.617542266845703
+
+bootstrap_ci: (4.994335651397705, 25.24053382873535)
+
+bootstrap_mean: 15.698943138122559
+
+weight_entropy: 0.7454829216003418
+
+Experiment 18/72
+  Testing balanced at temp=1.0 with prompt: 'To solve this problem, first...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 4.007436
+Variance: 1.509796e-03
+Effective Sample Size: 1.0/200
+
+KL with different averaging techniques:
+
+Standard: 4.0074357986450195
+
+Clipped: 7.8843207359313965
+
+bayesian: 3.49224591255188
+
+bootstrap_ci: (3.9782893657684326, 9.835000038146973)
+
+bootstrap_mean: 5.694154262542725
+
+weight_entropy: 0.0642017275094986
+✓ Saved 6 experiments to results_balanced.json
+
+============================================================
+Testing proposal: adaptive
+============================================================
+
+Experiment 19/72
+  Testing adaptive at temp=0.4 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 11.868384
+Variance: 2.932450e-01
+Effective Sample Size: 94.4/200
+
+KL with different averaging techniques:
+
+Standard: 11.868385314941406
+
+Clipped: 12.38469123840332
+
+bayesian: 12.063645362854004
+
+bootstrap_ci: (10.716460227966309, 13.218182563781738)
+
+bootstrap_mean: 11.941433906555176
+
+weight_entropy: 4.921867370605469
+
+Experiment 20/72
+  Testing adaptive at temp=0.4 with prompt: 'Once upon a time, there was...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 8.297759
+Variance: 1.918009e-01
+Effective Sample Size: 75.6/200
+
+KL with different averaging techniques:
+
+Standard: 8.297759056091309
+
+Clipped: 9.04743766784668
+
+bayesian: 8.557537078857422
+
+bootstrap_ci: (7.220231533050537, 9.629826545715332)
+
+bootstrap_mean: 8.314720153808594
+
+weight_entropy: 4.80495023727417
+
+Experiment 21/72
+  Testing adaptive at temp=0.4 with prompt: 'To solve this problem, first...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 5.356946
+Variance: 8.911654e-02
+Effective Sample Size: 99.4/200
+
+KL with different averaging techniques:
+
+Standard: 5.356945991516113
+
+Clipped: 5.71931791305542
+
+bayesian: 5.455942153930664
+
+bootstrap_ci: (4.7844719886779785, 6.093790531158447)
+
+bootstrap_mean: 5.3996076583862305
+
+weight_entropy: 4.975517272949219
+
+Experiment 22/72
+  Testing adaptive at temp=1.0 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 7.908427
+Variance: 1.426740e-01
+Effective Sample Size: 83.7/200
+
+KL with different averaging techniques:
+
+Standard: 7.9084272384643555
+
+Clipped: 8.513687133789062
+
+bayesian: 8.108445167541504
+
+bootstrap_ci: (6.8839850425720215, 9.065533638000488)
+
+bootstrap_mean: 7.956124782562256
+
+weight_entropy: 4.866209506988525
+
+Experiment 23/72
+  Testing adaptive at temp=1.0 with prompt: 'Once upon a time, there was...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 7.940228
+Variance: 1.325971e-01
+Effective Sample Size: 94.3/200
+
+KL with different averaging techniques:
+
+Standard: 7.940228462219238
+
+Clipped: 8.388282775878906
+
+bayesian: 8.035269737243652
+
+bootstrap_ci: (7.052690505981445, 8.940099716186523)
+
+bootstrap_mean: 7.996260166168213
+
+weight_entropy: 4.9318366050720215
+
+Experiment 24/72
+  Testing adaptive at temp=1.0 with prompt: 'To solve this problem, first...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 5.572931
+Variance: 8.407215e-02
+Effective Sample Size: 45.4/200
+
+KL with different averaging techniques:
+
+Standard: 5.572931289672852
+
+Clipped: 6.5665483474731445
+
+bayesian: 5.711686611175537
+
+bootstrap_ci: (4.593400955200195, 6.749390602111816)
+
+bootstrap_mean: 5.6971116065979
+
+weight_entropy: 4.6721601486206055
+✓ Saved 6 experiments to results_adaptive.json
+
+============================================================
+Testing proposal: mix09
+============================================================
+
+Experiment 25/72
+  Testing mix09 at temp=0.4 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 10.482345
+Variance: 3.147109e-01
+Effective Sample Size: 158.0/200
+
+KL with different averaging techniques:
+
+Standard: 10.482344627380371
+
+Clipped: 10.284749031066895
+
+bayesian: 10.162908554077148
+
+bootstrap_ci: (9.28718376159668, 11.772103309631348)
+
+bootstrap_mean: 10.464000701904297
+
+weight_entropy: 5.140264987945557
+
+Experiment 26/72
+  Testing mix09 at temp=0.4 with prompt: 'Once upon a time, there was...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 10.151251
+Variance: 2.314996e-01
+Effective Sample Size: 168.7/200
+
+KL with different averaging techniques:
+
+Standard: 10.151251792907715
+
+Clipped: 9.954193115234375
+
+bayesian: 9.927724838256836
+
+bootstrap_ci: (9.261248588562012, 11.137664794921875)
+
+bootstrap_mean: 10.177212715148926
+
+weight_entropy: 5.186306476593018
+
+Experiment 27/72
+  Testing mix09 at temp=0.4 with prompt: 'To solve this problem, first...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 5.516920
+Variance: 9.269647e-02
+Effective Sample Size: 174.5/200
+
+KL with different averaging techniques:
+
+Standard: 5.516920566558838
+
+Clipped: 5.451094627380371
+
+bayesian: 5.353003025054932
+
+bootstrap_ci: (5.005324363708496, 6.113216876983643)
+
+bootstrap_mean: 5.503190517425537
+
+weight_entropy: 5.209288597106934
+
+Experiment 28/72
+  Testing mix09 at temp=1.0 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 7.355350
+Variance: 1.690177e-01
+Effective Sample Size: 164.6/200
+
+KL with different averaging techniques:
+
+Standard: 7.355349540710449
+
+Clipped: 7.139256477355957
+
+bayesian: 7.191455364227295
+
+bootstrap_ci: (6.569498062133789, 8.492376327514648)
+
+bootstrap_mean: 7.419067859649658
+
+weight_entropy: 5.177765846252441
+
+Experiment 29/72
+  Testing mix09 at temp=1.0 with prompt: 'Once upon a time, there was...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 7.481222
+Variance: 4.139550e-01
+Effective Sample Size: 166.9/200
+
+KL with different averaging techniques:
+
+Standard: 7.481222629547119
+
+Clipped: 7.021819114685059
+
+bayesian: 7.23137903213501
+
+bootstrap_ci: (5.9320220947265625, 9.665812492370605)
+
+bootstrap_mean: 7.419377326965332
+
+weight_entropy: 5.195258140563965
+
+Experiment 30/72
+  Testing mix09 at temp=1.0 with prompt: 'To solve this problem, first...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 5.682268
+Variance: 7.370967e-02
+Effective Sample Size: 173.2/200
+
+KL with different averaging techniques:
+
+Standard: 5.682267665863037
+
+Clipped: 5.582087516784668
+
+bayesian: 5.535460472106934
+
+bootstrap_ci: (5.097400665283203, 6.168843746185303)
+
+bootstrap_mean: 5.603622913360596
+
+weight_entropy: 5.211638450622559
+✓ Saved 6 experiments to results_mix09.json
+
+============================================================
+Testing proposal: mix03
+============================================================
+
+Experiment 31/72
+  Testing mix03 at temp=0.4 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 9.898844
+Variance: 7.785421e-02
+Effective Sample Size: 2.3/200
+
+KL with different averaging techniques:
+
+Standard: 9.898844718933105
+
+Clipped: 3.7655091285705566
+
+bayesian: 8.695757865905762
+
+bootstrap_ci: (3.2699215412139893, 11.529426574707031)
+
+bootstrap_mean: 8.630237579345703
+
+weight_entropy: 1.6905035972595215
+
+Experiment 32/72
+  Testing mix03 at temp=0.4 with prompt: 'Once upon a time, there was...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 2.979957
+Variance: 3.651958e-02
+Effective Sample Size: 28.9/200
+
+KL with different averaging techniques:
+
+Standard: 2.9799563884735107
+
+Clipped: 2.553358554840088
+
+bayesian: 2.4517173767089844
+
+bootstrap_ci: (2.1354188919067383, 3.724403142929077)
+
+bootstrap_mean: 2.9173943996429443
+
+weight_entropy: 3.8880085945129395
+
+Experiment 33/72
+  Testing mix03 at temp=0.4 with prompt: 'To solve this problem, first...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 6.390615
+Variance: 1.477643e-01
+Effective Sample Size: 8.1/200
+
+KL with different averaging techniques:
+
+Standard: 6.390615940093994
+
+Clipped: 2.6704397201538086
+
+bayesian: 5.604150772094727
+
+bootstrap_ci: (2.169400930404663, 9.496912002563477)
+
+bootstrap_mean: 5.455086708068848
+
+weight_entropy: 3.2608609199523926
+
+Experiment 34/72
+  Testing mix03 at temp=1.0 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 10.999266
+Variance: 2.920572e-01
+Effective Sample Size: 5.7/200
+
+KL with different averaging techniques:
+
+Standard: 10.999266624450684
+
+Clipped: 3.5022501945495605
+
+bayesian: 9.806822776794434
+
+bootstrap_ci: (3.328378915786743, 15.631181716918945)
+
+bootstrap_mean: 9.327296257019043
+
+weight_entropy: 2.5892045497894287
+
+Experiment 35/72
+  Testing mix03 at temp=1.0 with prompt: 'Once upon a time, there was...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 10.071003
+Variance: 5.699084e-02
+Effective Sample Size: 1.9/200
+
+KL with different averaging techniques:
+
+Standard: 10.071002006530762
+
+Clipped: 3.1380248069763184
+
+bayesian: 8.917582511901855
+
+bootstrap_ci: (3.6026875972747803, 11.388518333435059)
+
+bootstrap_mean: 8.274150848388672
+
+weight_entropy: 1.3635168075561523
+
+Experiment 36/72
+  Testing mix03 at temp=1.0 with prompt: 'To solve this problem, first...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 8.120887
+Variance: 6.443815e-02
+Effective Sample Size: 6.2/200
+
+KL with different averaging techniques:
+
+Standard: 8.120887756347656
+
+Clipped: 4.074615001678467
+
+bayesian: 7.2057108879089355
+
+bootstrap_ci: (4.568068027496338, 9.517436027526855)
+
+bootstrap_mean: 7.7596635818481445
+
+weight_entropy: 2.6301233768463135
+✓ Saved 6 experiments to results_mix03.json
+
+============================================================
+Testing proposal: balanced2
+============================================================
+
+Experiment 37/72
+  Testing balanced2 at temp=0.4 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 7.919484
+Variance: 1.311216e-01
+Effective Sample Size: 27.9/200
+
+KL with different averaging techniques:
+
+Standard: 7.919483661651611
+
+Clipped: 6.1113386154174805
+
+bayesian: 7.113088130950928
+
+bootstrap_ci: (5.59906005859375, 9.76889419555664)
+
+bootstrap_mean: 7.914699077606201
+
+weight_entropy: 4.087143898010254
+
+Experiment 38/72
+  Testing balanced2 at temp=0.4 with prompt: 'Once upon a time, there was...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 8.231444
+Variance: 1.114941e-01
+Effective Sample Size: 15.1/200
+
+KL with different averaging techniques:
+
+Standard: 8.231444358825684
+
+Clipped: 5.97775936126709
+
+bayesian: 7.323264122009277
+
+bootstrap_ci: (5.5840559005737305, 10.481965065002441)
+
+bootstrap_mean: 7.901648998260498
+
+weight_entropy: 3.8698692321777344
+
+Experiment 39/72
+  Testing balanced2 at temp=0.4 with prompt: 'To solve this problem, first...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 4.684910
+Variance: 6.051077e-02
+Effective Sample Size: 61.5/200
+
+KL with different averaging techniques:
+
+Standard: 4.684909820556641
+
+Clipped: 3.895141363143921
+
+bayesian: 4.330613613128662
+
+bootstrap_ci: (3.7567050457000732, 5.761841773986816)
+
+bootstrap_mean: 4.650737762451172
+
+weight_entropy: 4.553549766540527
+
+Experiment 40/72
+  Testing balanced2 at temp=1.0 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 5.706722
+Variance: 6.901376e-02
+Effective Sample Size: 63.2/200
+
+KL with different averaging techniques:
+
+Standard: 5.706721305847168
+
+Clipped: 5.279094219207764
+
+bayesian: 5.275782108306885
+
+bootstrap_ci: (4.937004089355469, 6.5063886642456055)
+
+bootstrap_mean: 5.7454400062561035
+
+weight_entropy: 4.473087310791016
+
+Experiment 41/72
+  Testing balanced2 at temp=1.0 with prompt: 'Once upon a time, there was...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 6.677830
+Variance: 7.487708e-02
+Effective Sample Size: 49.6/200
+
+KL with different averaging techniques:
+
+Standard: 6.677830219268799
+
+Clipped: 5.755507469177246
+
+bayesian: 6.011455059051514
+
+bootstrap_ci: (5.433523178100586, 7.925242900848389)
+
+bootstrap_mean: 6.71230411529541
+
+weight_entropy: 4.314325332641602
+
+Experiment 42/72
+  Testing balanced2 at temp=1.0 with prompt: 'To solve this problem, first...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 5.514851
+Variance: 6.225785e-02
+Effective Sample Size: 58.4/200
+
+KL with different averaging techniques:
+
+Standard: 5.51485013961792
+
+Clipped: 4.915215015411377
+
+bayesian: 4.921280860900879
+
+bootstrap_ci: (4.254252910614014, 6.570568084716797)
+
+bootstrap_mean: 5.381219387054443
+
+weight_entropy: 4.412955284118652
+✓ Saved 6 experiments to results_balanced2.json
+
+============================================================
+Testing proposal: geometric
+============================================================
+
+Experiment 43/72
+  Testing geometric at temp=0.4 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 4.386792
+Variance: 3.600839e-02
+Effective Sample Size: 4.8/200
+
+KL with different averaging techniques:
+
+Standard: 4.386791229248047
+
+Clipped: 1.9274680614471436
+
+bayesian: 3.645989179611206
+
+bootstrap_ci: (1.687487244606018, 5.441714763641357)
+
+bootstrap_mean: 3.8391294479370117
+
+weight_entropy: 2.6487998962402344
+
+Experiment 44/72
+  Testing geometric at temp=0.4 with prompt: 'Once upon a time, there was...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 12.366291
+Variance: 1.488168e-02
+Effective Sample Size: 1.1/200
+
+KL with different averaging techniques:
+
+Standard: 12.366290092468262
+
+Clipped: 1.9739983081817627
+
+bayesian: 10.924993515014648
+
+bootstrap_ci: (1.439968466758728, 12.56710433959961)
+
+bootstrap_mean: 8.33582878112793
+
+weight_entropy: 0.23210567235946655
+
+Experiment 45/72
+  Testing geometric at temp=0.4 with prompt: 'To solve this problem, first...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 5.436320
+Variance: 3.332200e-02
+Effective Sample Size: 6.3/200
+
+KL with different averaging techniques:
+
+Standard: 5.436321258544922
+
+Clipped: 3.2451066970825195
+
+bayesian: 4.719992637634277
+
+bootstrap_ci: (3.353416919708252, 6.6811676025390625)
+
+bootstrap_mean: 5.155561923980713
+
+weight_entropy: 2.8874707221984863
+
+Experiment 46/72
+  Testing geometric at temp=1.0 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 3.955537
+Variance: 2.164767e-02
+Effective Sample Size: 17.8/200
+
+KL with different averaging techniques:
+
+Standard: 3.955536365509033
+
+Clipped: 3.3318052291870117
+
+bayesian: 3.406506061553955
+
+bootstrap_ci: (3.1198270320892334, 4.692408084869385)
+
+bootstrap_mean: 3.9094903469085693
+
+weight_entropy: 3.5067594051361084
+
+Experiment 47/72
+  Testing geometric at temp=1.0 with prompt: 'Once upon a time, there was...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 2.278731
+Variance: 1.744331e-02
+Effective Sample Size: 22.5/200
+
+KL with different averaging techniques:
+
+Standard: 2.278731107711792
+
+Clipped: 1.681045413017273
+
+bayesian: 1.768025517463684
+
+bootstrap_ci: (1.6157187223434448, 2.908010959625244)
+
+bootstrap_mean: 2.245466709136963
+
+weight_entropy: 3.644158124923706
+
+Experiment 48/72
+  Testing geometric at temp=1.0 with prompt: 'To solve this problem, first...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 5.260789
+Variance: 6.426985e-02
+Effective Sample Size: 2.8/200
+
+KL with different averaging techniques:
+
+Standard: 5.260788440704346
+
+Clipped: 1.0814180374145508
+
+bayesian: 4.5322771072387695
+
+bootstrap_ci: (0.7859964370727539, 6.822179794311523)
+
+bootstrap_mean: 4.711900234222412
+
+weight_entropy: 2.374271869659424
+✓ Saved 6 experiments to results_geometric.json
+
+============================================================
+Testing proposal: exponential_family_0.5
+============================================================
+
+Experiment 49/72
+  Testing exponential_family_0.5 at temp=0.4 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 16.820700
+Variance: 4.041109e-01
+Effective Sample Size: 13.4/200
+
+KL with different averaging techniques:
+
+Standard: 16.820697784423828
+
+Clipped: 14.90527629852295
+
+bayesian: 17.34990692138672
+
+bootstrap_ci: (11.508336067199707, 20.404001235961914)
+
+bootstrap_mean: 16.838184356689453
+
+weight_entropy: 3.5340075492858887
+
+Experiment 50/72
+  Testing exponential_family_0.5 at temp=0.4 with prompt: 'Once upon a time, there was...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 7.094566
+Variance: 2.042305e-01
+Effective Sample Size: 15.5/200
+
+KL with different averaging techniques:
+
+Standard: 7.094566345214844
+
+Clipped: 8.144102096557617
+
+bayesian: 8.101943969726562
+
+bootstrap_ci: (4.716822147369385, 10.586174964904785)
+
+bootstrap_mean: 7.284069061279297
+
+weight_entropy: 3.436493158340454
+
+Experiment 51/72
+  Testing exponential_family_0.5 at temp=0.4 with prompt: 'To solve this problem, first...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 2.736436
+Variance: 1.017109e-01
+Effective Sample Size: 6.2/200
+
+KL with different averaging techniques:
+
+Standard: 2.736436367034912
+
+Clipped: 5.3745436668396
+
+bayesian: 3.4429478645324707
+
+bootstrap_ci: (0.8488904237747192, 6.194657325744629)
+
+bootstrap_mean: 3.4909539222717285
+
+weight_entropy: 3.2113614082336426
+
+Experiment 52/72
+  Testing exponential_family_0.5 at temp=1.0 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 6.745109
+Variance: 9.692172e-02
+Effective Sample Size: 18.3/200
+
+KL with different averaging techniques:
+
+Standard: 6.7451090812683105
+
+Clipped: 7.850741386413574
+
+bayesian: 7.520817756652832
+
+bootstrap_ci: (5.624073028564453, 8.131630897521973)
+
+bootstrap_mean: 6.806598663330078
+
+weight_entropy: 3.5238749980926514
+
+Experiment 53/72
+  Testing exponential_family_0.5 at temp=1.0 with prompt: 'Once upon a time, there was...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 8.650403
+Variance: 9.958193e-02
+Effective Sample Size: 27.5/200
+
+KL with different averaging techniques:
+
+Standard: 8.650403022766113
+
+Clipped: 9.150564193725586
+
+bayesian: 9.287837982177734
+
+bootstrap_ci: (7.603841781616211, 9.898406982421875)
+
+bootstrap_mean: 8.718510627746582
+
+weight_entropy: 3.9331769943237305
+
+Experiment 54/72
+  Testing exponential_family_0.5 at temp=1.0 with prompt: 'To solve this problem, first...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 5.704613
+Variance: 1.094404e-01
+Effective Sample Size: 11.9/200
+
+KL with different averaging techniques:
+
+Standard: 5.7046122550964355
+
+Clipped: 7.972346782684326
+
+bayesian: 6.354161262512207
+
+bootstrap_ci: (3.6219918727874756, 8.735167503356934)
+
+bootstrap_mean: 6.157674789428711
+
+weight_entropy: 3.4624485969543457
+✓ Saved 6 experiments to results_exponential_family_0.5.json
+
+============================================================
+Testing proposal: exponential_family_1.0
+============================================================
+
+Experiment 55/72
+  Testing exponential_family_1.0 at temp=0.4 with prompt: 'An interesting fact is that...'
+Error in batch 0: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 1: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 2: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 3: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 4: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 5: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 6: probability tensor contains either `inf`, `nan` or element < 0
+
+Warning: No valid particles collected for exponential_family_1.0
+
+Experiment 56/72
+  Testing exponential_family_1.0 at temp=0.4 with prompt: 'Once upon a time, there was...'
+Error in batch 0: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 1: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 2: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 3: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 4: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 5: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 6: probability tensor contains either `inf`, `nan` or element < 0
+
+Warning: No valid particles collected for exponential_family_1.0
+
+Experiment 57/72
+  Testing exponential_family_1.0 at temp=0.4 with prompt: 'To solve this problem, first...'
+Error in batch 0: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 1: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 2: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 3: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 4: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 5: probability tensor contains either `inf`, `nan` or element < 0
+    Batch 7/7 completed (8 particles)
+
+KL_estimate: 2.670698
+Variance: 2.259769e-04
+Effective Sample Size: 1.0/8
+
+KL with different averaging techniques:
+
+Standard: 2.6706979274749756
+
+Clipped: 2.670736789703369
+
+bayesian: 4.999114513397217
+
+bootstrap_ci: (2.670630693435669, 29.00284194946289)
+
+bootstrap_mean: 11.48072624206543
+
+weight_entropy: 4.25405778514687e-05
+
+Experiment 58/72
+  Testing exponential_family_1.0 at temp=1.0 with prompt: 'An interesting fact is that...'
+Error in batch 3: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 4: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 5: probability tensor contains either `inf`, `nan` or element < 0
+    Batch 7/7 completed (104 particles)
+
+KL_estimate: 5.542350
+Variance: 3.814157e-01
+Effective Sample Size: 4.1/104
+
+KL with different averaging techniques:
+
+Standard: 5.5423502922058105
+
+Clipped: 4.2952961921691895
+
+bayesian: 7.986149311065674
+
+bootstrap_ci: (-0.31673210859298706, 9.008464813232422)
+
+bootstrap_mean: 5.01779842376709
+
+weight_entropy: 1.7824351787567139
+
+Experiment 59/72
+  Testing exponential_family_1.0 at temp=1.0 with prompt: 'Once upon a time, there was...'
+Error in batch 0: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 1: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 2: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 3: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 4: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 5: probability tensor contains either `inf`, `nan` or element < 0
+Error in batch 6: probability tensor contains either `inf`, `nan` or element < 0
+
+Warning: No valid particles collected for exponential_family_1.0
+
+Experiment 60/72
+  Testing exponential_family_1.0 at temp=1.0 with prompt: 'To solve this problem, first...'
+Error in batch 2: probability tensor contains either `inf`, `nan` or element < 0
+    Batch 7/7 completed (168 particles)
+
+KL_estimate: 8.189148
+Variance: 1.477502e-01
+Effective Sample Size: 5.7/168
+
+KL with different averaging techniques:
+
+Standard: 8.189146995544434
+
+Clipped: 9.399624824523926
+
+bayesian: 9.581733703613281
+
+bootstrap_ci: (5.061012268066406, 11.67873764038086)
+
+bootstrap_mean: 8.577993392944336
+
+weight_entropy: 2.255723714828491
+✓ Saved 6 experiments to results_exponential_family_1.0.json
+
+============================================================
+Testing proposal: cross_entropy_0.5
+============================================================
+
+Experiment 61/72
+  Testing cross_entropy_0.5 at temp=0.4 with prompt: 'An interesting fact is that...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 12.224054
+Variance: 3.089707e-01
+Effective Sample Size: 118.4/200
+
+KL with different averaging techniques:
+
+Standard: 12.224055290222168
+
+Clipped: 12.491280555725098
+
+bayesian: 12.360657691955566
+
+bootstrap_ci: (10.823199272155762, 13.336040496826172)
+
+bootstrap_mean: 12.10539436340332
+
+weight_entropy: 5.04420280456543
+
+Experiment 62/72
+  Testing cross_entropy_0.5 at temp=0.4 with prompt: 'Once upon a time, there was...'
+    Batch 7/7 completed (200 particles)
+
+KL_estimate: 8.988914
+Variance: 3.525265e-01
+Effective Sample Size: 69.0/200
+
+KL with different averaging techniques:
+
+Standard: 8.988914489746094
+
+Clipped: 9.984424591064453
+
+bayesian: 9.176618576049805
+
+bootstrap_ci: (6.67132043838501, 10.65666675567627)
+
+bootstrap_mean: 9.01398754119873
+
+weight_entropy: 4.949709415435791
