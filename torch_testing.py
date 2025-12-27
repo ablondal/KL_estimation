@@ -665,6 +665,7 @@ def rank_proposals(all_results: Dict) -> Dict:
         avg_kl = np.mean([exp['kl_estimate'] for exp in proposal_exps])
         avg_var = np.mean([exp['variance'] for exp in proposal_exps])
         avg_ess = np.mean([exp['effective_sample_size'] for exp in proposal_exps])
+        avg_sample_var = np.mean([exp['sample_var'] for exp in proposal_exps])
         
         # Stability score (lower variance and higher ESS is better)
         stability_score = avg_ess / (avg_var + 1e-10)
@@ -672,6 +673,7 @@ def rank_proposals(all_results: Dict) -> Dict:
         proposal_stats[proposal_name] = {
             'avg_kl': float(avg_kl),
             'avg_variance': float(avg_var),
+            'avg_sample_variance': float(avg_sample_var),
             'avg_effective_sample_size': float(avg_ess),
             'stability_score': float(stability_score),
             'n_experiments': len(proposal_exps)
@@ -682,6 +684,10 @@ def rank_proposals(all_results: Dict) -> Dict:
         'by_variance': sorted(
             proposal_stats.items(),
             key=lambda x: x[1]['avg_variance']
+        ),
+        'by_sample_variance': sorted(
+            proposal_stats.items(),
+            key=lambda x: x[1]['avg_sample_variance']
         ),
         'by_effective_sample_size': sorted(
             proposal_stats.items(),
@@ -838,6 +844,9 @@ def main():
     print("\n" + "=" * 80)
     print("COMPARISON WITH BASELINE")
     print("=" * 80)
+
+    with open('baseline_results.json', 'r') as f:
+        baseline_results = json.load(f)
 
     for prompt, baseline in baseline_results.items():
         print(f"\nBaseline for '{prompt[:30]}...':")
