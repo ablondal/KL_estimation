@@ -547,9 +547,13 @@ def run_batch_experiment(
         
         # Effective sample size
         ess = 1.0 / np.sum(norm_weights ** 2)
+
+    correction_factor = ess / (ess - 1)
+    sample_var = correction_factor * variance 
     
     print(f"\nKL_estimate: {float(kl_est):.6f}")
-    print(f"Variance: {float(variance):.6e}")
+    print(f"Asymptotic Variance: {float(variance):.6e}")
+    print(f"Sample Variance: {float(sample_var):.6e}")
     print(f"Effective Sample Size: {float(ess):.1f}/{N}")
     
     averaging_results = compute_kl_with_different_averaging(particles)
