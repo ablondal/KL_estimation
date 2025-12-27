@@ -818,10 +818,13 @@ def main():
     print("All experiments completed!")
     print(f"Total experiments run: {experiment_count}")
     print(f"Saving results...")
-    
+
+    with open(f'results_{all_results}.json', 'w') as f:
+            json.dump(all_results, f, indent=2, default=str)
+        
     # Rank proposals
     rankings = rank_proposals(all_results)
-    
+
     # Save results
     output_data = {
         'experiment_config': {
