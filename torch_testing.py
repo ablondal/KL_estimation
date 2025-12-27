@@ -672,9 +672,9 @@ def main():
     
     # Define all proposal functions to test
     proposals = {
-        'just_p': just_p,
-        'eps_01': eps_01,
-        'eps_03': eps_03,
+#        'just_p': just_p,
+#        'eps_01': eps_01,
+#        'eps_03': eps_03,
         'eps_05': eps_05,
         'eps_09': eps_09,
         'balanced': balanced,
@@ -711,7 +711,7 @@ def main():
     # Run experiments
     total_experiments = len(proposals) * len(temperatures) * len(test_prompts)
     experiment_count = 0
-    
+    '''
     # ===== 1. COMPUTE BASELINE FIRST =====
     print("=" * 80)
     print("COMPUTING RAO-BLACKWELLIZED BASELINE ESTIMATE")
@@ -736,7 +736,7 @@ def main():
         
     with open('baseline_results.json', 'w') as f:
         json.dump(baseline_results, f, indent=2)
-
+'''
     
     # ===== 2. RUN IMPORTANCE SAMPLING EXPERIMENTS =====
     print("\n" + "=" * 80)
