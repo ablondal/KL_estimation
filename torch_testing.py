@@ -819,7 +819,7 @@ def main():
     print(f"Total experiments run: {experiment_count}")
     print(f"Saving results...")
 
-    with open(f'results_{all_results}.json', 'w') as f:
+    with open('results_all_results.json', 'w') as f:
             json.dump(all_results, f, indent=2, default=str)
         
     # Rank proposals
