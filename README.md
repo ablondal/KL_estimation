@@ -15,6 +15,7 @@ pip install numpy scipy matplotlib torch transformers
 - `Synthetic_tests.py` - Main synthetic experiments
 - `visualize_proposals.py` - Visualization utilities (required)
 - `sampler.py` - Run LLM experiments
+- `batch_sampler.py` - Run LLM experiments in batchs across different temperatures and prompts
 - `calculate_stats.py` - Calculate stats from LLM experiments
 
 ---
