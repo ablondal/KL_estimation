@@ -12,6 +12,7 @@ pip install numpy scipy matplotlib torch transformers
 
 ## Files
 
+- `SMC_KL_divergence_estimator.pdf` - The report this Git Repo goes with :D
 - `Synthetic_tests.py` - Main synthetic experiments
 - `visualize_proposals.py` - Visualization utilities (required)
 - `sampler.py` - Run LLM experiments
