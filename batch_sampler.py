@@ -216,49 +216,6 @@ def batch_sample_once(
     
     return all_texts, batch_log_r.cpu().numpy(), batch_log_p.cpu().numpy(), batch_log_q.cpu().numpy()
     
-def sample_once(
-        prompt,
-        next_token_weight=(lambda p, l_p, l_q, lg_p, lg_q: p),
-        max_new_tokens=50,
-        temperature=1):
-    input_ids = tokenizer(prompt, return_tensors="pt").input_ids.to(device)
-
-    log_r = 0
-    log_p = 0     # sum_t log P(x_t | x_{x<t}); cumulative divergence
-    log_q = 0
-
-    p_probs = []
-    q_probs = []
-
-    for step in range(max_new_tokens):
-        with torch.no_grad():
-            out_a = model_a(input_ids)
-            out_b = model_b(input_ids)
-
-            logits_a = out_a.logits[0, -1] / temperature
-            logits_b = out_b.logits[0, -1] / temperature
-
-            l_p = torch.log_softmax(logits_a, dim=-1) # log P(x_t|x_<t); current token divergence
-            l_q = torch.log_softmax(logits_b, dim=-1)
-            p = torch.exp(l_p)
-
-            # --- sampling step (modifiable) ---
-            probs = next_token_weight(p, l_p, l_q, log_p, log_q)
-            next_token = torch.multinomial(probs, num_samples=1)
-
-            # For numerical stability, we really want to use Python floats
-            # as early as possible
-            log_r += math.log(probs[next_token].item())
-            log_p += l_p[next_token].item()
-            log_q += l_q[next_token].item()
-
-        input_ids = torch.cat([input_ids, next_token.unsqueeze(0)], dim=-1)
-
-        if next_token.item() == tokenizer.eos_token_id:
-            break
-
-    return tokenizer.decode(input_ids[0]), log_r, log_p, log_q
-
 # ========== Proposal Functions ==========
 
 def just_p(p, l_p, l_q, lg_p, lg_q):
@@ -365,36 +322,7 @@ def compute_baseline_RB(prompt, n_runs=10, max_new_tokens=20, temperature=0.4):
 
     print(f"Variance: {variance}")
     return mean_kl, variance, kls
-    
-def compute_variance(particles: List[Dict], kl_est: float, w_sum: float) -> float:
-    """Compute variance of KL estimate"""
-    if len(particles) == 0 or w_sum == 0: 
-        return float('inf') 
-                    
-    N = len(particles)
-    weighted_sqr_error_sum = 0.0
 
-    for p in particles: 
-        weighted_sqr_error_sum += (p['weight'] ** 2) * ((p['val'] - kl_est) ** 2)
-
-    variance = (1.0/N) * (weighted_sqr_error_sum / (w_sum ** 2))
-    return variance 
-
-def compute_effective_sample_size(particles: List[Dict]) -> float:
-    """Compute effective sample size"""
-    if len(particles) == 0:
-        return 0.0
-    
-    weights = np.array([p['weight'] for p in particles])
-    w_sum = np.sum(weights)
-    
-    if w_sum == 0:
-        return 0.0
-    
-    norm_weights = weights / w_sum
-    ess = 1.0 / np.sum(norm_weights ** 2)
-    return ess
-    
 def compute_kl_with_different_averaging(particles: List[Dict]) -> Dict:
     """Compare different weighting/averaging strategies"""
     
@@ -411,21 +339,17 @@ def compute_kl_with_different_averaging(particles: List[Dict]) -> Dict:
             'weight_entropy': 0.0
         }
     
-    # 1. Standard importance sampling
     kl_standard = np.average(values, weights=weights)
     
-    # 2. Self-normalized with clipping
     clipped_weights = np.clip(weights, np.percentile(weights, 5), 
                                np.percentile(weights, 95))
     kl_clipped = np.average(values, weights=clipped_weights)
     
-    # 3. Bayesian averaging
     prior_strength = 0.1
     prior_mean = np.median(values)
     weighted_var = np.average((values - kl_standard)**2, weights=weights)
     kl_bayesian = (prior_strength * prior_mean + kl_standard) / (1 + prior_strength)
     
-    # 4. Bootstrap confidence intervals
     bootstrap_estimates = []
     for _ in range(100):
         idx = np.random.choice(len(particles), size=len(particles), replace=True)
@@ -437,7 +361,6 @@ def compute_kl_with_different_averaging(particles: List[Dict]) -> Dict:
     ci_lower = np.percentile(bootstrap_estimates, 2.5) if bootstrap_estimates else 0.0
     ci_upper = np.percentile(bootstrap_estimates, 97.5) if bootstrap_estimates else 0.0
     
-    # Weight entropy
     normalized_weights = weights / np.sum(weights)
     weight_entropy = -np.sum(normalized_weights * np.log(normalized_weights + 1e-10))
 
@@ -449,7 +372,7 @@ def compute_kl_with_different_averaging(particles: List[Dict]) -> Dict:
     print(f"\nbayesian: {float(kl_bayesian)}")
     print(f"\nbootstrap_ci: {(float(ci_lower), float(ci_upper))}")
     print(f"\nbootstrap_mean: {float(bootstrap_mean)}")
-    print(f"\nweight_entropy: {float(weight_entropy)}")
+    print(f"\nweight_entropy: {float(weight_entropy)}") # if high, indicates high diversity (good)
     
     return {
         'standard': float(kl_standard),
@@ -575,71 +498,6 @@ def run_batch_experiment(
         'n_particles': N
     }
 
-def run_experiment(
-    proposal_func,
-    proposal_name: str,
-    prompt: str,
-    temperature: float,
-    max_new_tokens: int = 20,
-    n_reps: int = 200
-) -> Dict:
-    """Run a single experiment with given parameters"""
-    
-    print(f"  Testing {proposal_name} at temp={temperature} with prompt: '{prompt[:30]}...'")
-    
-    particles = []
-    kl_sum = 0.0
-    w_sum = 0.0
-    
-    for k in range(n_reps):
-        text, lg_r, lg_p, lg_q = sample_once(
-            prompt,
-            max_new_tokens=max_new_tokens,
-            temperature=temperature,
-            next_token_weight=proposal_func
-        )
-        
-        weight = math.exp(lg_p - lg_r)
-        particles.append({
-            'text': text,
-            'weight': weight,
-            'val': lg_p - lg_q
-        })
-        
-        kl_sum += weight * (lg_p - lg_q)
-        w_sum += weight
-        
-        if (k + 1) % 50 == 0:
-            print(f"    Completed {k + 1}/{n_reps} reps", end='\r')
-    
-    print(f"    Completed {n_reps}/{n_reps} reps")
-    
-    if w_sum == 0:
-        kl_est = 0.0
-        variance = float('inf')
-    else:
-        kl_est = kl_sum / w_sum
-        variance = compute_variance(particles, kl_est, w_sum)
-    
-    ess = compute_effective_sample_size(particles)
-
-    print(f"\nKL_estimate: {float(kl_est)}")
-    print(f"\nVariance: {float(variance)}")
-    
-    # Different averaging methods
-    averaging_results = compute_kl_with_different_averaging(particles)
-    
-    return {
-        'proposal_name': proposal_name,
-        'prompt': prompt,
-        'temperature': temperature,
-        'n_reps': n_reps,
-        'kl_estimate': float(kl_est),
-        'variance': float(variance),
-        'effective_sample_size': float(ess),
-        'averaging_results': averaging_results,
-        'n_particles': len(particles)
-    }
 
 def rank_proposals(all_results: Dict) -> Dict:
     """Rank proposals based on performance metrics"""
@@ -667,7 +525,7 @@ def rank_proposals(all_results: Dict) -> Dict:
         avg_ess = np.mean([exp['effective_sample_size'] for exp in proposal_exps])
         avg_sample_var = np.mean([exp['sample_var'] for exp in proposal_exps])
         
-        # Stability score (lower variance and higher ESS is better)
+        # Stability score 
         stability_score = avg_ess / (avg_var + 1e-10)
         
         proposal_stats[proposal_name] = {
@@ -692,7 +550,7 @@ def rank_proposals(all_results: Dict) -> Dict:
         'by_effective_sample_size': sorted(
             proposal_stats.items(),
             key=lambda x: x[1]['avg_effective_sample_size'],
-            reverse=True  # Higher ESS is better
+            reverse=True  
         ),
         'by_stability': sorted(
             proposal_stats.items(),
@@ -708,23 +566,23 @@ def rank_proposals(all_results: Dict) -> Dict:
     }
 
 def main():
-    """Main function to run comprehensive experiments"""
+    """Main function to run all experiments"""
     
     # Define all proposal functions to test
     proposals = {
         'just_p': just_p,
-#        'eps_01': eps_01,
-#        'eps_03': eps_03,
+        'eps_01': eps_01,
+        'eps_03': eps_03,
         'eps_05': eps_05,
         'eps_09': eps_09,
-#        'balanced': balanced,
+        'balanced': balanced,
         'adaptive': adaptive,
         'mix09': mix09,
-#        'mix03': mix03,
-#        'balanced2': balanced2,
-#        'geometric': geometric,
-#        'exponential_family_0.5': lambda p, l_p, l_q, lg_p, lg_q: exponential_family(p, l_p, l_q, lg_p, lg_q, beta=0.5),
-#        'exponential_family_1.0': lambda p, l_p, l_q, lg_p, lg_q: exponential_family(p, l_p, l_q, lg_p, lg_q, beta=1.0),
+        'mix03': mix03,
+        'balanced2': balanced2,
+        'geometric': geometric,
+        'exponential_family_0.5': lambda p, l_p, l_q, lg_p, lg_q: exponential_family(p, l_p, l_q, lg_p, lg_q, beta=0.5),
+        'exponential_family_1.0': lambda p, l_p, l_q, lg_p, lg_q: exponential_family(p, l_p, l_q, lg_p, lg_q, beta=1.0),
         'cross_entropy_0.5': lambda p, l_p, l_q, lg_p, lg_q: cross_entropy(p, l_p, l_q, lg_p, lg_q, beta=0.5),
         'cross_entropy_1.0': lambda p, l_p, l_q, lg_p, lg_q: cross_entropy(p, l_p, l_q, lg_p, lg_q, beta=1.0),
     }
@@ -732,12 +590,12 @@ def main():
     # Define experimental parameters
     temperatures = [0.4, 1.0]
     max_new_tokens = 20
-    n_reps = 200  # Reduced for speed; increase for better statistics
+    n_reps = 500   
     
     # Select subset of prompts for testing (to keep runtime reasonable)
     test_prompts = []
-    for category in ['factual']:
-        test_prompts.extend(PROMPT_CATEGORIES[category][:1])  # 1 prompt from each category
+    for category in ['factual', 'creative', 'instructional']:
+        test_prompts.extend(PROMPT_CATEGORIES[category][:1])  
     
     print(f"Running comprehensive experiments with {len(proposals)} proposals")
     print(f"Temperatures: {temperatures}")
@@ -751,7 +609,7 @@ def main():
     # Run experiments
     total_experiments = len(proposals) * len(temperatures) * len(test_prompts)
     experiment_count = 0
-    '''
+    
     # ===== 1. COMPUTE BASELINE FIRST =====
     print("=" * 80)
     print("COMPUTING RAO-BLACKWELLIZED BASELINE ESTIMATE")
@@ -762,9 +620,9 @@ def main():
         print(f"\nPrompt: '{prompt}'")
         mean_kl, variance, kls = compute_baseline_RB(
             prompt=prompt,
-            n_runs=200,  
+            n_runs=500,  
             max_new_tokens=max_new_tokens,
-            temperature=0.4  # Use a standard temperature
+            temperature=0.4   
         )
         
         baseline_results[prompt] = {
@@ -776,8 +634,7 @@ def main():
         
     with open('baseline_results.json', 'w') as f:
         json.dump(baseline_results, f, indent=2)
-
-    '''
+    
     # ===== 2. RUN IMPORTANCE SAMPLING EXPERIMENTS =====
     print("\n" + "=" * 80)
     print("RUNNING IMPORTANCE SAMPLING EXPERIMENTS")
@@ -862,15 +719,15 @@ def main():
     print("RANKINGS SUMMARY")
     print("="*80)
     
-    print("\nTop 5 by Variance (lower is better):")
+    print("\nTop 5 by Variance:")
     for i, (name, stats) in enumerate(rankings['rankings']['by_sample_variance'][:5], 1):
         print(f"{i}. {name}: variance={stats['avg_sample_variance']:.6f}, ESS={stats['avg_effective_sample_size']:.1f}")
     
-    print("\nTop 5 by Effective Sample Size (higher is better):")
+    print("\nTop 5 by Effective Sample Size:")
     for i, (name, stats) in enumerate(rankings['rankings']['by_effective_sample_size'][:5], 1):
         print(f"{i}. {name}: ESS={stats['avg_effective_sample_size']:.1f}, variance={stats['avg_variance']:.6f}")
     
-    print("\nTop 5 by Stability Score (higher is better):")
+    print("\nTop 5 by Stability Score:")
     for i, (name, stats) in enumerate(rankings['rankings']['by_stability'][:5], 1):
         print(f"{i}. {name}: stability={stats['stability_score']:.6f}, ESS={stats['avg_effective_sample_size']:.1f}, var={stats['avg_variance']:.6f}")
     
@@ -879,7 +736,7 @@ def main():
     print("="*80)
 
 if __name__ == "__main__":
-    # You can still run individual tests via command line if needed
+    # Run individual tests via command line if needed
     if len(sys.argv) > 1:
         # Run individual proposal test (backward compatibility)
         n_reps = 1000
@@ -909,5 +766,4 @@ if __name__ == "__main__":
             kl = kl_sum / w_sum if w_sum > 0 else 0
             print(f"\n{ff}: KL estimate: {kl:0.6f}")
     else:
-        # Run comprehensive experiments
         main()
