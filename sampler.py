@@ -219,12 +219,12 @@ def run_smc(func, length, reps, temp, folder outp):
     kl = kl_sum / w_sum
     print(f"KL estimate: {kl:0.6f}")
 
-    # calc MSE
-    mse_sum = 0
+    # calc WSE
+    wse_sum = 0
     for p in particles:
-        mse_sum += p['weight'] * (p['val'] - kl) * (p['val'] - kl)
-    mse = mse_sum / w_sum
-    print(f"KL MSE: {mse:0.6f}")
+        wse_sum += p['weight'] * (p['val'] - kl) * (p['val'] - kl)
+    wse = wse_sum / w_sum
+    print(f"KL WSE: {wse:0.6f}")
 
 # Parameters
 n_reps = 1000

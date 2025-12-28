@@ -1,15 +1,18 @@
 import sys, os, json, math
-script_directory = os.path.dirname(os.path.realpath(__file__))
+
+data_directory = "tests2/"
+if len(sys.argv) > 1:
+	data_directory = sys.argv[1]
 
 methods = {}
 
-files = os.listdir(script_directory)
+files = os.listdir(data_directory)
 for file in files:
 	if not file.endswith('.json'):
 		continue
 
 	name = file[:-5]
-	with open(os.path.join(script_directory, file), 'r') as f:
+	with open(os.path.join(data_directory, file), 'r') as f:
 		runs = json.load(f)
 	M = len(runs)
 
