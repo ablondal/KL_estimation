@@ -190,9 +190,10 @@ python batch_sampler.py just_p balanced adaptive
 Configuration can be done by modifying experimental parameters in main() and selecting specific proposal and prompts. 
 
 ```python
-temperatures = [0.4, 1.0]
-max_new_tokens = 20 # Max token length
-n_reps = 500   
+proposals =   # dictionary of proposals
+temperatures =    # List of temperatures 
+max_new_tokens =    # Max token length
+n_reps =   # Number of samples
 ```
 
 ## Metrics
